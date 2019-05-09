@@ -56,7 +56,13 @@ public class Builder {
 		}
 
 	}
-
+	
+	public void print(String s)
+	{
+		PrintBlock p = new PrintBlock();
+		p.setPrint(s);
+		allBlocks.add(p);
+	}
 	/**
 	 * 
 	 * @param varName
@@ -80,5 +86,25 @@ public class Builder {
 	public void recompile()
 	{
 		allBlocks.clear();
+	}
+	
+	public String run()
+	{
+		String console = "";
+		String newLine = System.getProperty("line.separator");
+		
+		for(Block<?> b : allBlocks)
+		{
+			if(b instanceof PrintBlock)
+			{
+				console = console + b.execute();
+			}
+			else
+			{
+				b.execute();
+			}
+		}
+		
+		return console;
 	}
 }
