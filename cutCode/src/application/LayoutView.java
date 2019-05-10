@@ -62,85 +62,50 @@ public class LayoutView extends Pane{
 			
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
-				press(event);
+				current = new BlockView();
+				current.setLayoutX(event.getX());
+				current.setLayoutY(event.getY());
+				layout.getChildren().add(current);
+				
 			}else if(type.equals( MouseEvent.MOUSE_DRAGGED)) {
-				drag(event);
+				current.setLayoutX(event.getX());
+				current.setLayoutY(event.getY());
+
 			}else if(type.equals( MouseEvent.MOUSE_RELEASED)) {
-				release(event);
+				BlockHandler handler = new BlockHandler(current);
+				current.setOnMousePressed(handler);
+				current.setOnMouseDragged(handler);
+				current.setOnMouseReleased(handler);
+				blocks.add(current);
+				current = null;
 			}
-		}
-		
-		private void press(MouseEvent e) {
-			current = new BlockView();
-			current.setLayoutX(e.getX());
-			current.setLayoutY(e.getY());
-			layout.getChildren().add(current);
-			
-		}
-		
-		private void drag(MouseEvent e) {
-			current.setLayoutX(e.getX());
-			current.setLayoutY(e.getY());
-			
-		}
-		
-		private void release(MouseEvent e) {
-			BlockHandler handler = new BlockHandler(current);
-			current.setOnMousePressed(handler);
-			current.setOnMouseDragged(handler);
-			current.setOnMouseReleased(handler);
-			
-			blocks.add(current);
-			current = null;
-			
-			
-		}
-		
+		}						
 	}
 	
 	private class BlockHandler implements EventHandler<MouseEvent>{
 		
 		private BlockView block;
+		private double anchorX, anchorY;
 		
 		public BlockHandler(BlockView block) {
 			this.block = block;
 		}
 		
 		@Override
-		public void handle(MouseEvent event) {
-			// TODO Auto-generated method stub
-			
-			System.out.println("(" + event.getX() + ", " + event.getY() + ")");
-			
+		public void handle(MouseEvent event) {			
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
-				this.press(event);
+				anchorX = event.getX();
+				anchorY = event.getY();
 			}else if(type.equals( MouseEvent.MOUSE_DRAGGED)) {
-				this.drag(event);
+				
+				this.block.setLayoutX(this.block.getLayoutX()+event.getX()-anchorX);
+				this.block.setLayoutY(this.block.getLayoutY()+event.getY()-anchorY);
+				System.err.println("" + event.getX() + ", " + event.getY());
 			}else if(type.equals( MouseEvent.MOUSE_RELEASED)) {
-				this.release(event);
+				anchorX = anchorY = 0;
 			}
 		}
-		
-		private void press(MouseEvent e) {
-			
-			
-		}
-		
-		private void drag(MouseEvent e) {
-			this.block.setLayoutX(e.getX());
-			this.block.setLayoutY(e.getY());
-			System.err.println("" + e.getX() + ", " + e.getY());
-			
-		}
-		
-		private void release(MouseEvent e) {
-			
-			
-			
-		}
-		
-		
 	}
 	
 }
