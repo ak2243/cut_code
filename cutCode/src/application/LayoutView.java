@@ -59,7 +59,7 @@ public class LayoutView extends Pane{
 		@Override
 		public void handle(MouseEvent event) {
 			// TODO Auto-generated method stub
-			
+			System.err.println("Handled");
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
 				press(event);
