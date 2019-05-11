@@ -40,19 +40,20 @@ public class Builder {
 				allBlocks.add(v);
 				break;
 			}
-			case "boolean": {
-				VariableBlock<Boolean> v = new VariableBlock<Boolean>();
-				v.setName(varName);
-				v.setValue(Boolean.parseBoolean(value));
-				allBlocks.add(v);
-				break;
-		 	}
+			
 			case "string": {
 				VariableBlock<String> v = new VariableBlock<String>();
 				v.setName(varName);
 				v.setValue(value);
 				break;
 			}
+			default: {
+				VariableBlock<Boolean> v = new VariableBlock<Boolean>();
+				v.setName(varName);
+				v.setValue(Boolean.parseBoolean(value));
+				allBlocks.add(v);
+				break;
+		 	}
 		}
 
 	}
@@ -80,7 +81,7 @@ public class Builder {
 	}
 
 	public void error() {
-		System.err.println("ERROR");
+		System.err.println("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 	
 	public void recompile()
@@ -107,4 +108,6 @@ public class Builder {
 		
 		return console;
 	}
+
+	
 }
