@@ -98,7 +98,7 @@ public class Builder {
 		{
 			if(b instanceof PrintBlock)
 			{
-				console = console + b.execute();
+				console = console + b.execute() + newLine;
 			}
 			else
 			{
