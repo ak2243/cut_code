@@ -3,7 +3,7 @@ package application;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
+import javafx.scene.paint.Color;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
@@ -62,7 +62,7 @@ public class LayoutView extends Pane{
 			
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
-				current = new BlockView(30,40);
+				current = new BlockView(30,40, Color.GREEN);
 				current.setLayoutX(event.getX());
 				current.setLayoutY(event.getY());
 				layout.getChildren().add(current);
