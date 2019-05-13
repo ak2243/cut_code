@@ -62,7 +62,7 @@ public class LayoutView extends Pane{
 			
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
-				current = new BlockView();
+				current = new BlockView(30,40);
 				current.setLayoutX(event.getX());
 				current.setLayoutY(event.getY());
 				layout.getChildren().add(current);
@@ -101,7 +101,7 @@ public class LayoutView extends Pane{
 				
 				this.block.setLayoutX(this.block.getLayoutX()+event.getX()-anchorX);
 				this.block.setLayoutY(this.block.getLayoutY()+event.getY()-anchorY);
-				System.err.println("" + event.getX() + ", " + event.getY());
+				System.err.println("(" + event.getX() + ", " + event.getY());
 			}else if(type.equals( MouseEvent.MOUSE_RELEASED)) {
 				anchorX = anchorY = 0;
 			}
