@@ -7,7 +7,7 @@ public class NotBlock extends BooleanOperator<Boolean> {
 	public Boolean execute() {
 		try
 		{
-			return super.getOperand1() && super.getOperand2();
+			return super.getOperand1() == super.getOperand2();
 		}
 		catch (NullPointerException e)
 		{
