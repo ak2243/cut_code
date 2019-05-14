@@ -10,8 +10,8 @@ public class BlockView extends Rectangle {
 	public BlockView(int width, int height, Paint p) {
 		//Paint p = new Paint();
 		//this.setFill(p);
+		
 		this.setId("hi");
-		this.setStyle("-fx-background-color: red;");
 		this.setWidth(width);
 		this.setHeight(height);
 		
