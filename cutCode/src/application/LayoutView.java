@@ -62,7 +62,7 @@ public class LayoutView extends Pane{
 			
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if(type.equals( MouseEvent.MOUSE_PRESSED)) {
-				current = new BlockView(30,40, Color.GREEN);
+				current = new BlockView(30,40, "hi");
 				current.setLayoutX(event.getX());
 				current.setLayoutY(event.getY());
 				layout.getChildren().add(current);

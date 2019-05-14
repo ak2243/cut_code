@@ -6,15 +6,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.geometry.*;
 
-public class BlockView extends Rectangle {
-	public BlockView(int width, int height, Paint p) {
-		//Paint p = new Paint();
-		//this.setFill(p);
-		
-		this.setId("hi");
+public class BlockView extends Button {
+	public BlockView(int width, int height, String ID) {
+		// Paint p = new Paint();
+		// this.setFill(p);
+		this.setId(ID);
 		this.setWidth(width);
 		this.setHeight(height);
-		
-		System.err.println(this.getStyle());
 	}
 }
