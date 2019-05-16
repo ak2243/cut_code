@@ -23,6 +23,12 @@
 #variable
 {
 	-fx-background-color: blue;
+	-fx-text-fill: gray;
 
+}
+#area
+{
+	-fx-fill: orange;
+	-fx-background-color: blue;
 }
 

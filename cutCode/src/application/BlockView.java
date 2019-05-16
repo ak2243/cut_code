@@ -11,7 +11,8 @@ public class BlockView extends Button {
 		// Paint p = new Paint();
 		// this.setFill(p);
 		this.setId(ID);
-		this.setWidth(width);
-		this.setHeight(height);
+		this.setMinHeight(height);
+		this.setMinWidth(width);
+		this.setText(ID);
 	}
 }
