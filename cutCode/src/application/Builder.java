@@ -53,6 +53,7 @@ public class Builder {
 				v.setValue(Boolean.parseBoolean(value));
 				allBlocks.add(v);
 				break;
+				
 		 	}
 		}
 
@@ -96,7 +97,7 @@ public class Builder {
 		
 		for(Block<?> b : allBlocks)
 		{
-			if(b instanceof PrintBlock)
+			if(b instanceof PrintBlock || b instanceof IfBlock)
 			{
 				console = console + b.execute() + newLine;
 			}
@@ -109,5 +110,17 @@ public class Builder {
 		return console;
 	}
 
+	public void createIf(BooleanOperator<?> condition)
+	{
+		IfBlock i = new IfBlock(condition.execute());
+		allBlocks.add(i);
+	}
+	
+	public void createEquals(VariableBlock<String> variable, String s)
+	{
+		//TODO: fix
+		variable.setValue(s);
+	}
+	
 	
 }

@@ -6,10 +6,11 @@ public class IfBlock extends Block<String> {
 	
 	private ArrayList<Block<?>> contents;
 	private ArrayList<Block<?>> elseContents;
-	private BooleanOperator<?> condition;
+	private boolean condition;
 	
-	public IfBlock()
+	public IfBlock(boolean condition)
 	{
+		this.condition =  condition;
 		contents = new ArrayList<Block<?>>();
 		elseContents = new ArrayList<Block<?>>();
 	}
@@ -26,7 +27,7 @@ public class IfBlock extends Block<String> {
 	
 	@Override
 	public String execute() {
-		if(!condition.execute())
+		if(!condition)
 		{
 			String console = "";
 			String newLine = System.getProperty("line.separator");
