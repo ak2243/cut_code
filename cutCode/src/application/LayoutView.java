@@ -113,6 +113,7 @@ public class LayoutView extends Pane {
 			if (type.equals(MouseEvent.MOUSE_PRESSED)) {
 				anchorX = event.getX();
 				anchorY = event.getY();
+				block.setNextBlock(null);
 			} else if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
 
 				this.block.setLayoutX(this.block.getLayoutX() + event.getX() - anchorX);
@@ -121,9 +122,11 @@ public class LayoutView extends Pane {
 			} else if (type.equals(MouseEvent.MOUSE_RELEASED)) {
 				anchorX = anchorY = 0;
 				for(BlockView b : blocks) {
-					if(Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600) {
+					if(b.getNextBlock() != null && Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600) {
 						block.setLayoutX(b.getLayoutX());
 						block.setLayoutY(b.getLayoutY() + b.getHeight());
+						b.setNextBlock(block);
+						block.setBlockAbove(b);
 					}
 				}
 			}

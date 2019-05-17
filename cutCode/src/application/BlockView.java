@@ -12,7 +12,7 @@ import javafx.geometry.*;
 public class BlockView extends HBox {
 	private BlockView nextBlock;
 	private BlockView nestedIn;
-	
+	private BlockView blockAbove;
 	
 	public BlockView(int width, int height, String ID) {
 		// Paint p = new Paint();
@@ -30,21 +30,14 @@ public class BlockView extends HBox {
 	public void setNextBlock(BlockView nextBlock) {
 		this.nextBlock = nextBlock;
 	}
-	
-	public void makeIfView()
-	{
-		
+
+
+	public BlockView getBlockAbove() {
+		return blockAbove;
 	}
-	
-	public void makeVariableView()
-	{
-		
+
+	public void setBlockAbove(BlockView blockAbove) {
+		this.blockAbove = blockAbove;
 	}
-	
-	public void makePrintStatement()
-	{
-		
-	}
-	
-	
+>>>>>>> d82e55c86fac264b755829584aedeab47fee0521
 }
