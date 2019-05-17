@@ -121,6 +121,11 @@ public class Builder {
 		//TODO: fix
 		variable.setValue(s);
 	}
+	public void createEquals(VariableBlock<Double> variable, double d)
+	{
+		//TODO: fix
+		variable.setValue(d);
+	}
 	
 	
 }
