@@ -30,4 +30,21 @@ public class BlockView extends HBox {
 	public void setNextBlock(BlockView nextBlock) {
 		this.nextBlock = nextBlock;
 	}
+	
+	public void makeIfView()
+	{
+		
+	}
+	
+	public void makeVariableView()
+	{
+		
+	}
+	
+	public void makePrintStatement()
+	{
+		
+	}
+	
+	
 }
