@@ -126,6 +126,11 @@ public class Builder {
 		//TODO: fix
 		variable.setValue(d);
 	}
+	public void createEquals(VariableBlock<Boolean> variable, boolean b)
+	{
+		//TODO: fix
+		variable.setValue(b);
+	}
 	
 	
 }
