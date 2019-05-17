@@ -81,9 +81,9 @@ public class LayoutView extends Pane {
 				current.setOnMouseDragged(handler);
 				current.setOnMouseReleased(handler);
 				for(BlockView block : blocks) {
-					
-					if(Math.pow(current.getLayoutX(), 2) + Math.pow(current.getLayoutY(), 2) < 40) {
-						
+					if(Math.pow(current.getLayoutX() - block.getLayoutX(),2) + Math.pow(current.getLayoutY() - (block.getLayoutY() + block.getHeight()), 2) < 1600) {
+						current.setLayoutX(block.getLayoutX());
+						current.setLayoutY(block.getLayoutY() + block.getHeight());
 					}
 				}
 				blocks.add(current);
@@ -95,6 +95,8 @@ public class LayoutView extends Pane {
 			}
 		}
 	}
+	
+	
 
 	private class BlockHandler implements EventHandler<MouseEvent> {
 
@@ -118,6 +120,12 @@ public class LayoutView extends Pane {
 				System.err.println("(" + event.getX() + ", " + event.getY());
 			} else if (type.equals(MouseEvent.MOUSE_RELEASED)) {
 				anchorX = anchorY = 0;
+				for(BlockView b : blocks) {
+					if(Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600) {
+						block.setLayoutX(b.getLayoutX());
+						block.setLayoutY(b.getLayoutY() + b.getHeight());
+					}
+				}
 			}
 		}
 	}
