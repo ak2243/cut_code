@@ -66,7 +66,7 @@ public class LayoutView extends Pane {
 				double mouseX = event.getSceneX();
 				double mouseY = event.getSceneY();
 				
-				current = new BlockView(100, 50, id);
+				current = new BlockView(300, 50, id, false);
 				layout.getChildren().add(current);
 				current.setLayoutX(mouseX - (current.getMinWidth() / 2));
 				current.setLayoutY(mouseY - (current.getMinHeight() / 2));
@@ -80,10 +80,12 @@ public class LayoutView extends Pane {
 				current.setOnMousePressed(handler);
 				current.setOnMouseDragged(handler);
 				current.setOnMouseReleased(handler);
-				for(BlockView block : blocks) {
-					if(Math.pow(current.getLayoutX() - block.getLayoutX(),2) + Math.pow(current.getLayoutY() - (block.getLayoutY() + block.getHeight()), 2) < 1600) {
-						current.setLayoutX(block.getLayoutX());
-						current.setLayoutY(block.getLayoutY() + block.getHeight());
+				for(BlockView b : blocks) {
+					if(b.getNextBlock() == null && (Math.pow(current.getLayoutX() - b.getLayoutX(),2) + Math.pow(current.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+						current.setLayoutX(b.getLayoutX());
+						current.setLayoutY(b.getLayoutY() + b.getHeight());
+						b.setNextBlock(current);
+						current.setBlockAbove(b);
 					}
 				}
 				blocks.add(current);
@@ -113,16 +115,19 @@ public class LayoutView extends Pane {
 			if (type.equals(MouseEvent.MOUSE_PRESSED)) {
 				anchorX = event.getX();
 				anchorY = event.getY();
+				if(block.getNextBlock() != null) block.getNextBlock().setBlockAbove(null);
 				block.setNextBlock(null);
+				if(block.getBlockAbove() != null) block.getBlockAbove().setNextBlock(null);
+				block.setBlockAbove(null);
+				
 			} else if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
 
 				this.block.setLayoutX(this.block.getLayoutX() + event.getX() - anchorX);
 				this.block.setLayoutY(this.block.getLayoutY() + event.getY() - anchorY);
-				System.err.println("(" + event.getX() + ", " + event.getY());
 			} else if (type.equals(MouseEvent.MOUSE_RELEASED)) {
 				anchorX = anchorY = 0;
 				for(BlockView b : blocks) {
-					if(b.getNextBlock() != null && Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600) {
+					if(b.getNextBlock() == null && (Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
 						block.setLayoutX(b.getLayoutX());
 						block.setLayoutY(b.getLayoutY() + b.getHeight());
 						b.setNextBlock(block);
@@ -138,10 +143,10 @@ public class LayoutView extends Pane {
 		box.setSpacing(20);
 		box.setPadding(new Insets(30));
 		ArrayList<BlockView> paletteBlocks = new ArrayList<BlockView>();
-		paletteBlocks.add(new BlockView(100, 50, "variable"));
-		paletteBlocks.add(new BlockView(100, 50, "print"));
-		paletteBlocks.add(new BlockView(100, 50, "if"));
-		paletteBlocks.add(new BlockView(100, 50, "operator"));
+		paletteBlocks.add(new BlockView(300, 50, "variable", true));
+		paletteBlocks.add(new BlockView(300, 50, "print", true));
+		paletteBlocks.add(new BlockView(300, 50, "if", true));
+		paletteBlocks.add(new BlockView(300, 50, "operator", true));
 		box.setMaxSize(160, 320);
 		for (BlockView block : paletteBlocks) {
 			Mouser mouser = new Mouser(this, block.getId());
