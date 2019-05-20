@@ -31,6 +31,19 @@ public class BlockView extends HBox {
 			{
 				makeIf();
 			}
+			else if (ID.equals("print"))
+			{
+				makePrint();
+			}
+			else if (ID.equals("variable"))
+			{
+				makeVar();
+			}
+		}
+		else
+		{
+			Label label = new Label(ID);
+			this.getChildren().add(label);
 		}
 	}
 
@@ -66,5 +79,24 @@ public class BlockView extends HBox {
 		secondOperand.setText("2nd Operand");
 		secondOperand.setMaxWidth(100);
 		this.getChildren().add(secondOperand);
+	}
+
+	public void makePrint()
+	{
+		Label label = new Label("Print:");
+		TextField toPrint = new TextField();
+		
+		this.getChildren().addAll(label, toPrint);
+	}
+	
+	public void makeVar()
+	{
+		Label label = new Label("Variable");
+		TextField name = new TextField("Name");
+		name.setMaxWidth(75);
+		Label label2 = new Label("=");
+		TextField val = new TextField("Value");
+		val.setMaxWidth(75);
+		this.getChildren().addAll(label, name, label2, val);
 	}
 }

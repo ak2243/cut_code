@@ -2,12 +2,17 @@ package application;
 
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
 import java.util.*;
@@ -27,7 +32,7 @@ public class LayoutView extends Pane {
 		this.getChildren().add(layout);
 
 		playArea = new AnchorPane();
-		playArea.setMinSize(width - 300, height);
+		playArea.setMinSize(width - 500, height);
 		System.err.println(width);
 		layout.setCenter(playArea);
 
@@ -41,6 +46,7 @@ public class LayoutView extends Pane {
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		
 		Button run = new Button("RUN");
+		run.setOnMousePressed(new RunListener());
 		run.setMinSize(80, 50);
 		run.setAlignment(Pos.BOTTOM_LEFT);
 		layout.setRight(run);
@@ -146,7 +152,7 @@ public class LayoutView extends Pane {
 		paletteBlocks.add(new BlockView(300, 50, "variable", true));
 		paletteBlocks.add(new BlockView(300, 50, "print", true));
 		paletteBlocks.add(new BlockView(300, 50, "if", true));
-		paletteBlocks.add(new BlockView(300, 50, "operator", true));
+		paletteBlocks.add(new BlockView(300, 50, "Change_Variable", true));
 		box.setMaxSize(160, 320);
 		for (BlockView block : paletteBlocks) {
 			Mouser mouser = new Mouser(this, block.getId());
@@ -157,5 +163,65 @@ public class LayoutView extends Pane {
 		}
 
 		return box;
+	}
+
+	private class RunListener implements EventHandler<MouseEvent>
+	{
+		@Override
+		public void handle(MouseEvent event)
+		{
+			Builder builder = new Builder();
+			for(BlockView b : blocks)
+			{
+				if(b.getId().equals("print"))
+				{
+					String input = ((TextField)(b.getChildren().get(1))).getText();
+					if(builder.getVariable(input) != null)
+					{
+						builder.print("" + builder.getVariable(input).execute());
+					}
+					else
+					{
+						builder.print(input);
+					}
+				}
+				else if(b.getId().equals("variable"))
+				{
+					String value = ((TextField)(b.getChildren().get(3))).getText();
+					String name = ((TextField)(b.getChildren().get(1))).getText();
+					String type = "";
+					if(value.equals("true") || value.equals("false"))
+					{
+						System.err.println("hi");
+						type = "boolean";
+					}
+					else
+					{
+						try
+						{
+							Double.parseDouble(value);
+							type = "number";
+						}
+						catch(NumberFormatException e)
+						{
+							type = "String";
+						}
+					}
+					System.err.println(type);
+					builder.createVariable(type, name, value);
+				}
+			}
+			String s = builder.run();
+			Stage stage = new Stage();
+			BorderPane root = new BorderPane();
+			Scene scene = new Scene(root,400,400);
+			Label console = new Label(s);
+			root.setCenter(console);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			stage.setScene(scene);
+			stage.show();
+		}
+
+		
 	}
 }

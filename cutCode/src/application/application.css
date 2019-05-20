@@ -1,34 +1,22 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
-#hi
-{
-	
-	-fx-background-color: green;
-}
 
 #print
 {
-	-fx-background-color: yellow;
+	-fx-background-color: #CA01D0;
 }
 
 #if
 {
-	-fx-background-color: red;
+	-fx-background-color: #D06201;
 }
 
-#operator
+#Change_Variable
 {
-	-fx-background-color: green;
+	-fx-background-color: #07D001;
 }
 
 #variable
 {
-	-fx-background-color: blue;
+	-fx-background-color: #016FD0;
 	-fx-text-fill: gray;
 
 }
-#area
-{
-	-fx-fill: orange;
-	-fx-background-color: blue;
-}
-

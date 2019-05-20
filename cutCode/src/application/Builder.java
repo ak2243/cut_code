@@ -116,17 +116,17 @@ public class Builder {
 		allBlocks.add(i);
 	}
 	
-	public void createEquals(VariableBlock<String> variable, String s)
+	public void setVar(VariableBlock<String> variable, String s)
 	{
 		//TODO: fix
 		variable.setValue(s);
 	}
-	public void createEquals(VariableBlock<Double> variable, double d)
+	public void setVar(VariableBlock<Double> variable, double d)
 	{
 		//TODO: fix
 		variable.setValue(d);
 	}
-	public void createEquals(VariableBlock<Boolean> variable, boolean b)
+	public void setVar(VariableBlock<Boolean> variable, boolean b)
 	{
 		//TODO: fix
 		variable.setValue(b);
