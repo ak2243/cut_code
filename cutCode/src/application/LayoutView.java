@@ -176,39 +176,13 @@ public class LayoutView extends Pane {
 				if(b.getId().equals("print"))
 				{
 					String input = ((TextField)(b.getChildren().get(1))).getText();
-					if(builder.getVariable(input) != null)
-					{
-						builder.print("" + builder.getVariable(input).execute());
-					}
-					else
-					{
-						builder.print(input);
-					}
+					builder.print(input);
 				}
 				else if(b.getId().equals("variable"))
 				{
 					String value = ((TextField)(b.getChildren().get(3))).getText();
 					String name = ((TextField)(b.getChildren().get(1))).getText();
-					String type = "";
-					if(value.equals("true") || value.equals("false"))
-					{
-						System.err.println("hi");
-						type = "boolean";
-					}
-					else
-					{
-						try
-						{
-							Double.parseDouble(value);
-							type = "number";
-						}
-						catch(NumberFormatException e)
-						{
-							type = "String";
-						}
-					}
-					System.err.println(type);
-					builder.createVariable(type, name, value);
+					builder.createVariable(name, value);
 				}
 			}
 			String s = builder.run();

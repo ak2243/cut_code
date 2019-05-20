@@ -16,53 +16,58 @@ public class Builder {
 	 * @param value: the value of the variable
 	 * @param varName: the name of the variable
 	 */
-	public void createVariable(String type, String varName, String value) {
-		String varType = type.toLowerCase();
-		if(type == null || varName == null || value == null)
+	public void createVariable( String varName, String value) {
+		if(value.equals("true") || value.equals("false"))
 		{
-			return;
-		}
-		if(getVariable(varName) != null)
-		{
-			error();
-			return;
-		}
-		switch (varType) {
-			case "number": {
-				VariableBlock<Double> v = new VariableBlock<Double>();
-				v.setName(varName);
-				try {
-					v.setValue(Double.parseDouble(value));
-				} catch (NumberFormatException e) {
-					error();
-					return;
-				}
-				allBlocks.add(v);
-				break;
-			}
 			
-			case "string": {
-				VariableBlock<String> v = new VariableBlock<String>();
-				v.setName(varName);
-				v.setValue(value);
-				break;
-			}
-			default: {
-				VariableBlock<Boolean> v = new VariableBlock<Boolean>();
-				v.setName(varName);
-				v.setValue(Boolean.parseBoolean(value));
-				allBlocks.add(v);
-				break;
-				
-		 	}
+			VariableBlock<Boolean> v = new VariableBlock<Boolean>();
+			v.setValue(Boolean.parseBoolean(value));
+			allBlocks.add(v);
+			v.setName(varName);
 		}
+		else
+		{
+			try
+			{
+				Double.parseDouble(value);
+				VariableBlock<Double> v = new VariableBlock<Double>();
+				v.setValue(Double.parseDouble(value));
+				allBlocks.add(v);
+				v.setName(varName);
+			}
+			catch(NumberFormatException e)
+			{
+				if(parseMath(value) != null)
+				{
+					VariableBlock<Double> v = new VariableBlock<Double>();
+					v.setValue(parseMath(value));
+					allBlocks.add(v);
+					v.setName(varName);
+				}
+				else
+				{
+					VariableBlock<String> v = new VariableBlock<String>();
+					v.setValue(value);
+					allBlocks.add(v);
+					v.setName(varName);
+				}
+			}
+		}
+		
 
 	}
 	
 	public void print(String s)
 	{
 		PrintBlock p = new PrintBlock();
-		p.setPrint(s);
+		if(getVariable(s) != null)
+		{
+			p.setPrint("" + getVariable(s).execute());
+		}
+		else
+		{
+			p.setPrint(s);
+		}
 		allBlocks.add(p);
 	}
 	/**
@@ -131,6 +136,90 @@ public class Builder {
 		//TODO: fix
 		variable.setValue(b);
 	}
-	
+	public Double parseMath(String s )
+	{
+		String input = s.replaceAll("\\s+","");
+		if(input.contains("+"))
+		{
+			Double sum = 0.0;
+			String[] operands = input.split("\\+");
+			for(String str : operands)
+			{
+				try
+				{
+					Double d = Double.parseDouble(str);
+					sum += d;
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+			return sum;
+		}
+		else if (input.contains("\\*"))
+		{
+			Double product = 1.0;
+			String[] operands = input.split("\\*");
+			for(String str : operands)
+			{
+				try
+				{
+					Double d = Double.parseDouble(str);
+					product *= d;
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+			return product;
+		}
+		else if (input.contains("\\/"))
+		{
+			Double quotient = 0.0;
+			String[] operands = input.split("\\/");
+			for(String str : operands)
+			{
+				try
+				{
+					Double d = Double.parseDouble(str);
+					if(str.equals(operands[0]))
+					{
+						quotient *= d;
+					}
+					else
+					{
+						quotient /= d;
+					}
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+			return quotient;
+		}
+		else if (input.contains("\\-"))
+		{
+			Double difference = 0.0;
+			String[] operands = input.split("\\-");
+			for(String str : operands)
+			{
+				try
+				{
+					Double d = Double.parseDouble(str);
+					difference -= d;
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+			return difference;
+		}
+		
+		return null;
+	}
 	
 }
