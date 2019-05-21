@@ -184,6 +184,10 @@ public class LayoutView extends Pane {
 					String name = ((TextField)(b.getChildren().get(1))).getText();
 					builder.createVariable(name, value);
 				}
+				else if (b.getId().equals("if"))
+				{
+					String operand = "";
+				}
 			}
 			String s = builder.run();
 			Stage stage = new Stage();

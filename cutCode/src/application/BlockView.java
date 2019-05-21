@@ -73,7 +73,7 @@ public class BlockView extends HBox {
 		firstOperand.setMaxWidth(100);;
 		this.getChildren().add(firstOperand);
 		ComboBox<String> c = new ComboBox<String>();
-		c.getItems().addAll("==", "&&", "||");
+		c.getItems().addAll("==", "&&", "||", "<", ">");
 		this.getChildren().add(c);
 		TextField secondOperand = new TextField();
 		secondOperand.setText("2nd Operand");

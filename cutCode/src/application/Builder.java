@@ -16,30 +16,91 @@ public class Builder {
 	 * @param varName: the name of the variable
 	 */
 	public void createVariable(String varName, String value) {
+		
 		if (value.equals("true") || value.equals("false")) {
-
 			VariableBlock<Boolean> v = new VariableBlock<Boolean>();
 			v.setValue(Boolean.parseBoolean(value));
-			allBlocks.add(v);
-			v.setName(varName);
+			if(getVariable(varName) != null)
+			{
+				if(getVariable(varName).execute() instanceof Boolean)
+				{
+					((VariableBlock<Boolean>)getVariable(varName)).setValue(Boolean.parseBoolean(value));
+				}
+				else
+				{
+					error();
+				}
+			}
+			else
+			{
+				v.setName(varName);
+				allBlocks.add(v);
+			}
 		} else {
 			try {
 				Double.parseDouble(value);
 				VariableBlock<Double> v = new VariableBlock<Double>();
 				v.setValue(Double.parseDouble(value));
-				allBlocks.add(v);
-				v.setName(varName);
+				
+				if(getVariable(varName) != null)
+				{
+					if(getVariable(varName).execute() instanceof Double)
+					{
+						((VariableBlock<Double>)getVariable(varName)).setValue(Double.parseDouble(value));
+					}
+					else
+					{
+						error();
+					}
+				}
+				else
+				{
+					v.setName(varName);
+					allBlocks.add(v);
+				}
+				
 			} catch (NumberFormatException e) {
 				if (parseMath(value) != null) {
 					VariableBlock<Double> v = new VariableBlock<Double>();
 					v.setValue(parseMath(value));
-					allBlocks.add(v);
-					v.setName(varName);
+					
+					if(getVariable(varName) != null)
+					{
+						if(getVariable(varName).execute() instanceof Double)
+						{
+							((VariableBlock<Double>)getVariable(varName)).setValue(parseMath(value));
+						}
+						else
+						{
+							error();
+						}
+					}
+					else
+					{
+						v.setName(varName);
+						allBlocks.add(v);
+					}
+					
 				} else {
 					VariableBlock<String> v = new VariableBlock<String>();
 					v.setValue(value);
-					allBlocks.add(v);
-					v.setName(varName);
+					
+					if(getVariable(varName) != null)
+					{
+						if(getVariable(varName).execute() instanceof String)
+						{
+							((VariableBlock<String>)getVariable(varName)).setValue(value);
+						}
+						else
+						{
+							error();
+						}
+					}
+					else
+					{
+						v.setName(varName);
+						allBlocks.add(v);
+					}
 				}
 			}
 		}
@@ -101,22 +162,6 @@ public class Builder {
 		IfBlock i = new IfBlock(condition.execute());
 		allBlocks.add(i);
 	}
-
-	public void setVar(VariableBlock<String> variable, String s) {
-		// TODO: fix
-		variable.setValue(s);
-	}
-
-	public void setVar(VariableBlock<Double> variable, double d) {
-		// TODO: fix
-		variable.setValue(d);
-	}
-
-	public void setVar(VariableBlock<Boolean> variable, boolean b) {
-		// TODO: fix
-		variable.setValue(b);
-	}
-
 	public Double parseMath(String s) {
 		String input = s.replaceAll(" ", "");
 		if (input.contains("+")) {
