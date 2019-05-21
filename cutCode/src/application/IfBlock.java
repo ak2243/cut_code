@@ -13,6 +13,9 @@ public class IfBlock extends Block<String> {
 		this.condition =  condition;
 		contents = new ArrayList<Block<?>>();
 		elseContents = new ArrayList<Block<?>>();
+		PrintBlock p = new PrintBlock();
+		p.setPrint("Hello world");
+		contents.add(p);
 	}
 	public boolean getCondition()
 	{

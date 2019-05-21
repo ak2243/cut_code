@@ -122,8 +122,7 @@ public class Builder {
 		for (Block<?> b : allBlocks) {
 			if (b instanceof PrintBlock || b instanceof IfBlock) {
 				console = console + b.execute() + newLine;
-			}
-			else {
+			} else {
 				b.execute();
 			}
 		}
@@ -155,7 +154,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand < secondOperand);
-			allBlocks.add(i);System.err.println(i.getCondition());
+			allBlocks.add(i);
+			System.err.println(i.getCondition());
 		} else if (operator.equals(">")) {
 			Double firstOperand = null;
 			try {
@@ -179,7 +179,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand > secondOperand);
-			allBlocks.add(i);System.err.println(i.getCondition());
+			allBlocks.add(i);
+			System.err.println(i.getCondition());
 		} else if (operator.equals("&&")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -201,7 +202,8 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand && secondOperand);
-			allBlocks.add(i);System.err.println(i.getCondition());
+			allBlocks.add(i);
+			System.err.println(i.getCondition());
 		} else if (operator.equals("||")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -223,68 +225,22 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand || secondOperand);
-			allBlocks.add(i);System.err.println(i.getCondition());
-		} else if (operator.equals("==")) {
-			Double firstOperand = null;
-			try {
-				Double.parseDouble(operand1);
-				firstOperand = Double.parseDouble(operand1);
-				System.err.println("Let's see");
-			} catch (NumberFormatException e) {
-				if (parseMath(operand1) != null) {
-					firstOperand = parseMath(operand1);
-				}
-				else if (getVariable(operand1) != null)
-				{
-					if(getVariable(operand1).execute() instanceof Double)
-					{
-						firstOperand = (Double)getVariable(operand1).execute();
-					}
-					else if(getVariable(operand2) != null)
-					{
-						if(getVariable(operand1).execute() instanceof String || getVariable(operand2).execute() instanceof String)
-						{
-							String first = ((VariableBlock<String>)getVariable(operand1)).execute();
-							String second = ((VariableBlock<String>)getVariable(operand2)).execute();
-							IfBlock i = new IfBlock(second.equals(first));
-							allBlocks.add(i);System.err.println(i.getCondition());
-							
-							return;
-							
-						}
-					}
-				}
-				else
-				{
-					error();
-					return;
-				}
+			allBlocks.add(i);
+			System.err.println(i.getCondition());
+		} 
+		
+		else if (operator.equals("==")) {
+
+			if (operand1.equals(operand2)) {
+				IfBlock i = new IfBlock(true);
+				allBlocks.add(i);
+			} else if (parseMath(operand1) != null && parseMath(operand2) != null) {
+				IfBlock i = new IfBlock(parseMath(operand1).equals(parseMath(operand2)));
+				allBlocks.add(i);
+			} else if (parseOperand(operand1) != null && parseOperand(operand2) != null) {
+				IfBlock i = new IfBlock(parseOperand(operand1).equals(parseOperand(operand2)));
+				allBlocks.add(i);
 			}
-			
-			
-			Double secondOperand = null;
-			try {
-				Double.parseDouble(operand1);
-				secondOperand = Double.parseDouble(operand1);
-				System.err.println("Vision");
-			} catch (NumberFormatException e) {
-				if (parseMath(operand2) != null) {
-					secondOperand = parseMath(operand2);
-				} 
-				else if (getVariable(operand2) != null)
-				{
-					if(getVariable(operand2).execute() instanceof Double)
-					{
-						secondOperand = (Double)getVariable(operand2).execute();
-					}
-				}
-				else {
-					error();
-					return;
-				}
-			}
-			IfBlock i = new IfBlock(firstOperand.equals(secondOperand));	
-			allBlocks.add(i);System.err.println(i.getCondition());
 		}
 	}
 
@@ -389,6 +345,12 @@ public class Builder {
 	}
 
 	public Boolean parseOperand(String str) {
+		if (getVariable(str) != null) {
+			if (getVariable(str).equals("true") || getVariable(str).equals("false")) {
+				return Boolean.parseBoolean(((VariableBlock<String>) getVariable(str)).execute());
+			}
+			return null;
+		}
 		String operand = str.replaceAll(" ", "");
 		if (operand.equals("<")) {
 			String[] operands = operand.split("<");
