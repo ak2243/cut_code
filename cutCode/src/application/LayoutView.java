@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -186,7 +187,10 @@ public class LayoutView extends Pane {
 				}
 				else if (b.getId().equals("if"))
 				{
-					String operand = "";
+					String operand1 = ((TextField)(b.getChildren().get(1))).getText();
+					String operator = ((ComboBox<String>)(b.getChildren().get(2))).getValue();
+					String operand2 = ((TextField)(b.getChildren().get(3))).getText();
+					builder.createIf(operand1, operator, operand2);
 				}
 			}
 			String s = builder.run();

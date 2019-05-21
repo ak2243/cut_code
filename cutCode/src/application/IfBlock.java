@@ -14,6 +14,10 @@ public class IfBlock extends Block<String> {
 		contents = new ArrayList<Block<?>>();
 		elseContents = new ArrayList<Block<?>>();
 	}
+	public boolean getCondition()
+	{
+		return condition;
+	}
 
 	public void addToContents(Block<?> b)
 	{
@@ -27,6 +31,7 @@ public class IfBlock extends Block<String> {
 	
 	@Override
 	public String execute() {
+		System.err.println(condition);
 		if(!condition)
 		{
 			String console = "";
