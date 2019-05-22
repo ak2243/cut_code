@@ -224,8 +224,13 @@ public class LayoutView extends Pane {
 				String operator = ((ComboBox<String>) (b.getChildren().get(2))).getValue();
 				String operand2 = ((TextField) (b.getChildren().get(3))).getText();
 				builder.createIf(operand1, operator, operand2, 0);
-				BlockView block = b.getNestedIn();
-
+				System.err.println("HOLA");
+				try {
+					System.err.println("Size:" + builder.getBlocks().size());
+					builder.getIf(0).addToContents(addToIf(b.getNestedIn(), builder.getBlocks()));
+				} catch (NullPointerException e) {
+					builder.error();
+				}
 			}
 			return builder.get(0);
 		}

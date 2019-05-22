@@ -48,7 +48,7 @@ public class IfBlock extends Block<String> {
 		String newLine = System.getProperty("line.separator");
 
 		for (Block<?> b : contents) {
-			if (b instanceof PrintBlock) {
+			if (b instanceof PrintBlock || b instanceof IfBlock) {
 				console = console + b.execute() + newLine;
 			} else {
 				b.execute();

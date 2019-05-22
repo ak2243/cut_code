@@ -175,6 +175,11 @@ public class Builder {
 				if (parseMath(operand1) != null) {
 					firstOperand = parseMath(operand1);
 				}
+				else
+				{
+					error();
+					return;
+				}
 			}
 			Double secondOperand = null;
 			try {
@@ -199,6 +204,11 @@ public class Builder {
 			} catch (NumberFormatException e) {
 				if (parseMath(operand1) != null) {
 					firstOperand = parseMath(operand1);
+				}
+				else
+				{
+					error();
+					return;
 				}
 			}
 			Double secondOperand = null;
