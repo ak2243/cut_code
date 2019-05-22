@@ -101,4 +101,12 @@ public class BlockView extends HBox {
 		val.setMaxWidth(75);
 		this.getChildren().addAll(label, name, label2, val);
 	}
+
+	public BlockView getNestedIn() {
+		return nestedIn;
+	}
+
+	public void setNestedIn(BlockView nestedIn) {
+		this.nestedIn = nestedIn;
+	}
 }

@@ -130,7 +130,7 @@ public class Builder {
 		return console;
 	}
 
-	public void createIf(String operand1, String operator, String operand2) {
+	public void createIf(String operand1, String operator, String operand2, int id) {
 		if (operator.equals("<")) {
 			Double firstOperand = null;
 			try {
@@ -154,8 +154,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand < secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals(">")) {
 			Double firstOperand = null;
 			try {
@@ -179,8 +179,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand > secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals("&&")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -202,8 +202,8 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand && secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals("||")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -225,20 +225,23 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand || secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} 
 		
 		else if (operator.equals("==")) {
 
 			if (operand1.equals(operand2)) {
 				IfBlock i = new IfBlock(true);
+				i.setId(id);
 				allBlocks.add(i);
 			} else if (parseMath(operand1) != null && parseMath(operand2) != null) {
 				IfBlock i = new IfBlock(parseMath(operand1).equals(parseMath(operand2)));
+				i.setId(id);
 				allBlocks.add(i);
 			} else if (parseOperand(operand1) != null && parseOperand(operand2) != null) {
 				IfBlock i = new IfBlock(parseOperand(operand1).equals(parseOperand(operand2)));
+				i.setId(id);
 				allBlocks.add(i);
 			}
 		}
@@ -353,6 +356,7 @@ public class Builder {
 		}
 		String operand = str.replaceAll(" ", "");
 		if (operand.equals("<")) {
+			System.err.println("HOLA");
 			String[] operands = operand.split("<");
 			if (operands.length <= 1 || operands.length > 2)// TODO: Maybe allow for more than one operand
 				return null;
@@ -403,5 +407,35 @@ public class Builder {
 			return firstOperand > secondOperand;
 		}
 		return null;
+	}
+
+	public IfBlock getIf(int id)
+	{
+		for(Block b : allBlocks)
+		{
+			try
+			{
+				if(b instanceof IfBlock)
+				{
+					if(((IfBlock) b).getId() == id)
+					{
+						return (IfBlock) b;
+					}
+				}
+			}
+			catch (NullPointerException e) {}
+		}
+		return null;
+	}
+	public Block<?> get(int index)
+	{
+		try
+		{
+			return allBlocks.get(index);
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			return null;
+		}
 	}
 }

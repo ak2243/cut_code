@@ -34,7 +34,6 @@ public class LayoutView extends Pane {
 
 		playArea = new AnchorPane();
 		playArea.setMinSize(width - 500, height);
-		System.err.println(width);
 		layout.setCenter(playArea);
 
 		blockStorage = makePalette();
@@ -89,6 +88,11 @@ public class LayoutView extends Pane {
 				current.setOnMouseReleased(handler);
 				for(BlockView b : blocks) {
 					if(b.getNextBlock() == null && (Math.pow(current.getLayoutX() - b.getLayoutX(),2) + Math.pow(current.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+						if(b.getId().equals("if"))
+						{
+							
+							b.setNestedIn(current);
+						}
 						current.setLayoutX(b.getLayoutX());
 						current.setLayoutY(b.getLayoutY() + b.getHeight());
 						b.setNextBlock(current);
@@ -96,10 +100,6 @@ public class LayoutView extends Pane {
 					}
 				}
 				blocks.add(current);
-				
-				
-				
-				
 				current = null;
 			}
 		}
@@ -135,6 +135,10 @@ public class LayoutView extends Pane {
 				anchorX = anchorY = 0;
 				for(BlockView b : blocks) {
 					if(b.getNextBlock() == null && (Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+						if(b.getId().equals("if"))
+						{
+							b.setNestedIn(block);
+						}
 						block.setLayoutX(b.getLayoutX());
 						block.setLayoutY(b.getLayoutY() + b.getHeight());
 						b.setNextBlock(block);
@@ -172,8 +176,13 @@ public class LayoutView extends Pane {
 		public void handle(MouseEvent event)
 		{
 			Builder builder = new Builder();
-			for(BlockView b : blocks)
+			for(int i = 0; i < blocks.size(); i++)
 			{
+				BlockView b = blocks.get(i);
+				if(b.getBlockAbove() != null && b.getBlockAbove().getId().equals("if"))
+				{
+					continue;
+				}
 				if(b.getId().equals("print"))
 				{
 					String input = ((TextField)(b.getChildren().get(1))).getText();
@@ -190,7 +199,15 @@ public class LayoutView extends Pane {
 					String operand1 = ((TextField)(b.getChildren().get(1))).getText();
 					String operator = ((ComboBox<String>)(b.getChildren().get(2))).getValue();
 					String operand2 = ((TextField)(b.getChildren().get(3))).getText();
-					builder.createIf(operand1, operator, operand2);
+					builder.createIf(operand1, operator, operand2, i);
+					try
+					{
+						builder.getIf(i).addToContents(addToIf(b.getNestedIn()));
+					}
+					catch (NullPointerException e)
+					{
+						builder.error();
+					}
 				}
 			}
 			String s = builder.run();
@@ -204,6 +221,30 @@ public class LayoutView extends Pane {
 			stage.show();
 		}
 
-		
+		private Block<?> addToIf(BlockView b)
+		{
+			Builder builder = new Builder();
+			if(b.getId().equals("print"))
+			{
+				String input = ((TextField)(b.getChildren().get(1))).getText();
+				builder.print(input);
+			}
+			else if(b.getId().equals("variable"))
+			{
+				String value = ((TextField)(b.getChildren().get(3))).getText();
+				String name = ((TextField)(b.getChildren().get(1))).getText();
+				builder.createVariable(name, value);
+			}
+			else if (b.getId().equals("if"))
+			{
+				String operand1 = ((TextField)(b.getChildren().get(1))).getText();
+				String operator = ((ComboBox<String>)(b.getChildren().get(2))).getValue();
+				String operand2 = ((TextField)(b.getChildren().get(3))).getText();
+				builder.createIf(operand1, operator, operand2, 0);
+				BlockView block = b.getNestedIn();
+				
+			}
+			return builder.get(0);
+		}
 	}
 }

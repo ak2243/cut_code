@@ -14,9 +14,7 @@ public class IfBlock extends Block<String> {
 		this.condition =  condition;
 		contents = new ArrayList<Block<?>>();
 		elseContents = new ArrayList<Block<?>>();
-		PrintBlock p = new PrintBlock();
-		p.setPrint("Hello world");
-		contents.add(p);
+		
 	}
 	public boolean getCondition()
 	{
@@ -72,6 +70,12 @@ public class IfBlock extends Block<String> {
 		
 		return console;
 		
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }
