@@ -7,6 +7,7 @@ public class IfBlock extends Block<String> {
 	private ArrayList<Block<?>> contents;
 	private ArrayList<Block<?>> elseContents;
 	private boolean condition;
+	private int id;
 	
 	public IfBlock(boolean condition)
 	{
