@@ -44,7 +44,7 @@ public class LayoutView extends Pane {
 
 		blockStorage.setBorder(new Border(
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		
+
 		Button run = new Button("RUN");
 		run.setOnMousePressed(new RunListener());
 		run.setMinSize(80, 50);
@@ -71,7 +71,7 @@ public class LayoutView extends Pane {
 
 				double mouseX = event.getSceneX();
 				double mouseY = event.getSceneY();
-				
+
 				current = new BlockView(300, 50, id, false);
 				layout.getChildren().add(current);
 				current.setLayoutX(mouseX - (current.getMinWidth() / 2));
@@ -86,11 +86,11 @@ public class LayoutView extends Pane {
 				current.setOnMousePressed(handler);
 				current.setOnMouseDragged(handler);
 				current.setOnMouseReleased(handler);
-				for(BlockView b : blocks) {
-					if(b.getNextBlock() == null && (Math.pow(current.getLayoutX() - b.getLayoutX(),2) + Math.pow(current.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
-						if(b.getId().equals("if"))
-						{
-							
+				for (BlockView b : blocks) {
+					if (b.getNextBlock() == null && (Math.pow(current.getLayoutX() - b.getLayoutX(), 2)
+							+ Math.pow(current.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+						if (b.getId().equals("if")) {
+
 							b.setNestedIn(current);
 						}
 						current.setLayoutX(b.getLayoutX());
@@ -104,8 +104,6 @@ public class LayoutView extends Pane {
 			}
 		}
 	}
-	
-	
 
 	private class BlockHandler implements EventHandler<MouseEvent> {
 
@@ -122,21 +120,23 @@ public class LayoutView extends Pane {
 			if (type.equals(MouseEvent.MOUSE_PRESSED)) {
 				anchorX = event.getX();
 				anchorY = event.getY();
-				if(block.getNextBlock() != null) block.getNextBlock().setBlockAbove(null);
+				if (block.getNextBlock() != null)
+					block.getNextBlock().setBlockAbove(null);
 				block.setNextBlock(null);
-				if(block.getBlockAbove() != null) block.getBlockAbove().setNextBlock(null);
+				if (block.getBlockAbove() != null)
+					block.getBlockAbove().setNextBlock(null);
 				block.setBlockAbove(null);
-				
+
 			} else if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
 
 				this.block.setLayoutX(this.block.getLayoutX() + event.getX() - anchorX);
 				this.block.setLayoutY(this.block.getLayoutY() + event.getY() - anchorY);
 			} else if (type.equals(MouseEvent.MOUSE_RELEASED)) {
 				anchorX = anchorY = 0;
-				for(BlockView b : blocks) {
-					if(b.getNextBlock() == null && (Math.pow(block.getLayoutX() - b.getLayoutX(),2) + Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
-						if(b.getId().equals("if"))
-						{
+				for (BlockView b : blocks) {
+					if (b.getNextBlock() == null && (Math.pow(block.getLayoutX() - b.getLayoutX(), 2)
+							+ Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+						if (b.getId().equals("if")) {
 							b.setNestedIn(block);
 						}
 						block.setLayoutX(b.getLayoutX());
@@ -170,42 +170,31 @@ public class LayoutView extends Pane {
 		return box;
 	}
 
-	private class RunListener implements EventHandler<MouseEvent>
-	{
+	private class RunListener implements EventHandler<MouseEvent> {
 		@Override
-		public void handle(MouseEvent event)
-		{
+		public void handle(MouseEvent event) {
 			Builder builder = new Builder();
-			for(int i = 0; i < blocks.size(); i++)
-			{
+			for (int i = 0; i < blocks.size(); i++) {
 				BlockView b = blocks.get(i);
-				if(b.getBlockAbove() != null && b.getBlockAbove().getId().equals("if"))
-				{
+				if (b.getBlockAbove() != null && b.getBlockAbove().getId().equals("if")) {
 					continue;
 				}
-				if(b.getId().equals("print"))
-				{
-					String input = ((TextField)(b.getChildren().get(1))).getText();
+				if (b.getId().equals("print")) {
+					String input = ((TextField) (b.getChildren().get(1))).getText();
 					builder.print(input);
-				}
-				else if(b.getId().equals("variable"))
-				{
-					String value = ((TextField)(b.getChildren().get(3))).getText();
-					String name = ((TextField)(b.getChildren().get(1))).getText();
+				} else if (b.getId().equals("variable")) {
+					String value = ((TextField) (b.getChildren().get(3))).getText();
+					String name = ((TextField) (b.getChildren().get(1))).getText();
 					builder.createVariable(name, value);
-				}
-				else if (b.getId().equals("if"))
-				{
-					String operand1 = ((TextField)(b.getChildren().get(1))).getText();
-					String operator = ((ComboBox<String>)(b.getChildren().get(2))).getValue();
-					String operand2 = ((TextField)(b.getChildren().get(3))).getText();
+				} else if (b.getId().equals("if")) {
+					String operand1 = ((TextField) (b.getChildren().get(1))).getText();
+					String operator = ((ComboBox<String>) (b.getChildren().get(2))).getValue();
+					String operand2 = ((TextField) (b.getChildren().get(3))).getText();
 					builder.createIf(operand1, operator, operand2, i);
-					try
-					{
-						builder.getIf(i).addToContents(addToIf(b.getNestedIn()));
-					}
-					catch (NullPointerException e)
-					{
+					try {
+						System.err.println("Size:" + builder.getBlocks().size());
+						builder.getIf(i).addToContents(addToIf(b.getNestedIn(), builder.getBlocks()));
+					} catch (NullPointerException e) {
 						builder.error();
 					}
 				}
@@ -213,7 +202,7 @@ public class LayoutView extends Pane {
 			String s = builder.run();
 			Stage stage = new Stage();
 			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root, 400, 400);
 			Label console = new Label(s);
 			root.setCenter(console);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -221,28 +210,22 @@ public class LayoutView extends Pane {
 			stage.show();
 		}
 
-		private Block<?> addToIf(BlockView b)
-		{
-			Builder builder = new Builder();
-			if(b.getId().equals("print"))
-			{
-				String input = ((TextField)(b.getChildren().get(1))).getText();
+		private Block<?> addToIf(BlockView b, ArrayList<Block<?>> blocks) {
+			Builder builder = new Builder(blocks);
+			if (b.getId().equals("print")) {
+				String input = ((TextField) (b.getChildren().get(1))).getText();
 				builder.print(input);
-			}
-			else if(b.getId().equals("variable"))
-			{
-				String value = ((TextField)(b.getChildren().get(3))).getText();
-				String name = ((TextField)(b.getChildren().get(1))).getText();
+			} else if (b.getId().equals("variable")) {
+				String value = ((TextField) (b.getChildren().get(3))).getText();
+				String name = ((TextField) (b.getChildren().get(1))).getText();
 				builder.createVariable(name, value);
-			}
-			else if (b.getId().equals("if"))
-			{
-				String operand1 = ((TextField)(b.getChildren().get(1))).getText();
-				String operator = ((ComboBox<String>)(b.getChildren().get(2))).getValue();
-				String operand2 = ((TextField)(b.getChildren().get(3))).getText();
+			} else if (b.getId().equals("if")) {
+				String operand1 = ((TextField) (b.getChildren().get(1))).getText();
+				String operator = ((ComboBox<String>) (b.getChildren().get(2))).getValue();
+				String operand2 = ((TextField) (b.getChildren().get(3))).getText();
 				builder.createIf(operand1, operator, operand2, 0);
 				BlockView block = b.getNestedIn();
-				
+
 			}
 			return builder.get(0);
 		}

@@ -17,7 +17,7 @@ public class BlockView extends HBox {
 	private BlockView nextBlock;
 	private BlockView nestedIn;
 	private BlockView blockAbove;
-	
+
 	public BlockView(int width, int height, String ID, boolean inPalette) {
 		// Paint p = new Paint();
 		// this.setFill(p);
@@ -25,23 +25,15 @@ public class BlockView extends HBox {
 		this.setAlignment(Pos.CENTER);
 		this.setMinHeight(height);
 		this.setMinWidth(width);
-		if(!inPalette)
-		{
-			if(ID.equals("if"))
-			{
+		if (!inPalette) {
+			if (ID.equals("if")) {
 				makeIf();
-			}
-			else if (ID.equals("print"))
-			{
+			} else if (ID.equals("print")) {
 				makePrint();
-			}
-			else if (ID.equals("variable"))
-			{
+			} else if (ID.equals("variable")) {
 				makeVar();
 			}
-		}
-		else
-		{
+		} else {
 			Label label = new Label(ID);
 			this.getChildren().add(label);
 		}
@@ -55,7 +47,6 @@ public class BlockView extends HBox {
 		this.nextBlock = nextBlock;
 	}
 
-
 	public BlockView getBlockAbove() {
 		return blockAbove;
 	}
@@ -63,19 +54,19 @@ public class BlockView extends HBox {
 	public void setBlockAbove(BlockView blockAbove) {
 		this.blockAbove = blockAbove;
 	}
-	
-	public void makeIf()
-	{
+
+	public void makeIf() {
 		Label label = new Label("if");
 		this.getChildren().add(label);
 		TextField firstOperand = new TextField();
 		firstOperand.setText("1st Operand");
-		firstOperand.setMaxWidth(100);;
+		firstOperand.setMaxWidth(100);
+		;
 		this.getChildren().add(firstOperand);
 		ComboBox<String> c = new ComboBox<String>();
-		
+
 		c.getItems().addAll("==", "&&", "||", "<", ">");
-		
+
 		this.getChildren().add(c);
 		TextField secondOperand = new TextField();
 		secondOperand.setText("2nd Operand");
@@ -83,16 +74,14 @@ public class BlockView extends HBox {
 		this.getChildren().add(secondOperand);
 	}
 
-	public void makePrint()
-	{
+	public void makePrint() {
 		Label label = new Label("Print:");
 		TextField toPrint = new TextField();
-		
+
 		this.getChildren().addAll(label, toPrint);
 	}
-	
-	public void makeVar()
-	{
+
+	public void makeVar() {
 		Label label = new Label("Variable");
 		TextField name = new TextField("Name");
 		name.setMaxWidth(75);
