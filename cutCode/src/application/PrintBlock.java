@@ -5,14 +5,13 @@ public class PrintBlock extends Block<String> {
 
 	@Override
 	public String execute() {
-		// TODO Auto-generated method stub
-		return print;
+		return print; // This is displayed on the console by the run mechanism
 	}
 
 	/**
 	 * @param print the print to set
 	 */
-	public void setPrint(String print) {
+	public void setPrint(String print) { // sets the output from this block
 		this.print = print;
 	}
 
