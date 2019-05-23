@@ -99,6 +99,12 @@ public class LayoutView extends Pane {
 						current.setBlockAbove(b);
 					}
 				}
+				if(this.current.getLayoutY() >= blockStorage.getLayoutY() && this.current.getLayoutY() <= blockStorage.getLayoutY() + blockStorage.getHeight()
+				&& this.current.getLayoutX() >= blockStorage.getLayoutX() && this.current.getLayoutX() <= blockStorage.getLayoutX() + blockStorage.getWidth()) {
+					
+					LayoutView.this.getChildren().remove(current);
+				}
+				
 				blocks.add(current);
 				current = null;
 			}
@@ -167,8 +173,8 @@ public class LayoutView extends Pane {
 		paletteBlocks.add(new BlockView(300, 50, "variable", true));
 		paletteBlocks.add(new BlockView(300, 50, "print", true));
 		paletteBlocks.add(new BlockView(300, 50, "if", true));
-		paletteBlocks.add(new BlockView(300, 50, "Change_Variable", true));
-		box.setMaxSize(160, 320);
+		//paletteBlocks.add(new BlockView(300, 50, "Change_Variable", true));
+		box.setMaxSize(320, 230);
 		for (BlockView block : paletteBlocks) {
 			Mouser mouser = new Mouser(this, block.getId());
 			block.setOnMousePressed(mouser);
