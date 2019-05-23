@@ -24,7 +24,6 @@ public class LayoutView extends Pane {
 	private VBox blockStorage;
 	private ArrayList<BlockView> blocks;
 	private BorderPane layout;
-	private BlockView firstBlock;
 
 	public LayoutView(double width, double height) {
 
@@ -64,7 +63,6 @@ public class LayoutView extends Pane {
 
 		@Override
 		public void handle(MouseEvent event) {
-			// TODO Auto-generated method stub
 
 			System.err.println("Handled");
 
@@ -180,7 +178,6 @@ public class LayoutView extends Pane {
 	private class RunListener implements EventHandler<MouseEvent> {
 
 		ArrayList<BlockView> heads;
-		Builder builder;
 		
 		public RunListener() {
 			heads = new ArrayList<BlockView>();
