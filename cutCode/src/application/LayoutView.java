@@ -66,6 +66,8 @@ public class LayoutView extends Pane {
 		public void handle(MouseEvent event) {
 			// TODO Auto-generated method stub
 
+			System.err.println("Handled");
+
 			EventType<? extends MouseEvent> type = event.getEventType();
 			if (type.equals(MouseEvent.MOUSE_PRESSED)) {
 
@@ -89,10 +91,13 @@ public class LayoutView extends Pane {
 				for (BlockView b : blocks) {
 					if (b.getNextBlock() == null && (Math.pow(current.getLayoutX() - b.getLayoutX(), 2)
 							+ Math.pow(current.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+<<<<<<< HEAD
+=======
 						if (b.getId().equals("if")) {
 
 							b.setNestedIn(current);
 						}
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 						current.setLayoutX(b.getLayoutX());
 						current.setLayoutY(b.getLayoutY() + b.getHeight());
 						b.setNextBlock(current);
@@ -100,6 +105,10 @@ public class LayoutView extends Pane {
 					}
 				}
 				blocks.add(current);
+<<<<<<< HEAD
+
+=======
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 				current = null;
 			}
 		}
@@ -136,9 +145,12 @@ public class LayoutView extends Pane {
 				for (BlockView b : blocks) {
 					if (b.getNextBlock() == null && (Math.pow(block.getLayoutX() - b.getLayoutX(), 2)
 							+ Math.pow(block.getLayoutY() - (b.getLayoutY() + b.getHeight()), 2) < 1600)) {
+<<<<<<< HEAD
+=======
 						if (b.getId().equals("if")) {
 							b.setNestedIn(block);
 						}
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 						block.setLayoutX(b.getLayoutX());
 						block.setLayoutY(b.getLayoutY() + b.getHeight());
 						b.setNextBlock(block);
@@ -171,6 +183,23 @@ public class LayoutView extends Pane {
 	}
 
 	private class RunListener implements EventHandler<MouseEvent> {
+<<<<<<< HEAD
+		ArrayList<BlockView> heads;
+		Builder builder;
+		
+		public RunListener() {
+			heads = new ArrayList<BlockView>();
+		}
+
+		@Override
+		public void handle(MouseEvent event) {
+			builder = new Builder();
+
+			sortBlocks();
+
+			for (BlockView b : heads) {
+				setupBlock(b);
+=======
 		@Override
 		public void handle(MouseEvent event) {
 			Builder builder = new Builder();
@@ -198,6 +227,7 @@ public class LayoutView extends Pane {
 						builder.error();
 					}
 				}
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 			}
 			String s = builder.run();
 			Stage stage = new Stage();
@@ -210,8 +240,35 @@ public class LayoutView extends Pane {
 			stage.show();
 		}
 
+<<<<<<< HEAD
+		private void sortBlocks() {
+
+			heads.clear();
+			for (BlockView b : blocks) {
+				if (b.getBlockAbove() == null)
+					heads.add(b);
+			}
+
+			Collections.sort(heads, new Comparator<BlockView>() {
+				@Override
+				public int compare(BlockView arg0, BlockView arg1) {
+					// TODO Auto-generated method stub
+					if (arg0.getLayoutY() < arg1.getLayoutY())
+						return -1;
+					else if (arg0.getLayoutY() < arg1.getLayoutY())
+						return 1;
+					return 0;
+				}
+
+			});
+			
+		}
+		
+		private void setupBlock(BlockView b) {
+=======
 		private Block<?> addToIf(BlockView b, ArrayList<Block<?>> blocks) {
 			Builder builder = new Builder(blocks);
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 			if (b.getId().equals("print")) {
 				String input = ((TextField) (b.getChildren().get(1))).getText();
 				builder.print(input);
@@ -223,6 +280,14 @@ public class LayoutView extends Pane {
 				String operand1 = ((TextField) (b.getChildren().get(1))).getText();
 				String operator = ((ComboBox<String>) (b.getChildren().get(2))).getValue();
 				String operand2 = ((TextField) (b.getChildren().get(3))).getText();
+<<<<<<< HEAD
+				builder.createIf(operand1, operator, operand2);
+			}
+			if(b.getNextBlock() != null) {
+				this.setupBlock(b.getNextBlock());
+			}
+			
+=======
 				builder.createIf(operand1, operator, operand2, 0);
 				System.err.println("HOLA");
 				try {
@@ -233,6 +298,8 @@ public class LayoutView extends Pane {
 				}
 			}
 			return builder.get(0);
+>>>>>>> a0f99ea190cabe9a5751911b222315071c81e9a8
 		}
 	}
+
 }
