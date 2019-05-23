@@ -10,48 +10,37 @@ public class IfBlock extends Block<String> {
 	private int id;
 
 	public IfBlock(boolean condition) {
-		this.condition = condition;
-		contents = new ArrayList<Block<?>>();
-		elseContents = new ArrayList<Block<?>>();
+		this.condition = condition; // the condition, to the IfBlock object, is just a boolean
+		contents = new ArrayList<Block<?>>();// what to run if true
+		elseContents = new ArrayList<Block<?>>(); // what to run if false. We never used this but I had it here in case
+													// we wanted to later
 
 	}
 
-	public boolean getCondition() {
+	public boolean getCondition() { // returns the condition
 		return condition;
 	}
 
-	public void addToContents(Block<?> b) {
+	public void addToContents(Block<?> b) { // blocks are added for what to do if true
 		contents.add(b);
 	}
 
-	public void addToElse(Block<?> b) {
+	public void addToElse(Block<?> b) { // blocks are added for what to do if false
 		elseContents.add(b);
 	}
 
 	@Override
 	public String execute() {
-		if (!condition) {
-			String console = "";
-			String newLine = System.getProperty("line.separator");
-
-			for (Block<?> b : elseContents) {
-				if (b instanceof PrintBlock) {
-					console = console + b.execute() + newLine;
-				} else {
-					b.execute();
-				}
-			}
-
-			return console;
-		}
+		if (!condition) // By this, it only continues if the condition is true
+			return "";
 		String console = "";
 		String newLine = System.getProperty("line.separator");
 
 		for (Block<?> b : contents) {
 			if (b instanceof PrintBlock || b instanceof IfBlock) {
-				console = console + b.execute() + newLine;
+				console = console + b.execute() + newLine; // that way we get the correct things on the console
 			} else {
-				b.execute();
+				b.execute(); // All the other blocks still need to be executed
 			}
 		}
 
@@ -59,11 +48,11 @@ public class IfBlock extends Block<String> {
 
 	}
 
-	public int getId() {
+	public int getId() { // Special id for if statements
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(int id) { // Special id for if statements
 		this.id = id;
 	}
 
