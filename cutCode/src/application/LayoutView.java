@@ -126,7 +126,10 @@ public class LayoutView extends Pane {
 					block.getNextBlock().setBlockAbove(null);
 				block.setNextBlock(null);
 				if (block.getBlockAbove() != null)
+				{
 					block.getBlockAbove().setNextBlock(null);
+					block.getBlockAbove().setNestedIn(null);
+				}
 				block.setBlockAbove(null);
 
 			} else if (type.equals(MouseEvent.MOUSE_DRAGGED)) {
@@ -234,19 +237,29 @@ public class LayoutView extends Pane {
 				if (b.getBlockAbove() == null)
 					heads.add(b);
 			}
-
 			Collections.sort(heads, new Comparator<BlockView>() {
 				@Override
 				public int compare(BlockView arg0, BlockView arg1) {
 					// TODO Auto-generated method stub
 					if (arg0.getLayoutY() < arg1.getLayoutY())
 						return -1;
-					else if (arg0.getLayoutY() < arg1.getLayoutY())
+					else if (arg0.getLayoutY() > arg1.getLayoutY())
 						return 1;
 					return 0;
 				}
 
 			});
+			blocks.clear();
+			for(int i = 0; i < heads.size(); i++)
+			{
+				BlockView b = heads.get(i);
+				blocks.add(b);
+				while(b.getNextBlock() != null)
+				{
+					blocks.add(b.getNextBlock());
+					b = b.getNextBlock();
+				}
+			}
 			
 		}
 
