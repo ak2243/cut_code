@@ -178,8 +178,8 @@ public class Builder {
 			}
 			Double secondOperand = null;
 			try {
-				Double.parseDouble(operand1);
-				secondOperand = Double.parseDouble(operand1);
+				Double.parseDouble(operand2);
+				secondOperand = Double.parseDouble(operand2);
 			} catch (NumberFormatException e) {
 				if (parseMath(operand2) != null) {
 					secondOperand = parseMath(operand2);
