@@ -149,6 +149,11 @@ public class LayoutView extends Pane {
 						block.setBlockAbove(b);
 					}
 				}
+				if(this.block.getLayoutY() >= blockStorage.getLayoutY() && this.block.getLayoutY() <= blockStorage.getLayoutY() + blockStorage.getHeight()
+				&& this.block.getLayoutX() >= blockStorage.getLayoutX() && this.block.getLayoutX() <= blockStorage.getLayoutX() + blockStorage.getWidth()) {
+					
+					LayoutView.this.getChildren().remove(block);
+				}
 			}
 		}
 	}
@@ -247,6 +252,15 @@ public class LayoutView extends Pane {
 				}
 
 			});
+			
+			blocks.clear();
+			for(BlockView b : heads) {
+				blocks.add(b);
+				while(b.getNextBlock() != null) {
+					blocks.add(b.getNextBlock());
+					b = b.getNextBlock();
+				}
+			}
 			
 		}
 
