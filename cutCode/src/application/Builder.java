@@ -3,10 +3,26 @@ package application;
 import java.util.*;
 
 public class Builder {
-	ArrayList<Block<?>> allBlocks;
+	private ArrayList<Block<?>> allBlocks;
+	private ArrayList<Block<?>> altBlocks;
+	private boolean error;
 
 	public Builder() {
+		error = false;
 		allBlocks = new ArrayList<Block<?>>();
+		altBlocks = new ArrayList<Block<?>>();
+	}
+
+	public Builder(ArrayList<Block<?>> altBlocks) {
+		if (altBlocks != null || altBlocks.size() == 0) {
+			this.altBlocks = altBlocks;
+		}
+		error = false;
+		allBlocks = new ArrayList<Block<?>>();
+	}
+
+	public ArrayList<Block<?>> getBlocks() {
+		return allBlocks;
 	}
 
 	/**
@@ -85,9 +101,11 @@ public class Builder {
 
 	public void print(String s) {
 		PrintBlock p = new PrintBlock();
+		System.err.println(s);
 		if (getVariable(s) != null) {
 			p.setPrint("" + getVariable(s).execute());
 		} else if (parseMath(s) != null) {
+			System.err.println("Checkpoint");
 			p.setPrint("" + parseMath(s));
 		} else {
 			p.setPrint(s);
@@ -108,14 +126,27 @@ public class Builder {
 				}
 			}
 		}
+		try {
+			for (int i = 0; i < altBlocks.size(); i++) {
+				if (altBlocks.get(i) instanceof VariableBlock<?>) {
+					if (((VariableBlock<?>) altBlocks.get(i)).getName().equals(varName)) {
+						return ((VariableBlock<?>) altBlocks.get(i));
+					}
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 		return null;
 	}
 
 	public void error() {
-		System.err.println("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		error = true;
 	}
 
 	public String run() {
+		if (error)
+			return "error";
 		String console = "";
 		String newLine = System.getProperty("line.separator");
 
@@ -130,7 +161,11 @@ public class Builder {
 		return console;
 	}
 
-	public void createIf(String operand1, String operator, String operand2) {
+	public void createIf(String operand1, String operator, String operand2, int id) {
+		if (operator == null || operand1 == null || operand2 == null) {
+			error();
+			return;
+		}
 		if (operator.equals("<")) {
 			Double firstOperand = null;
 			try {
@@ -154,8 +189,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand < secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals(">")) {
 			Double firstOperand = null;
 			try {
@@ -168,8 +203,8 @@ public class Builder {
 			}
 			Double secondOperand = null;
 			try {
-				Double.parseDouble(operand1);
-				secondOperand = Double.parseDouble(operand1);
+				Double.parseDouble(operand2);
+				secondOperand = Double.parseDouble(operand2);
 			} catch (NumberFormatException e) {
 				if (parseMath(operand2) != null) {
 					secondOperand = parseMath(operand2);
@@ -179,8 +214,8 @@ public class Builder {
 				}
 			}
 			IfBlock i = new IfBlock(firstOperand > secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals("&&")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -188,6 +223,7 @@ public class Builder {
 			} else if (parseOperand(operand1) != null) {
 				firstOperand = parseOperand(operand1);
 			} else {
+
 				error();
 				return;
 			}
@@ -202,8 +238,8 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand && secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
 		} else if (operator.equals("||")) {
 			Boolean firstOperand = null;
 			if (operand1.replaceAll(" ", "").equals("true") || operand1.replaceAll(" ", "").equals("false")) {
@@ -225,20 +261,22 @@ public class Builder {
 				return;
 			}
 			IfBlock i = new IfBlock(firstOperand || secondOperand);
+			i.setId(id);
 			allBlocks.add(i);
-			System.err.println(i.getCondition());
-		} 
-		
-		else if (operator.equals("==")) {
+		}
 
-			if (operand1.equals(operand2)) {
-				IfBlock i = new IfBlock(true);
-				allBlocks.add(i);
-			} else if (parseMath(operand1) != null && parseMath(operand2) != null) {
+		else if (operator.equals("==")) {
+			if (parseMath(operand1) != null && parseMath(operand2) != null) {
 				IfBlock i = new IfBlock(parseMath(operand1).equals(parseMath(operand2)));
+				i.setId(id);
 				allBlocks.add(i);
 			} else if (parseOperand(operand1) != null && parseOperand(operand2) != null) {
 				IfBlock i = new IfBlock(parseOperand(operand1).equals(parseOperand(operand2)));
+				i.setId(id);
+				allBlocks.add(i);
+			} else {
+				IfBlock i = new IfBlock(operand1.equals(operand2));
+				i.setId(id);
 				allBlocks.add(i);
 			}
 		}
@@ -246,6 +284,9 @@ public class Builder {
 
 	public Double parseMath(String s) {
 		String input = s.replaceAll(" ", "");
+		if (getVariable(input) != null && getVariable(input).execute() instanceof Double) {
+			return ((VariableBlock<Double>) getVariable(input)).execute();
+		}
 		if (input.contains("+")) {
 			Double sum = 0.0;
 			String[] operands = input.split("\\+");
@@ -265,7 +306,6 @@ public class Builder {
 			}
 			return sum;
 		} else if (input.contains("*")) {
-			System.err.println("hello");
 			Double product = 1.0;
 			String[] operands = input.split("\\*");
 			for (String str : operands) {
@@ -346,19 +386,20 @@ public class Builder {
 
 	public Boolean parseOperand(String str) {
 		if (getVariable(str) != null) {
-			if (getVariable(str).equals("true") || getVariable(str).equals("false")) {
-				return Boolean.parseBoolean(((VariableBlock<String>) getVariable(str)).execute());
+			if (getVariable(str).execute() instanceof Boolean) {
+				return ((VariableBlock<Boolean>) getVariable(str)).execute();
 			}
 			return null;
 		}
 		String operand = str.replaceAll(" ", "");
-		if (operand.equals("<")) {
+		if (operand.contains("<")) {
 			String[] operands = operand.split("<");
-			if (operands.length <= 1 || operands.length > 2)// TODO: Maybe allow for more than one operand
+			if (operands.length != 2)// TODO: Maybe allow for more than one operand
 				return null;
 			Double firstOperand = null;
 			try {
-				Double.parseDouble(operands[1]);
+				Double.parseDouble(operands[0]);
+				firstOperand = Double.parseDouble(operands[0]);
 			} catch (NumberFormatException e) {
 				if (parseMath(operands[0]) != null) {
 					firstOperand = parseMath(operands[0]);
@@ -367,6 +408,7 @@ public class Builder {
 			Double secondOperand = null;
 			try {
 				Double.parseDouble(operands[1]);
+				secondOperand = Double.parseDouble(operands[1]);
 			} catch (NumberFormatException e) {
 				if (parseMath(operands[1]) != null) {
 					secondOperand = parseMath(operands[1]);
@@ -376,14 +418,15 @@ public class Builder {
 			}
 
 			return firstOperand < secondOperand;
-		} else if (operand.equals(">")) {
+		} else if (operand.contains(">")) {
 
 			String[] operands = operand.split(">");
 			if (operands.length <= 1 || operands.length > 2)// TODO: Maybe allow for more than one operand
 				return null;
 			Double firstOperand = null;
 			try {
-				Double.parseDouble(operands[1]);
+				Double.parseDouble(operands[0]);
+				firstOperand = Double.parseDouble(operands[0]);
 			} catch (NumberFormatException e) {
 				if (parseMath(operands[0]) != null) {
 					firstOperand = parseMath(operands[0]);
@@ -392,6 +435,7 @@ public class Builder {
 			Double secondOperand = null;
 			try {
 				Double.parseDouble(operands[1]);
+				secondOperand = Double.parseDouble(operands[1]);
 			} catch (NumberFormatException e) {
 				if (parseMath(operands[1]) != null) {
 					secondOperand = parseMath(operands[1]);
@@ -403,5 +447,27 @@ public class Builder {
 			return firstOperand > secondOperand;
 		}
 		return null;
+	}
+
+	public IfBlock getIf(int id) {
+		for (Block b : allBlocks) {
+			try {
+				if (b instanceof IfBlock) {
+					if (((IfBlock) b).getId() == id) {
+						return (IfBlock) b;
+					}
+				}
+			} catch (NullPointerException e) {
+			}
+		}
+		return null;
+	}
+
+	public Block<?> get(int index) {
+		try {
+			return allBlocks.get(index);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 }
