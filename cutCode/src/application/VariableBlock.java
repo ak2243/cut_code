@@ -1,6 +1,6 @@
 package application;
 
-public class VariableBlock<T> extends Block<T> { //Class for logical variable blocks
+public abstract class VariableBlock<T> extends Block<String> { //Class for logical variable blocks
 	T value; //can be of any type. In this program, only String, Double, or Boolean
 	String varName; //the object stores the variable name as a String
 
@@ -15,10 +15,12 @@ public class VariableBlock<T> extends Block<T> { //Class for logical variable bl
 	public void setValue(T val) { //sets the value
 		value = val;
 	}
-
-	@Override
-	public T execute() { //Executing a variable only needs to return the value
+	public T getValue()
+	{
 		return value;
 	}
+
+	@Override
+	public abstract String execute();
 
 }

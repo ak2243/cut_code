@@ -6,10 +6,10 @@ public class IfBlock extends Block<String> {
 
 	private ArrayList<Block<?>> contents;
 	private ArrayList<Block<?>> elseContents;
-	private boolean condition;
+	private String condition;
 	private int id;
 
-	public IfBlock(boolean condition) {
+	public IfBlock(String condition) {
 		this.condition = condition; // the condition, to the IfBlock object, is just a boolean
 		contents = new ArrayList<Block<?>>();// what to run if true
 		elseContents = new ArrayList<Block<?>>(); // what to run if false. We never used this but I had it here in case
@@ -17,7 +17,7 @@ public class IfBlock extends Block<String> {
 
 	}
 
-	public boolean getCondition() { // returns the condition
+	public String getCondition() { // returns the condition
 		return condition;
 	}
 
@@ -31,20 +31,18 @@ public class IfBlock extends Block<String> {
 
 	@Override
 	public String execute() {
-		if (!condition) // By this, it only continues if the condition is true
-			return "";
-		String console = "";
-		String newLine = System.getProperty("line.separator");
-
-		for (Block<?> b : contents) {
-			if (b instanceof PrintBlock || b instanceof IfBlock) {
-				console = console + b.execute() + newLine; // that way we get the correct things on the console
-			} else {
-				b.execute(); // All the other blocks still need to be executed
-			}
+		String s = "if (" + condition + ") {";
+		for(Block<?> b : contents)
+		{
+			s = s + b.execute();
 		}
-
-		return console;
+		s = s + "} else {";
+		for(Block<?> b : elseContents)
+		{
+			s = s + b.execute();
+		}
+		s = s + "}";
+		return s;
 
 	}
 

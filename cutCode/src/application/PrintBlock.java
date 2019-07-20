@@ -5,7 +5,8 @@ public class PrintBlock extends Block<String> {
 
 	@Override
 	public String execute() {
-		return print; // This is displayed on the console by the run mechanism
+		
+		return "System.out.println(" + print + ");"; // This is displayed on the console by the run mechanism
 	}
 
 	/**
