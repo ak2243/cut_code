@@ -93,7 +93,7 @@ public class Builder {
 		}
 		code = code + "}}";
 
-		StringBuilder output = new StringBuilder(64);
+		String output = "";
 		Process p;
 		Process p2;
 		try {
@@ -101,19 +101,30 @@ public class Builder {
 					new OutputStreamWriter(new FileOutputStream("Program.java"), "utf-8"));
 			writer.write(code);
 			writer.close();
-			p = Runtime.getRuntime().exec("javac Program.java");
-			p2 = Runtime.getRuntime().exec("java Program");
-			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
-			int in = -1;
-			while ((in = inStream.read()) != -1) {
-				output.append((char) in);
-			}
-			inStream.close();
-		} catch (Exception e) {
+			
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		try
+		{
+			p = Runtime.getRuntime().exec("javac Program.java");
+			p2 = Runtime.getRuntime().exec("java Program");
+			BufferedReader inStream = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("java Program").getInputStream()));
+			p2.getOutputStream().flush();
+			String in = inStream.readLine();
+			while (in != null) {
+				System.err.println(in);
+				output = output + in + System.lineSeparator();
+				in = inStream.readLine();
+			}
+			inStream.close();
+		}
+		catch(IOException e)
+		{
+			
+		}
 
-		return output.toString();
+		return output;
 	}
 
 	public void createIf(String operand1, String operator, String operand2, int id) {

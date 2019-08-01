@@ -268,6 +268,7 @@ public class LayoutView extends Pane {
 			}
 			
 			//Set up a new stage/scene to display the output
+			
 			String s = builder.run();
 			Stage stage = new Stage();
 			BorderPane root = new BorderPane();
