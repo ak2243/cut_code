@@ -110,15 +110,29 @@ public class Builder {
 			p = Runtime.getRuntime().exec("javac Program.java");
 			p.waitFor();
 			p2 = Runtime.getRuntime().exec("java Program");
-			BufferedReader inStream = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("java Program").getInputStream()));
+			
+			BufferedReader stream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			boolean error = false;
+			String inn = stream.readLine();
+			while (inn != null) {
+				System.err.println(inn);
+				inn = stream.readLine();
+				error = true;
+			}
+			if(error)
+			{
+				stream.close();
+				return "Error";
+			}
+			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 			p2.getOutputStream().flush();
 			String in = inStream.readLine();
 			while (in != null) {
-				System.err.println(in);
 				output = output + in + System.lineSeparator();
 				in = inStream.readLine();
 			}
 			inStream.close();
+			
 		}
 		catch(IOException e)
 		{
@@ -128,7 +142,6 @@ public class Builder {
 		{
 			
 		}
-		
 
 		return output;
 	}
