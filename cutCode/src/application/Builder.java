@@ -108,6 +108,7 @@ public class Builder {
 		try
 		{
 			p = Runtime.getRuntime().exec("javac Program.java");
+			p.waitFor();
 			p2 = Runtime.getRuntime().exec("java Program");
 			BufferedReader inStream = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("java Program").getInputStream()));
 			p2.getOutputStream().flush();
@@ -123,6 +124,11 @@ public class Builder {
 		{
 			
 		}
+		catch(InterruptedException ex)
+		{
+			
+		}
+		
 
 		return output;
 	}
