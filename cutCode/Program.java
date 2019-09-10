@@ -1,1 +1,1 @@
-public class Program{ public static void main(String[] args) {System.out.println("h");}}
+public class Program{ public static void main(String[] args) {System.out.println("hiayu");System.out.println("hiya");}}

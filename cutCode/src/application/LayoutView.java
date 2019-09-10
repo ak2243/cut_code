@@ -268,12 +268,10 @@ public class LayoutView extends Pane {
 			}
 			
 			//Set up a new stage/scene to display the output
-			
-			String s = builder.run();
 			Stage stage = new Stage();
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 400, 400);
-			Label console = new Label(s);
+			Label console = new Label(builder.run());
 			root.setCenter(console);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			stage.setScene(scene);
