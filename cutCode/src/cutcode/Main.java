@@ -14,7 +14,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
 		primaryStage.setScene(new Scene(new BorderPane(), 500, 500));
 		primaryStage.show();
 	}
