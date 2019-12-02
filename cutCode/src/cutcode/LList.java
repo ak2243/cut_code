@@ -157,21 +157,21 @@ public class LList<E> implements List<E> {
 			add(element);
 		} else if (index == 0) { // special scenario
 			Node<E> add = new Node<E>(null); // new node with no data
-			head.setPrevious(add);
-			add.setNext(head);
+			head.prev = add;
+			add.next = head;
 			head.setData(element); // maintains the link between the old head and the node succeeding it
 			head = add;
 			size++;
 		} else {
 			Node<E> spot = head.getNext();
 			for (int i = 0; i < index; i++) {
-				spot = spot.getNext(); // goes to the index
+				spot = spot.next; // goes to the index
 			}
 			Node<E> add = new Node<E>(element);
-			spot.getPrevious().setNext(add);
-			add.setPrevious(spot.getPrevious());
+			spot.prev.next = add;
+			add.prev = spot.prev;
 			spot.setPrevious(add);
-			add.setNext(spot); // links all the nodes together
+			add.next = spot; // links all the nodes together
 			size++;
 		}
 
@@ -182,19 +182,19 @@ public class LList<E> implements List<E> {
 		if (index >= size || index < 0) { // out of bounds
 			throw new IndexOutOfBoundsException();
 		} else if (index == size - 1) { //special scenario
-			E data = tail.getData();
-			tail = tail.getPrevious();
-			tail.setNext(null);
+			E data = tail.data;
+			tail = tail.prev;
+			tail.next = null;
 			size--;
 			return data;
 		} else {
-			Node<E> spot = head.getNext();
+			Node<E> spot = head.next;
 			for (int i = 0; i < index; i++) {
-				spot = spot.getNext();
+				spot = spot.next;
 			}
 
-			spot.getPrevious().setNext(spot.getNext());
-			spot.getNext().setPrevious(spot.getPrevious()); //links the nodes held together by the node we're removing
+			spot.prev.next = spot.next;
+			spot.next.prev = spot.prev; //links the nodes held together by the node we're removing
 			size--;
 			return spot.getData();
 		}
@@ -244,8 +244,8 @@ public class LList<E> implements List<E> {
 			if (current == null) {
 				throw new NoSuchElementException(); // the end of the list has been reached
 			}
-			E data = current.getData(); // we take the data
-			current = current.getNext(); // move on to the next node
+			E data = current.data; // we take the data
+			current = current.next; // move on to the next node
 			return data; // return the data
 		}
 	}
