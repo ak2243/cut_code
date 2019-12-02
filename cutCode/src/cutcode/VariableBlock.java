@@ -1,6 +1,6 @@
 package cutcode;
 
-public abstract class VariableBlock<T> extends Block<String> { //Class for logical variable blocks
+public abstract class VariableBlock<T> extends Block { //Class for logical variable blocks
 	T value; //can be of any type. In this program, only String, Double, or Boolean
 	String varName; //the object stores the variable name as a String
 
