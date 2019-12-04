@@ -1,6 +1,6 @@
 package cutcode;
 
-public class MethodBlock extends Block {
+public class MethodBlock implements Block {
 	private String signature;
 	public LList<Block> commands;
 	public static final String MAIN = "public static void main (String[] args)";
@@ -13,10 +13,10 @@ public class MethodBlock extends Block {
 	/**
 	 * @returns the method signature followed by " {" and a line separator
 	 */
-	public String execute() {
+	public String toString() {
 		String command = "";
 		for (Block b : commands) {
-			command = command + b.execute();
+			command = command + b.toString();
 		}
 		return signature + " {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}

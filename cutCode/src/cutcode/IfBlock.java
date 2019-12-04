@@ -1,6 +1,6 @@
 package cutcode;
 
-public class IfBlock extends Block {
+public class IfBlock implements Block {
 	private String condition;
 	public LList<Block> commands;
 
@@ -13,10 +13,10 @@ public class IfBlock extends Block {
 	}
 
 	@Override
-	public String execute() {
+	public String toString() {
 		String command = "";
 		for (Block b : commands) {
-			command = command + b.execute();
+			command = command + b.toString();
 		}
 		return "if (" + condition + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}

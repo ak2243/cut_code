@@ -1,17 +1,22 @@
 package cutcode;
 
-public class ClassBlock extends Block {
+public class ClassBlock implements Block {
 	private String declaration;
 	public LList<Block> commands;
 	public static final String STANDARD = "public class Program";
 
+	public ClassBlock()
+	{
+		commands = new LList<Block>();
+	}
+	
 	@Override
-	public String execute() {
+	public String toString() {
 		String command = "";
 		for (Block b : commands) {
-			command = command + b.execute();
+			command = command + b.toString();
 		}
-		return declaration + " {" + System.lineSeparator() + command + " }" + System.lineSeparator();
+		return declaration + " {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}
 
 	public void setDeclaration(String str) {

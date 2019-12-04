@@ -1,10 +1,10 @@
 package cutcode;
 
-public class PrintBlock extends Block {
+public class PrintBlock implements Block {
 	private String print;
 
 	@Override
-	public String execute() {
+	public String toString() {
 		
 		return "System.out.println(" + print + ");" + System.lineSeparator(); // This is displayed on the console by the run mechanism
 	}

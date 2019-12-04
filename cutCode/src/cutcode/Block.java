@@ -1,5 +1,6 @@
 package cutcode;
 
-public abstract class Block { //Abstract class for the generic class
-	public abstract String execute(); //All blocks must be executable
+public interface Block { //Abstract class for the generic class
+	@Override
+	public String toString(); //All blocks must be executable
 }
