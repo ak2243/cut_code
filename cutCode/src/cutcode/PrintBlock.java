@@ -5,7 +5,6 @@ public class PrintBlock implements Block {
 
 	@Override
 	public String toString() {
-		
 		return "System.out.println(" + print + ");" + System.lineSeparator(); // This is displayed on the console by the run mechanism
 	}
 

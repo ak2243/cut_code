@@ -14,18 +14,6 @@ public class FileManager {
 	private BufferedReader reader;
 	private BufferedWriter writer;
 
-	/**
-	 * @param filename the file to be read
-	 */
-	public FileManager(String filename) {
-		input = new File(filename);
-		try {
-			reader = new BufferedReader(new FileReader(input));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
 	/** 
 	 * @return the next line in the file
 	 */
@@ -76,6 +64,10 @@ public class FileManager {
 	public void openWriter() throws IOException {
 		writer = new BufferedWriter(new FileWriter(output));
 	}
+	
+	public void openReader() throws IOException {
+		reader = new BufferedReader(new FileReader(input));
+	}
 
 	/**
 	 * 
@@ -85,5 +77,10 @@ public class FileManager {
 	public void setOutput(String out) throws IOException {
 		output = new File(out);
 		output.createNewFile();
+	}
+	
+	public void setInput(String in) throws IOException {
+		input = new File(in);
+		input .createNewFile();
 	}
 }
