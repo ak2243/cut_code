@@ -1,6 +1,7 @@
 package cutcode;
 
 import javafx.application.Application;
+import graphics.Workspace;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -14,7 +15,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setScene(new Scene(new BorderPane(), 500, 500));
+		Workspace workspace = new Workspace();
+		primaryStage.setScene(new Scene(workspace, 500, 500));
 		primaryStage.show();
 	}
 }
