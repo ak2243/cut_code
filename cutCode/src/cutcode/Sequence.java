@@ -10,5 +10,7 @@ public class Sequence<E> extends LList<E> implements Comparable<Sequence<E>>{
 	public int compareTo(Sequence<E> o) {
 		return Double.compare(this.height, o.height);
 	}
+	
+	
 
 }

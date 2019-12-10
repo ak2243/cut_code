@@ -249,6 +249,10 @@ public class LList<E> implements List<E> {
 			return data; // return the data
 		}
 	}
+	
+	public E getEnd() {
+		return tail.getData();
+	}
 
 	private class Node<E> {
 		private Node<E> prev, next; // pointers linking nodes together
