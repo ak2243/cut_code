@@ -1,8 +1,8 @@
 package cutcode;
 
 public abstract class VariableBlock<T> implements Block { //Class for logical variable blocks
-	T value; //can be of any type. In this program, only String, Double, or Boolean
-	String varName; //the object stores the variable name as a String
+	private T value; //can be of any type. In this program, only String, Double, or Boolean
+	private String varName; //the object stores the variable name as a String
 
 	public void setName(String s) { //Setting the name
 		varName = s;

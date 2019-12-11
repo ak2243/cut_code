@@ -20,9 +20,10 @@ public class Workspace extends BorderPane{
 		VBox palette = new VBox();
 		palette.setSpacing(40);
 		palette.setPadding(new Insets(30));
-		palette.setMinWidth(100);
+		palette.setMinWidth(200);
 		palette.setBackground(new Background(new BackgroundFill(Color.rgb(255,10,10,0.8),
 				CornerRadii.EMPTY,Insets.EMPTY)));
+		palette.getChildren().add(new IfBlock());
 		
 		return palette;
 	}
