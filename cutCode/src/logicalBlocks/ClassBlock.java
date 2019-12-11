@@ -1,4 +1,6 @@
-package cutcode;
+package logicalBlocks;
+
+import cutcode.LList;
 
 public class ClassBlock implements Block {
 	private String declaration;

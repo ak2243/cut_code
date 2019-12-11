@@ -1,7 +1,7 @@
 package graphics;
 
 import javafx.scene.layout.HBox;
-import cutcode.Block;
+import logicalBlocks.Block;
 
 public abstract class GraphicalBlock extends HBox{
 	

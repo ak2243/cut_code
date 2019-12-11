@@ -1,4 +1,4 @@
-package cutcode;
+package logicalBlocks;
 
 public class StringBlock extends VariableBlock<String> {
 

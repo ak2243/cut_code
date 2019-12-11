@@ -1,6 +1,8 @@
 package graphics;
 
 import cutcode.*;
+import logicalBlocks.Block;
+import logicalBlocks.IfBlock;
 
 public class IfBlockG extends GraphicalBlock {
 

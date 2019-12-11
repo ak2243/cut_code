@@ -1,4 +1,4 @@
-package cutcode;
+package logicalBlocks;
 
 public interface Block { //Abstract class for the generic class
 	@Override

@@ -1,10 +1,12 @@
-package cutcode;
+package logicalBlocks;
+
+import cutcode.LList;
 
 public class IfBlock implements Block {
-	private String condition;
 	public LList<Block> commands;
+	private OperandBlock condition;
 
-	public void setCondition(String condition) {
+	public void setCondition(OperandBlock condition) {
 		this.condition = condition;
 	}
 
@@ -18,7 +20,7 @@ public class IfBlock implements Block {
 		for (Block b : commands) {
 			command = command + b.toString();
 		}
-		return "if (" + condition + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
+		return "if (" + condition.toString() + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}
 
 }
