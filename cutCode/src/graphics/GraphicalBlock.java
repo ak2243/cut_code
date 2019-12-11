@@ -1,7 +1,8 @@
 package graphics;
 
 import javafx.scene.layout.VBox;
-import cutcode.Block;
+import javafx.scene.layout.HBox;
+import logicalBlocks.Block;
 
 public abstract class GraphicalBlock extends VBox{
 	

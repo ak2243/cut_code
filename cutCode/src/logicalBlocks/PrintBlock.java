@@ -1,4 +1,4 @@
-package cutcode;
+package logicalBlocks;
 
 public class PrintBlock implements Block {
 	private String print;

@@ -1,4 +1,6 @@
-package cutcode;
+package logicalBlocks;
+
+import cutcode.LList;
 
 public class MethodBlock implements Block {
 	private String signature;

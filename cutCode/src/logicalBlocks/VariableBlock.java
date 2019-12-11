@@ -1,4 +1,4 @@
-package cutcode;
+package logicalBlocks;
 
 public abstract class VariableBlock<T> implements Block { //Class for logical variable blocks
 	private T value; //can be of any type. In this program, only String, Double, or Boolean

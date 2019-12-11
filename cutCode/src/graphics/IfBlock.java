@@ -38,8 +38,8 @@ public class IfBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public Block getLogicalBlock() {
-		cutcode.IfBlock ret = new cutcode.IfBlock();
+	public logicalBlocks.Block getLogicalBlock() {
+		logicalBlocks.IfBlock ret = new logicalBlocks.IfBlock();
 		for (GraphicalBlock g : commands) {
 			ret.commands.add(g.getLogicalBlock());
 		}
