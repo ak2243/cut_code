@@ -19,4 +19,6 @@ public abstract class GraphicalBlock extends VBox{
 	
 	public abstract Block getLogicalBlock();
 	
+	public abstract GraphicalBlock cloneBlock();
+	
 }
