@@ -1,13 +1,42 @@
 package graphics;
 
-import cutcode.Block;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import logicalBlocks.Block;
 
 public class DoubleBlock extends GraphicalBlock{
 	
 	private double value;
 	
+	private TextField box1,box2;
+	
 	public DoubleBlock() {
-		super()
+		super(200,40);
+		this.setMinWidth(200);
+		this.setMinHeight(40);
+		box1 = new TextField();
+		box1.setMaxWidth(30);
+		box2 = new TextField();
+		box2.setMaxWidth(30);
+		HBox line = new HBox();
+		line.setSpacing(5);
+		line.setPadding(new Insets(8));
+		line.getChildren().add(new Label("double"));
+		line.getChildren().add(box1);
+		line.getChildren().add(new Label("="));
+		line.getChildren().add(box2);
+		
+		this.setBackground(new Background(new BackgroundFill(Color.DARKGREEN,CornerRadii.EMPTY,Insets.EMPTY)));
+		System.err.println(this.getBackground().toString());
+		this.getChildren().add(line);
+		
+		
 	}
 	
 	public DoubleBlock(double width, double height) {
@@ -17,7 +46,7 @@ public class DoubleBlock extends GraphicalBlock{
 	@Override
 	public Block getLogicalBlock() {
 		// TODO Auto-generated method stub
-		cutcode.DoubleBlock ret = new cutcode.DoubleBlock();
+		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
 		ret.setValue(value);
 		return ret;
 	}

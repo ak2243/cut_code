@@ -18,8 +18,8 @@ public class IfBlock extends GraphicalBlock {
 	public IfBlock() {
 		super();
 		
-		this.setMinWidth(80);
-		this.setMinHeight(70);
+		this.setMinWidth(90);
+		this.setMinHeight(80);
 		this.setPadding(new Insets(10));
 		this.setBackground(new Background(new BackgroundFill(Color.ORANGE,CornerRadii.EMPTY,Insets.EMPTY)));
 		HBox topLine = new HBox();
