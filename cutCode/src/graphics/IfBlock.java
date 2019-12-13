@@ -16,10 +16,8 @@ public class IfBlock extends GraphicalBlock {
 	private Sequence<GraphicalBlock> commands;
 
 	public IfBlock() {
-		super();
+		super(200,80);
 		
-		this.setMinWidth(90);
-		this.setMinHeight(80);
 		this.setPadding(new Insets(10));
 		this.setBackground(new Background(new BackgroundFill(Color.ORANGE,CornerRadii.EMPTY,Insets.EMPTY)));
 		HBox topLine = new HBox();
@@ -44,5 +42,10 @@ public class IfBlock extends GraphicalBlock {
 			ret.commands.add(g.getLogicalBlock());
 		}
 		return ret;
+	}
+	
+	@Override
+	public GraphicalBlock cloneBlock() {
+		return new IfBlock();
 	}
 }

@@ -46,7 +46,7 @@ public class Workspace extends BorderPane {
 		GraphicalBlock current;
 		
 		public MouseHandler(GraphicalBlock b) {
-			this.block = b;
+			block = b;
 		}
 
 		@Override
@@ -54,9 +54,9 @@ public class Workspace extends BorderPane {
 			// TODO Auto-generated method stub
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 				System.out.println("hafj");
-				DoubleBlock add = new DoubleBlock();
-				add.setPrefWidth(200);
-				add.setPrefHeight(40);
+				GraphicalBlock add = block.cloneBlock();
+				//add.setPrefWidth(200);
+				//add.setPrefHeight(40);
 				Workspace.this.getChildren().add(add);
 				double mouseX = e.getSceneX();
 				double mouseY = e.getSceneY();

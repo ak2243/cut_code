@@ -18,8 +18,7 @@ public class DoubleBlock extends GraphicalBlock{
 	
 	public DoubleBlock() {
 		super(200,40);
-		this.setMinWidth(200);
-		this.setMinHeight(40);
+		
 		box1 = new TextField();
 		box1.setMaxWidth(30);
 		box2 = new TextField();
@@ -49,6 +48,11 @@ public class DoubleBlock extends GraphicalBlock{
 		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
 		ret.setValue(value);
 		return ret;
+	}
+	
+	@Override
+	public GraphicalBlock cloneBlock() {
+		return new DoubleBlock();
 	}
 	
 }
