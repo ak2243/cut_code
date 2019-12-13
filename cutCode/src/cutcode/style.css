@@ -1,0 +1,21 @@
+#print
+{
+	-fx-background-color: #CA01D0;
+}
+
+#if
+{
+	-fx-background-color: #D06201;
+}
+
+#Change_Variable
+{
+	-fx-background-color: #07D001;
+}
+
+#variable
+{
+	-fx-background-color: #016FD0;
+	-fx-text-fill: gray;
+
+}

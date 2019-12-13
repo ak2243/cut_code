@@ -17,13 +17,14 @@ public class IfBlock extends GraphicalBlock {
 
 	public IfBlock() {
 		super(200,80);
-		
+
 		this.setPadding(new Insets(10));
-		this.setBackground(new Background(new BackgroundFill(Color.ORANGE,CornerRadii.EMPTY,Insets.EMPTY)));
+		this.setId("if");
+		System.err.println(this.getId());
 		HBox topLine = new HBox();
 		topLine.getChildren().addAll(new Label("if"));
 		VBox bottomLine = new VBox();
-		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE,CornerRadii.EMPTY,Insets.EMPTY)));
+			bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE,CornerRadii.EMPTY,Insets.EMPTY)));
 		bottomLine.setMinWidth(40);
 		bottomLine.setMinHeight(40);
 		this.getChildren().addAll(topLine,bottomLine);

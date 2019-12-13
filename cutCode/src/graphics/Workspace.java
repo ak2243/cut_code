@@ -6,16 +6,23 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
 public class Workspace extends BorderPane {
 
 	private BSTree<Sequence<GraphicalBlock>> chains;
+	private Pane playArea;
+	private BorderPane layout;
 
-	public Workspace() {
+	public Workspace(double width, double height) {
+		layout = this;
 		VBox palette = setupPalette();
 		this.setLeft(palette);
+		playArea = new AnchorPane();
+		playArea.setMinSize(width - 500, height);
+		setCenter(playArea);
 	}
 
 	public VBox setupPalette() {
@@ -53,13 +60,14 @@ public class Workspace extends BorderPane {
 		public void handle(MouseEvent e) {
 			// TODO Auto-generated method stub
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-				System.out.println("hafj");
+				
 				GraphicalBlock add = block.cloneBlock();
+				System.err.println(add.getMinWidth() + " " + add.getMaxHeight());
 				//add.setPrefWidth(200);
 				//add.setPrefHeight(40);
-				Workspace.this.getChildren().add(add);
-				double mouseX = e.getSceneX();
-				double mouseY = e.getSceneY();
+				playArea.getChildren().add(add);
+				double mouseX = e.getX();
+				double mouseY = e.getY();
 
 				double blockX = block.getLayoutX();
 				double blockY = block.getLayoutY();
@@ -74,6 +82,7 @@ public class Workspace extends BorderPane {
 				current.setLayoutX(e.getSceneX() - offsetX);
 				current.setLayoutY(e.getSceneY() - offsetY);
 			}
+			
 		}
 
 	}
