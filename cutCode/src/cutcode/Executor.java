@@ -7,9 +7,11 @@ import graphics.GraphicalBlock;
 public class Executor {
 	/**
 	 * 
+	 * Converts graphical block to string code
+	 * 
 	 * @param sequences; the List of sequences of graphical blocks
 	 * @return a String object, containing the full code
-	 * @efficiency this method is O(n^3)
+	 * efficiency this method is O(n^3)
 	 */
 	public String getCode(List<Sequence<GraphicalBlock>> sequences) {
 		String output = "";

@@ -1,6 +1,6 @@
 package logicalBlocks;
 
-public abstract class OperandBlock implements Block {
+public abstract class OperatorBlock implements Block {
 	private Block leftOperand;
 	private Block rightOperand;
 	public Block getRightOperand() {

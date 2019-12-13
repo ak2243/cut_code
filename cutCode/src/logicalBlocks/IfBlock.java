@@ -4,9 +4,9 @@ import cutcode.LList;
 
 public class IfBlock implements Block {
 	public LList<Block> commands;
-	private OperandBlock condition;
+	private OperatorBlock condition;
 
-	public void setCondition(OperandBlock condition) {
+	public void setCondition(OperatorBlock condition) {
 		this.condition = condition;
 	}
 
