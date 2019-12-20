@@ -11,10 +11,11 @@ public abstract class GraphicalBlock extends VBox{
 	}
 	
 	public GraphicalBlock(double width, double height) {
-		this.setMinHeight(height);
-		this.setMinWidth(width);
-		this.setMaxHeight(height);
-		this.setMaxWidth(width);
+		setMinHeight(height);
+		setMinWidth(width);
+		setMaxHeight(height);
+		setMaxWidth(width);
+		System.err.println("hello" + getMaxWidth() + ", " + getMaxHeight());
 	}
 	
 	public abstract Block getLogicalBlock();
