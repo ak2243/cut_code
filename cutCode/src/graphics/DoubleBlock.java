@@ -12,7 +12,8 @@ import logicalBlocks.Block;
 
 public class DoubleBlock extends GraphicalBlock{
 	
-	private double value;
+	public double value;
+	public String name;
 	
 	private TextField box1,box2;
 	
@@ -47,6 +48,7 @@ public class DoubleBlock extends GraphicalBlock{
 		// TODO Auto-generated method stub
 		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
 		ret.setValue(value);
+		ret.setName(name);
 		return ret;
 	}
 	

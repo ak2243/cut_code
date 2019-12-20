@@ -1,6 +1,10 @@
 package cutcode;
 
 import javafx.application.Application;
+
+import java.io.IOException;
+import java.util.List;
+
 import graphics.Workspace;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -15,10 +19,12 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Workspace workspace = new Workspace(1000, 700);
+		Workspace workspace = new Workspace(1000, 700, this);
 		Scene scene = new Scene(workspace, 1000, 700);
 		scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+	
+	
 }

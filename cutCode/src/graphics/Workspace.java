@@ -1,6 +1,7 @@
 package graphics;
 
 import cutcode.BSTree;
+import cutcode.Main;
 import cutcode.Sequence;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,7 +17,7 @@ public class Workspace extends BorderPane {
 	private Pane playArea;
 	private BorderPane layout;
 
-	public Workspace(double width, double height) {
+	public Workspace(double width, double height, Main main) {
 		layout = this;
 		VBox palette = setupPalette();
 		this.setLeft(palette);
