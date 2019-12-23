@@ -2,12 +2,12 @@ package logicalBlocks;
 
 import cutcode.LList;
 
-public class MethodBlock implements Block {
+public class FunctionBlock implements Block {
 	private String signature;
 	public LList<Block> commands;
 	public static final String MAIN = "public static void main (String[] args)";
 
-	public MethodBlock() {
+	public FunctionBlock() {
 		commands = new LList<Block>();
 	}
 

@@ -1,9 +1,7 @@
 package graphics;
 
-import cutcode.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -14,6 +12,7 @@ import javafx.scene.paint.Color;
 public class IfBlock extends GraphicalBlock {
 
 	private Sequence<GraphicalBlock> commands;
+	private OperatorBlock condition;
 
 	public IfBlock() {
 		super(200,80);
@@ -39,6 +38,7 @@ public class IfBlock extends GraphicalBlock {
 	@Override
 	public logicalBlocks.Block getLogicalBlock() {
 		logicalBlocks.IfBlock ret = new logicalBlocks.IfBlock();
+		ret.setCondition((logicalBlocks.OperatorBlock) condition.getLogicalBlock());
 		for (GraphicalBlock g : commands) {
 			ret.commands.add(g.getLogicalBlock());
 		}

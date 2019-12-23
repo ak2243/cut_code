@@ -2,7 +2,6 @@ package graphics;
 
 import cutcode.BSTree;
 import cutcode.Main;
-import cutcode.Sequence;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.event.EventHandler;

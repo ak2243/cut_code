@@ -7,11 +7,13 @@ public class ClassBlock implements Block {
 	public LList<Block> commands;
 	public static final String STANDARD = "public class Program";
 
-	public ClassBlock()
-	{
+	/**
+	 * @apiNote this class is not currently in use
+	 */
+	public ClassBlock() {
 		commands = new LList<Block>();
 	}
-	
+
 	@Override
 	public String toString() {
 		String command = "";
