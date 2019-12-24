@@ -43,14 +43,17 @@ public class DoubleBlock extends GraphicalBlock{
 		super(width,height);
 	}
 	
+	/**
+	 * @author Peter Timpane
+	 * @apiNote O(1)
+	 */
 	@Override
 	public Block getLogicalBlock() {
-		// TODO Auto-generated method stub
 		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
 		ret.setValue(value);
 		ret.setName(name);
 		return ret;
-	}
+	} 
 	
 	@Override
 	public GraphicalBlock cloneBlock() {

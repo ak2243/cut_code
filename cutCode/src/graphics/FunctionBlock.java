@@ -15,7 +15,7 @@ public class FunctionBlock extends GraphicalBlock{
 		logicalBlocks.FunctionBlock ret = new logicalBlocks.FunctionBlock();
 		ret.setSignature("public static " + declaration);
 		for (GraphicalBlock g : commands) {
-			ret.commands.add(g.getLogicalBlock()); //TODO doesn't this have big O(infinity)
+			ret.commands.add(g.getLogicalBlock()); //TODO doesn't this have big O(infinity)?
 		}
 		return ret;
 	}
