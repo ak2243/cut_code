@@ -8,11 +8,12 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import logicalBlocks.Block;
 
 public class IfBlock extends GraphicalBlock {
 
 	private Sequence<GraphicalBlock> commands;
-	private OperatorBlock condition;
+	private AndBlock condition; //TODO make this OperatorBlock
 
 	public IfBlock() {
 		super(200,80);
@@ -35,8 +36,12 @@ public class IfBlock extends GraphicalBlock {
 		commands = new Sequence<GraphicalBlock>();
 	}
 
+	/**
+	 * @apiNote O(infinity)
+	 * @author Peter Timpane
+	 */
 	@Override
-	public logicalBlocks.Block getLogicalBlock() {
+	public Block getLogicalBlock() {
 		logicalBlocks.IfBlock ret = new logicalBlocks.IfBlock();
 		ret.setCondition((logicalBlocks.OperatorBlock) condition.getLogicalBlock());
 		for (GraphicalBlock g : commands) {

@@ -2,9 +2,9 @@ package graphics;
 
 import logicalBlocks.Block;
 
-public class FunctionBlock extends GraphicalBlock{
+public class FunctionBlock extends GraphicalBlock {
 	private Sequence<GraphicalBlock> commands;
-	private String declaration; //NOTE: this only contains return type and 
+	private String declaration; //NOTE: this only contains return type and name
 
 	/**
 	 * @apiNote method efficiency O(infinity)?

@@ -6,8 +6,8 @@ public class StringBlock extends GraphicalBlock {
 	public String value;
 	public String name;
 	/**
-	 * @author Arjun Khanna
 	 * @apiNote O(1)
+	 * @author Arjun Khanna
 	 */
 	@Override
 	public Block getLogicalBlock() {

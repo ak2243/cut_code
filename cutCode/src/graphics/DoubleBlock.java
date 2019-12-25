@@ -44,8 +44,8 @@ public class DoubleBlock extends GraphicalBlock{
 	}
 	
 	/**
-	 * @author Peter Timpane
 	 * @apiNote O(1)
+	 * @author Peter Timpane
 	 */
 	@Override
 	public Block getLogicalBlock() {

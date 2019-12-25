@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 
 public class Workspace extends BorderPane {
 
-	private BSTree<Sequence<GraphicalBlock>> chains;
+	private BSTree<Sequence<GraphicalBlock>> sequences;
 	private Pane playArea;
 	private BorderPane layout;
 

@@ -2,19 +2,17 @@ package graphics;
 
 import logicalBlocks.Block;
 
-public class WhileBlock extends GraphicalBlock{
-
+public class ElseBlock extends GraphicalBlock {
 	private Sequence<GraphicalBlock> commands;
-	private AndBlock condition;
-	
+
 	/**
-	 * @apiNote method efficiency O(infinity)?
+	 * @return the logicalBlock for an else block
+	 * @apiNote O(n)
 	 * @author Arjun Khanna
 	 */
 	@Override
 	public Block getLogicalBlock() {
-		logicalBlocks.WhileBlock ret = new logicalBlocks.WhileBlock();
-		ret.setCondition((logicalBlocks.OperatorBlock) condition.getLogicalBlock());
+		logicalBlocks.ElseBlock ret = new logicalBlocks.ElseBlock();
 		for (GraphicalBlock g : commands) {
 			ret.commands.add(g.getLogicalBlock());
 		}

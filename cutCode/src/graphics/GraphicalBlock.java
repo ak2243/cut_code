@@ -4,7 +4,7 @@ import javafx.scene.layout.VBox;
 
 import logicalBlocks.Block;
 
-public abstract class GraphicalBlock extends VBox{
+public abstract class GraphicalBlock extends VBox {
 	
 	public GraphicalBlock() {
 		super();
@@ -18,6 +18,10 @@ public abstract class GraphicalBlock extends VBox{
 		System.err.println("hello" + getMaxWidth() + ", " + getMaxHeight());
 	}
 	
+	/**
+	 * 
+	 * @return the logical block object for the graphical block
+	 */
 	public abstract Block getLogicalBlock();
 	
 	public abstract GraphicalBlock cloneBlock();

@@ -18,8 +18,8 @@ public class Executor {
 	 * Converts graphical block to string code
 	 * 
 	 * @param sequences; the List of sequences of graphical blocks
-	 * @return a String object, containing the full code efficiency this method is
-	 *         O(n^3)
+	 * @return a String of the Java code for the sequence of GraphicalBlocks
+	 * @apiNote O(n^3)
 	 * @author Arjun Khanna
 	 */
 	public String getCode(List<Sequence<GraphicalBlock>> sequences) {
@@ -47,7 +47,8 @@ public class Executor {
 
 	/**
 	 * @param filename the .java file to be run
-	 * @return the console output from running the file. efficiency unknown
+	 * @return the console output from running the file
+	 * @apiNote O(?)
 	 * @author Arjun Khanna
 	 */
 	public String run(String filename) { //TODO: find efficiency of this method

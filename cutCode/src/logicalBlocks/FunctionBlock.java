@@ -14,6 +14,7 @@ public class FunctionBlock implements Block {
 	@Override
 	/**
 	 * @returns the method signature followed by " {" and a line separator
+	 * @author Arjun Khanna
 	 */
 	public String toString() {
 		String command = "";
@@ -27,6 +28,7 @@ public class FunctionBlock implements Block {
 	 * 
 	 * @param s the method signature, including keywords, return type, and
 	 *          parameters
+	 * @author Arjun Khanna
 	 */
 	public void setSignature(String s) {
 		signature = s;

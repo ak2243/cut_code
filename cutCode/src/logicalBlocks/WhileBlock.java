@@ -6,6 +6,12 @@ public class WhileBlock implements Block{
 	public LList<Block> commands;
 	private OperatorBlock condition;
 
+	/**
+	 * 
+	 * @param condition - the OperatorBlock condition
+	 * @apiNote O(1)
+	 * @author Arjun Khanna
+	 */
 	public void setCondition(OperatorBlock condition) {
 		this.condition = condition;
 	}
@@ -14,6 +20,11 @@ public class WhileBlock implements Block{
 		commands = new LList<Block>();
 	}
 
+	/**
+	 * @return the Java code for a while loop with the given condition and statements
+	 * @apiNote O(n)
+	 * @author Arjun Khanna
+	 */
 	@Override
 	public String toString() {
 		String command = "";
