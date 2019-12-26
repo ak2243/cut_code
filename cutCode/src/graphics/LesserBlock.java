@@ -2,15 +2,15 @@ package graphics;
 
 import logicalBlocks.Block;
 
-public class OrBlock extends OperatorBlock {
-	
+public class LesserBlock extends OperatorBlock {
+
 	/**
 	 * @apiNote O(1)
 	 * @author Arjun Khanna
 	 */
 	@Override
 	public Block getLogicalBlock() {
-		logicalBlocks.OrBlock ret = new logicalBlocks.OrBlock();
+		logicalBlocks.LesserBlock ret = new logicalBlocks.LesserBlock();
 		ret.setLeftOperand(getLeftOperand().getLogicalBlock());
 		ret.setRightOperand(getRightOperand().getLogicalBlock());
 		return ret;

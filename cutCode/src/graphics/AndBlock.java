@@ -2,9 +2,8 @@ package graphics;
 
 import logicalBlocks.Block;
 
-public class AndBlock extends GraphicalBlock {
-	private GraphicalBlock leftOperand;
-	private GraphicalBlock rightOperand;
+public class AndBlock extends OperatorBlock {
+	
 	
 	/**
 	 * @apiNote O(1)
@@ -13,8 +12,8 @@ public class AndBlock extends GraphicalBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.AndBlock ret = new logicalBlocks.AndBlock();
-		ret.setLeftOperand(leftOperand.getLogicalBlock());
-		ret.setRightOperand(rightOperand.getLogicalBlock());
+		ret.setLeftOperand(getLeftOperand().getLogicalBlock());
+		ret.setRightOperand(getRightOperand().getLogicalBlock());
 		return ret;
 	}
 
