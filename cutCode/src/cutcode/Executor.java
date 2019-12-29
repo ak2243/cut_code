@@ -3,14 +3,15 @@ package cutcode;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 
 import graphics.GraphicalBlock;
 import graphics.Sequence;
-import logicalBlocks.Block;
 
 public class Executor {
-	
+	private int lineLoc = 2;
+	private HashMap<Integer, logicalBlocks.Block> allBlocks;
 	public static final String ERROR = "An error occured, please try again later.";
 
 	/**
@@ -22,27 +23,45 @@ public class Executor {
 	 * @apiNote O(n^3)
 	 * @author Arjun Khanna
 	 */
-	public String getCode(List<Sequence<GraphicalBlock>> sequences) {
+	public String getCode(List<Sequence<logicalBlocks.Block>> sequences) {
+		allBlocks = new HashMap<Integer, logicalBlocks.Block>();
 		String output = "";
-		for (Sequence<GraphicalBlock> s : sequences) {
+		for (Sequence<logicalBlocks.Block> s : sequences) {
 			output += sequenceToJava(s);
 		}
-		return "public class Program {" + System.lineSeparator() + "public static void main (String[] args) {"
-				+ System.lineSeparator() + output + "}" + System.lineSeparator() + "}";
+		return "public class Program {" + System.lineSeparator() + output + "}";
 	}
 
 	/**
 	 * 
-	 * @param s - the sequence of GraphicalBlocks that should be converted to java code
+	 * @param s - the sequence of GraphicalBlocks that should be converted to java
+	 *          code
 	 * @return the java code (with new lines but no indents) of the graphical blocks
 	 * @author Arjun Khanna
 	 */
-	private String sequenceToJava(Sequence<GraphicalBlock> s) {
+	private String sequenceToJava(Sequence<logicalBlocks.Block> s) {
 		String output = "";
-		for (GraphicalBlock block : s) { // Need to go through all the blocks
-			output += block.getLogicalBlock().toString(); // calls the Block.toString() method to get the java code
+		for (logicalBlocks.Block block : s) { // Need to go through all the blocks
+			putInHashMap(block);
+			output += block.toString(); // calls the Block.toString() method to get the java code
 		}
 		return output;
+	}
+
+	private void putInHashMap(logicalBlocks.Block block) {
+		allBlocks.put(lineLoc, block);
+		lineLoc++;
+		if (block instanceof logicalBlocks.FunctionBlock) {
+			for (logicalBlocks.Block b : ((logicalBlocks.FunctionBlock) block).commands) {
+				putInHashMap(b);
+			}
+			lineLoc++;
+		} else if (block instanceof logicalBlocks.IfBlock) {
+			for (logicalBlocks.Block b : ((logicalBlocks.IfBlock) block).commands) {
+				putInHashMap(b);
+			}
+			lineLoc++;
+		}
 	}
 
 	/**
@@ -51,7 +70,7 @@ public class Executor {
 	 * @apiNote O(?)
 	 * @author Arjun Khanna
 	 */
-	public String run(String filename) { //TODO: find efficiency of this method
+	public String run(String filename) { // TODO: find efficiency of this method
 		String output = "";
 		Process p;
 		Process p2;
@@ -60,33 +79,45 @@ public class Executor {
 			p.waitFor();
 			p2 = Runtime.getRuntime().exec("java Program"); // this will run the program
 
-			BufferedReader stream = new BufferedReader(new InputStreamReader(p.getErrorStream())); // this is where the
-																									// program will
-																									// output error
-																									// messages
+			BufferedReader stream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			// this is where the process outputs error messages
+
 			boolean error = false;
-			String inn = stream.readLine(); //takes the error statement. null if no errors
-			while (inn != null) { //gets all the console error output
-				inn = stream.readLine();
+			String errorOutput = "";
+			String errorLine = stream.readLine(); // takes the error statement. null if no errors
+			while (errorLine != null) { // gets all the console error output
+				errorOutput += errorLine;
+				errorLine = stream.readLine();
 				error = true;
 			}
-			if (error) { 
+			if (error) {
 				stream.close();
-				return ERROR; //TODO add specific error reporting here
+				return parseErrorMessage(errorOutput); // TODO add specific error reporting here
 			}
 			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 			p2.getOutputStream().flush();
-			String in = inStream.readLine(); //this variable will hold console output from the program
-			while (in != null) { //gets all the console output
+			String in = inStream.readLine(); // this variable will hold console output from the program
+			while (in != null) { // gets all the console output
 				output = output + in + System.lineSeparator();
 				in = inStream.readLine();
 			}
 			inStream.close();
 
 		} catch (InterruptedException | IOException e) {
-			return ERROR; //No way to forsee this
+			return ERROR; // No way to forsee this
 		}
 		return output;
+	}
+
+	/**
+	 * 
+	 * @param errorOutput - the compiler error message
+	 * @return
+	 */
+	private String parseErrorMessage(String errorOutput) {
+		String[] things = errorOutput.split(":");
+		logicalBlocks.Block block = allBlocks.get(Integer.parseInt(things[1]));
+		return block.toString();
 	}
 
 }

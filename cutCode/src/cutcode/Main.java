@@ -34,7 +34,7 @@ public class Main extends Application {
 	 * @param blocks: a list of the sequences of GraphicalBlocks that
 	 * @author Arjun Khanna
 	 */
-	public static String run(List<Sequence<GraphicalBlock>> blocks) {
+	/*public static String run(List<Sequence<GraphicalBlock>> blocks) {
 		Executor executor = new Executor();
 		String code = executor.getCode(blocks);
 		FileManager manager = new FileManager();
@@ -47,6 +47,6 @@ public class Main extends Application {
 			return ERROR;
 		}
 		return executor.run(filename);
-	}
+	}*/
 
 }
