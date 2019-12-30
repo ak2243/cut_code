@@ -3,7 +3,7 @@ package graphics;
 import logicalBlocks.Block;
 
 public class FunctionBlock extends GraphicalBlock {
-	private Sequence<GraphicalBlock> commands;
+	public Sequence<GraphicalBlock> commands;
 	private String declaration; //NOTE: this only contains return type and name
 
 	/**

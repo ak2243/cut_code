@@ -4,7 +4,7 @@ import logicalBlocks.Block;
 
 public class WhileBlock extends GraphicalBlock{
 
-	private Sequence<GraphicalBlock> commands;
+	public Sequence<GraphicalBlock> commands;
 	private AndBlock condition;
 	
 	/**
