@@ -11,7 +11,7 @@ import graphics.Sequence;
 
 public class Executor {
 	private int lineLoc = 2;
-	private HashMap<Integer, logicalBlocks.Block> allBlocks;
+	private HashMap<Integer, GraphicalBlock> allBlocks;
 	public static final String ERROR = "An error occured, please try again later.";
 
 	/**
@@ -23,10 +23,10 @@ public class Executor {
 	 * @apiNote O(n^3)
 	 * @author Arjun Khanna
 	 */
-	public String getCode(List<Sequence<logicalBlocks.Block>> sequences) {
-		allBlocks = new HashMap<Integer, logicalBlocks.Block>();
+	public String getCode(List<Sequence<GraphicalBlock>> sequences) {
+		allBlocks = new HashMap<Integer, GraphicalBlock>();
 		String output = "";
-		for (Sequence<logicalBlocks.Block> s : sequences) {
+		for (Sequence<GraphicalBlock> s : sequences) {
 			output += sequenceToJava(s);
 		}
 		return "public class Program {" + System.lineSeparator() + output + "}";
@@ -39,26 +39,38 @@ public class Executor {
 	 * @return the java code (with new lines but no indents) of the graphical blocks
 	 * @author Arjun Khanna
 	 */
-	private String sequenceToJava(Sequence<logicalBlocks.Block> s) {
+	private String sequenceToJava(Sequence<GraphicalBlock> s) {
 		String output = "";
-		for (logicalBlocks.Block block : s) { // Need to go through all the blocks
+		for (GraphicalBlock block : s) { // Need to go through all the blocks
 			putInHashMap(block);
-			output += block.toString(); // calls the Block.toString() method to get the java code
+			output += block.getLogicalBlock().toString(); // calls the Block.toString() method to get the java code
 		}
 		return output;
 	}
 
-	private void putInHashMap(logicalBlocks.Block block) {
+	/**
+	 * 
+	 * @param block - the block to be put in the HashMap
+	 */
+	private void putInHashMap(GraphicalBlock block) {
 		allBlocks.put(lineLoc, block);
 		lineLoc++;
-		if (block instanceof logicalBlocks.FunctionBlock) {
-			for (logicalBlocks.Block b : ((logicalBlocks.FunctionBlock) block).commands) {
+		if (block instanceof graphics.FunctionBlock) {
+			for (GraphicalBlock b : ((graphics.FunctionBlock) block).commands) {
 				putInHashMap(b);
+				lineLoc++;
 			}
 			lineLoc++;
-		} else if (block instanceof logicalBlocks.IfBlock) {
-			for (logicalBlocks.Block b : ((logicalBlocks.IfBlock) block).commands) {
+		} else if (block instanceof graphics.IfBlock) {
+			for (GraphicalBlock b : ((graphics.IfBlock) block).commands) {
 				putInHashMap(b);
+				lineLoc++;
+			}
+			lineLoc++;
+		} else if (block instanceof graphics.WhileBlock) {
+			for (GraphicalBlock b : ((graphics.WhileBlock) block).commands) {
+				putInHashMap(b);
+				lineLoc++;
 			}
 			lineLoc++;
 		}
@@ -69,8 +81,9 @@ public class Executor {
 	 * @return the console output from running the file
 	 * @apiNote O(?)
 	 * @author Arjun Khanna
+	 * @throws BlockCodeCompilerErrorException 
 	 */
-	public String run(String filename) { // TODO: find efficiency of this method
+	public String run(String filename) throws BlockCodeCompilerErrorException { // TODO: find efficiency of this method
 		String output = "";
 		Process p;
 		Process p2;
@@ -92,7 +105,12 @@ public class Executor {
 			}
 			if (error) {
 				stream.close();
-				return parseErrorMessage(errorOutput); // TODO add specific error reporting here
+				try {
+					handleCompilerError(errorOutput); // TODO add specific error reporting here
+				} catch (NumberFormatException e) {
+					return ERROR;
+				}
+				throw new BlockCodeCompilerErrorException();
 			}
 			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 			p2.getOutputStream().flush();
@@ -112,12 +130,11 @@ public class Executor {
 	/**
 	 * 
 	 * @param errorOutput - the compiler error message
-	 * @return
 	 */
-	private String parseErrorMessage(String errorOutput) {
+	private void handleCompilerError(String errorOutput) throws NumberFormatException {
 		String[] things = errorOutput.split(":");
-		logicalBlocks.Block block = allBlocks.get(Integer.parseInt(things[1]));
-		return block.toString();
+		GraphicalBlock block = allBlocks.get(Integer.parseInt(things[1]));
+		block.tagErrorOnBlock();
 	}
 
 }

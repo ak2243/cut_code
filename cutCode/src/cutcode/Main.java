@@ -23,7 +23,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Workspace workspace = new Workspace(1000, 700, this);
 		Scene scene = new Scene(workspace, 1000, 700);
-		scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		filename = "program.java";
@@ -34,7 +33,7 @@ public class Main extends Application {
 	 * @param blocks: a list of the sequences of GraphicalBlocks that
 	 * @author Arjun Khanna
 	 */
-	/*public static String run(List<Sequence<GraphicalBlock>> blocks) {
+	public static String run(List<Sequence<GraphicalBlock>> blocks) throws BlockCodeCompilerErrorException {
 		Executor executor = new Executor();
 		String code = executor.getCode(blocks);
 		FileManager manager = new FileManager();
@@ -47,6 +46,6 @@ public class Main extends Application {
 			return ERROR;
 		}
 		return executor.run(filename);
-	}*/
+	}
 
 }

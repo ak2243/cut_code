@@ -12,7 +12,7 @@ import logicalBlocks.Block;
 
 public class IfBlock extends GraphicalBlock {
 
-	private Sequence<GraphicalBlock> commands;
+	public Sequence<GraphicalBlock> commands;
 	private AndBlock condition; //TODO make this OperatorBlock
 
 	public IfBlock() {
