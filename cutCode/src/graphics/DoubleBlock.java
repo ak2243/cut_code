@@ -33,7 +33,7 @@ public class DoubleBlock extends GraphicalBlock{
 		line.getChildren().add(box2);
 		
 		this.setBackground(new Background(new BackgroundFill(Color.DARKGREEN,CornerRadii.EMPTY,Insets.EMPTY)));
-		System.err.println(this.getMinWidth() + "f");
+		
 		this.getChildren().add(line);
 		
 		

@@ -6,6 +6,8 @@ import logicalBlocks.Block;
 
 public abstract class GraphicalBlock extends VBox {
 	
+	private Sequence<GraphicalBlock> sequence;
+	
 	public GraphicalBlock() {
 		super();
 	}
@@ -15,7 +17,6 @@ public abstract class GraphicalBlock extends VBox {
 		setMinWidth(width);
 		setMaxHeight(height);
 		setMaxWidth(width);
-		System.err.println("hello" + getMaxWidth() + ", " + getMaxHeight());
 	}
 	
 	/**
@@ -25,5 +26,13 @@ public abstract class GraphicalBlock extends VBox {
 	public abstract Block getLogicalBlock();
 	
 	public abstract GraphicalBlock cloneBlock();
+
+	public Sequence<GraphicalBlock> getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Sequence<GraphicalBlock> sequence) {
+		this.sequence = sequence;
+	}
 	
 }
