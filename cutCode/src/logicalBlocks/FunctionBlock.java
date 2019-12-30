@@ -11,11 +11,14 @@ public class FunctionBlock implements Block {
 		commands = new LList<Block>();
 	}
 
-	@Override
 	/**
-	 * @returns the method signature followed by " {" and a line separator
+	 * @returns the method signature followed by an open brace, a line separator,
+	 *          the java code of the blocks to be executed in the function, and a
+	 *          close brace
+	 * @apiNote O(infinity)
 	 * @author Arjun Khanna
 	 */
+	@Override
 	public String toString() {
 		String command = "";
 		for (Block b : commands) {

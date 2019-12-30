@@ -43,12 +43,6 @@ public abstract class VariableBlock<T> implements Block { // Class for logical v
 		return value;
 	}
 
-	public VariableCallBlock getVariableCall() {
-		VariableCallBlock var =  new VariableCallBlock();
-		var.setName(varName);
-		return var;
-	}
-
 	@Override
 	public abstract String toString();
 
