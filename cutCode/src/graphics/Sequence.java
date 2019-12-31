@@ -1,18 +1,17 @@
 package graphics;
 
 import cutcode.LList;
+import javafx.scene.Node;
 
-public class Sequence<E> extends LList<E> implements Comparable<Sequence<E>>{
-	public double height; //TODO should this be public?
+public class Sequence<E extends Node> extends LList<E> implements Comparable<Sequence<E>>{
+	
 	
 	/**
 	 * @returns the comparison of the two sequences, compared by height
 	 */
 	@Override
 	public int compareTo(Sequence<E> o) {
-		return Double.compare(this.height, o.height);
+		return Double.compare(this.get(0).getLayoutY(), o.get(0).getLayoutY());
 	}
 	
-	
-
 }

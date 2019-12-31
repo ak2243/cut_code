@@ -19,8 +19,8 @@ public class IfBlock extends GraphicalBlock {
 		super(200,80);
 
 		this.setPadding(new Insets(10));
-		this.setId("if");
-		System.err.println(this.getId());
+		this.setBackground(new Background(new BackgroundFill(Color.web("#D06201"),CornerRadii.EMPTY,Insets.EMPTY)));
+		
 		HBox topLine = new HBox();
 		topLine.getChildren().addAll(new Label("if"));
 		VBox bottomLine = new VBox();
