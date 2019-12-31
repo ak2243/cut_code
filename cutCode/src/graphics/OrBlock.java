@@ -22,4 +22,10 @@ public class OrBlock extends OperatorBlock {
 		return null;
 	}
 
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

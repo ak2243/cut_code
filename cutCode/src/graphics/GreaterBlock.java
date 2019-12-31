@@ -21,5 +21,11 @@ public class GreaterBlock extends OperatorBlock {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

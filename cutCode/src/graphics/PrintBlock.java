@@ -51,4 +51,10 @@ public class PrintBlock extends GraphicalBlock {
 		return new PrintBlock();
 	}
 
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

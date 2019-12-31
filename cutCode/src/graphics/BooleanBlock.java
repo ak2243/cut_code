@@ -54,4 +54,10 @@ public class BooleanBlock extends GraphicalBlock {
 	public GraphicalBlock cloneBlock() {
 		return new BooleanBlock();
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -54,4 +54,10 @@ public class IfBlock extends GraphicalBlock {
 	public GraphicalBlock cloneBlock() {
 		return new IfBlock();
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

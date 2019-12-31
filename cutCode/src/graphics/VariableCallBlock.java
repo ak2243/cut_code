@@ -48,4 +48,10 @@ public class VariableCallBlock extends GraphicalBlock {
 		return new VariableCallBlock();
 	}
 
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

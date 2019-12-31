@@ -56,5 +56,11 @@ public class DoubleBlock extends GraphicalBlock{
 	public GraphicalBlock cloneBlock() {
 		return new DoubleBlock();
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

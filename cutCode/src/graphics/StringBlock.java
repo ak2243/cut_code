@@ -49,5 +49,11 @@ public class StringBlock extends GraphicalBlock {
 	public GraphicalBlock cloneBlock() {
 		return new StringBlock();
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

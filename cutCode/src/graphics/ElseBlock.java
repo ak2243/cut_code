@@ -25,4 +25,10 @@ public class ElseBlock extends GraphicalBlock {
 		return null;
 	}
 
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

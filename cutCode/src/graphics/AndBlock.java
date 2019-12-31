@@ -23,4 +23,10 @@ public class AndBlock extends OperatorBlock {
 		return null;
 	}
 
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -7,11 +7,7 @@ import logicalBlocks.Block;
 
 public abstract class GraphicalBlock extends VBox {
 
-	
 	private Sequence<GraphicalBlock> sequence;
-	
-
-
 
 	public GraphicalBlock() {
 		super();
@@ -33,18 +29,22 @@ public abstract class GraphicalBlock extends VBox {
 
 	public abstract GraphicalBlock cloneBlock();
 
-
 	public Sequence<GraphicalBlock> getSequence() {
 		return sequence;
 	}
+	
+	/**
+	 * 
+	 * @return - the json representation of this block 
+	 */
+	public abstract String toJSON();
 
 	public void setSequence(Sequence<GraphicalBlock> sequence) {
 		this.sequence = sequence;
 	}
-	
+
 	public void tagErrorOnBlock() {
-		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-width: 3;\n"
-				+ "-fx-border-style: dashed;\n";
+		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-width: 3;\n" + "-fx-border-style: dashed;\n";
 		this.setStyle(cssLayout);
 	}
 

@@ -25,6 +25,12 @@ public class FunctionBlock extends GraphicalBlock {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String toJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	
