@@ -32,7 +32,7 @@ public class Workspace extends BorderPane {
 		palette.setMinWidth(200);
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
-		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock() };
+		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(), new BooleanBlock(), new VariableCallBlock()};
 		for (GraphicalBlock b : paletteBlocks) {
 			
 			MouseHandler handler = new MouseHandler(b);

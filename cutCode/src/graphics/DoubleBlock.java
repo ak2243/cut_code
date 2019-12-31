@@ -12,9 +12,6 @@ import logicalBlocks.Block;
 
 public class DoubleBlock extends GraphicalBlock{
 	
-	public double value;
-	public String name;
-	
 	private TextField box1,box2;
 	
 	public DoubleBlock() {
@@ -50,8 +47,8 @@ public class DoubleBlock extends GraphicalBlock{
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
-		ret.setValue(value);
-		ret.setName(name);
+		ret.setValue(Double.parseDouble(box1.getText()));
+		ret.setName(box2.getText());
 		return ret;
 	} 
 	
