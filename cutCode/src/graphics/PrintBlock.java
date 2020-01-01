@@ -27,7 +27,7 @@ public class PrintBlock extends GraphicalBlock {
 		line.getChildren().addAll(label, text);
 		line.setSpacing(5);
 		line.setPadding(new Insets(8));
-		this.setBackground(new Background(new BackgroundFill(Color.DARKGREEN,CornerRadii.EMPTY,Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY,Insets.EMPTY)));
 		this.getChildren().add(line);
 	}
 	
