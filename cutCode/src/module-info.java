@@ -1,9 +1,9 @@
 module cutCode {
-    requires javafx.controls;
-    requires javafx.fxml;
-	requires javafx.graphics;
-	requires javafx.base;
+	exports graphics;
+	exports cutcode;
+	exports logicalBlocks;
 
-    opens cutcode to javafx.fxml;
-    exports cutcode;
+	requires javafx.base;
+	requires javafx.controls;
+	requires javafx.graphics;
 }
