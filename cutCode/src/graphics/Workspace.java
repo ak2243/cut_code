@@ -97,20 +97,15 @@ public class Workspace extends Pane {
 				offsetX = mouseX - blockX;
 				offsetY = mouseY - blockY;
 
-<<<<<<< HEAD
 				current.setLayoutX(e.getSceneX() - offsetX);
 				current.setLayoutY(e.getSceneY() - offsetY);
 				
-			}else if(e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				
-				Point2D mouse = new Point2D(e.getSceneX(),e.getSceneY());
-				if(palette.contains(mouse)) {
-=======
+			
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
->>>>>>> 443ef0cab6a9abed34ad8e26b2af3c60ee84a08a
+
 					Workspace.this.getChildren().remove(current);
 				} else {
 					BlockHandler handler = new BlockHandler(current);
@@ -120,7 +115,7 @@ public class Workspace extends Pane {
 
 					boolean connected = false;
 					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
-<<<<<<< HEAD
+
 					for(Sequence<GraphicalBlock> s : sequencesSorted){
 						connected = false;
 						double endX = s.getEnd().getLayoutX();
@@ -135,29 +130,18 @@ public class Workspace extends Pane {
 							current.setLayoutX(endX);
 							current.setLayoutY(endY);
 							System.err.println("(" + current.getLayoutX() + " , " + current.getLayoutY() + ")");
-=======
-					for (Sequence<GraphicalBlock> s : sequencesSorted) {
-						double endX = s.getEnd().getLayoutX();
-						double endY = s.getEnd().getLayoutY();
 
-						if (Math.pow(block.getLayoutY() - endY, 2) + Math.pow(block.getLayoutX() - endX, 2) < 100) {
-							s.add(block);
-							block.setSequence(s);
-							block.setLayoutX(endX);
-							block.setLayoutY(endY + s.getEnd().getHeight());
->>>>>>> 443ef0cab6a9abed34ad8e26b2af3c60ee84a08a
+
 							connected = true;
 							System.err.println("Connected!");
 							break;
 						}
 						System.err.println("Sequence passed w/o connection");
 					}
-<<<<<<< HEAD
+
 					System.err.println(connected);
-					if(!connected) {
-=======
 					if (!connected) {
->>>>>>> 443ef0cab6a9abed34ad8e26b2af3c60ee84a08a
+
 						Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
 						sequence.add(current);
 						current.setSequence(sequence);
@@ -170,16 +154,7 @@ public class Workspace extends Pane {
 				current.setLayoutX(e.getSceneX() - offsetX);
 				current.setLayoutY(e.getSceneY() - offsetY);
 			}
-<<<<<<< HEAD
-			
-			
-			
-=======
 
-			current.setLayoutX(e.getSceneX() - offsetX);
-			current.setLayoutY(e.getSceneY() - offsetY);
-
->>>>>>> 443ef0cab6a9abed34ad8e26b2af3c60ee84a08a
 		}
 
 	}
@@ -201,7 +176,7 @@ public class Workspace extends Pane {
 
 				offsetX = e.getSceneX() - block.getLayoutX();
 				offsetY = e.getSceneY() - block.getLayoutY();
-<<<<<<< HEAD
+
 				
 				if(block.getSequence().size() != 1) {
 					Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
@@ -281,17 +256,7 @@ public class Workspace extends Pane {
 				for(GraphicalBlock b : block.getSequence()) {
 					
 				}
-=======
 
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
-				if (palette.contains(mouse)) {
-					Workspace.this.getChildren().remove(block);
-				} else {
-
-				}
-
->>>>>>> 443ef0cab6a9abed34ad8e26b2af3c60ee84a08a
 			}
 		}
 	}
