@@ -8,6 +8,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import logicalBlocks.Block;
 
 public class DoubleBlock extends GraphicalBlock{
@@ -24,7 +25,9 @@ public class DoubleBlock extends GraphicalBlock{
 		HBox line = new HBox();
 		line.setSpacing(5);
 		line.setPadding(new Insets(8));
-		line.getChildren().add(new Label("double"));
+		Text text = new Text("Double");
+		text.setFill(Color.WHITE);
+		line.getChildren().add(text);
 		line.getChildren().add(box1);
 		line.getChildren().add(new Label("="));
 		line.getChildren().add(box2);
