@@ -1,8 +1,11 @@
 package graphics;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cutcode.BSTree;
+import cutcode.BlockCodeCompilerErrorException;
+import cutcode.LList;
 import cutcode.Main;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,12 +19,14 @@ import javafx.scene.input.MouseEvent;
 public class Workspace extends Pane {
 
 	private BSTree<Sequence<GraphicalBlock>> sequences;
-	//private Pane playArea;
+	private LList<FunctionBlock> functions;
+	// private Pane playArea;
 	private BorderPane layout;
 	private VBox palette;
 	private static int sNumber;
+
 	public Workspace(double width, double height) {
-		
+
 		this.setMinHeight(height);
 		this.setMaxHeight(height);
 		this.setMinWidth(width);
@@ -30,9 +35,9 @@ public class Workspace extends Pane {
 		this.getChildren().add(layout);
 		palette = setupPalette();
 		layout.setLeft(palette);
-		
+
 		sequences = new BSTree<Sequence<GraphicalBlock>>();
-		
+
 	}
 
 	public VBox setupPalette() {
@@ -40,18 +45,19 @@ public class Workspace extends Pane {
 		palette.setSpacing(40);
 		palette.setPadding(new Insets(30));
 		palette.setMinWidth(200);
-		
+
 		palette.setMinHeight(this.getMinHeight());
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
-		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(), new BooleanBlock(), new VariableCallBlock()};
+		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(),
+				new BooleanBlock(), new VariableCallBlock() };
 		for (GraphicalBlock b : paletteBlocks) {
-			
+
 			MouseHandler handler = new MouseHandler(b);
 			b.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
 			b.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 			b.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-			
+
 			palette.getChildren().add(b);
 		}
 
@@ -63,9 +69,9 @@ public class Workspace extends Pane {
 		double offsetX;
 		double offsetY;
 		GraphicalBlock block;
-		
+
 		GraphicalBlock current;
-		
+
 		public MouseHandler(GraphicalBlock b) {
 			block = b;
 		}
@@ -74,11 +80,11 @@ public class Workspace extends Pane {
 		public void handle(MouseEvent e) {
 			// TODO Auto-generated method stub
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-				
+
 				current = block.cloneBlock();
-				
-				//add.setPrefWidth(200);
-				//add.setPrefHeight(40);
+
+				// add.setPrefWidth(200);
+				// add.setPrefHeight(40);
 				Workspace.this.getChildren().add(current);
 				double mouseX = e.getSceneX();
 				double mouseY = e.getSceneY();
@@ -89,26 +95,24 @@ public class Workspace extends Pane {
 				offsetX = mouseX - blockX;
 				offsetY = mouseY - blockY;
 
-				
-			}else if(e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				
-				Point2D mouse = new Point2D(e.getSceneX(),e.getSceneY());
-				if(palette.contains(mouse)) {
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+
+				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
+				if (palette.contains(mouse)) {
 					Workspace.this.getChildren().remove(current);
-				}else {
+				} else {
 					BlockHandler handler = new BlockHandler(current);
 					current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 					current.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
 					current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-					
-					
+
 					boolean connected = false;
 					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
-					for(Sequence<GraphicalBlock> s : sequencesSorted){
+					for (Sequence<GraphicalBlock> s : sequencesSorted) {
 						double endX = s.getEnd().getLayoutX();
 						double endY = s.getEnd().getLayoutY();
-						
-						if(Math.pow(block.getLayoutY() - endY,2) + Math.pow(block.getLayoutX() - endX, 2) < 100) {
+
+						if (Math.pow(block.getLayoutY() - endY, 2) + Math.pow(block.getLayoutX() - endX, 2) < 100) {
 							s.add(block);
 							block.setSequence(s);
 							block.setLayoutX(endX);
@@ -118,7 +122,7 @@ public class Workspace extends Pane {
 						}
 						System.err.println("Sequence passed w/o connection");
 					}
-					if(!connected) {
+					if (!connected) {
 						Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
 						sequence.add(block);
 						block.setSequence(sequence);
@@ -128,46 +132,53 @@ public class Workspace extends Pane {
 					System.err.println(sNumber);
 				}
 			}
-			
+
 			current.setLayoutX(e.getSceneX() - offsetX);
 			current.setLayoutY(e.getSceneY() - offsetY);
-			
+
 		}
 
 	}
-	
-	private class BlockHandler implements EventHandler<MouseEvent>{
-		
-		
+
+	private class BlockHandler implements EventHandler<MouseEvent> {
+
 		private GraphicalBlock block;
 		private double offsetX;
 		private double offsetY;
-		
+
 		public BlockHandler(GraphicalBlock b) {
 			block = b;
 		}
-		
+
 		@Override
 		public void handle(MouseEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-				
+			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
+
 				offsetX = e.getSceneX() - block.getLayoutX();
 				offsetY = e.getSceneY() - block.getLayoutY();
-				
-			}else if(e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				Point2D mouse = new Point2D(e.getSceneX(),e.getSceneY());
-				if(palette.contains(mouse)) {
+
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
+				if (palette.contains(mouse)) {
 					Workspace.this.getChildren().remove(block);
-				}else {
-					
+				} else {
+
 				}
-				
+
 			}
 			block.setLayoutX(e.getSceneX() - offsetX);
 			block.setLayoutY(e.getSceneY() - offsetY);
 		}
-		
 	}
-
+	
+	private String run() throws BlockCodeCompilerErrorException {
+		List<Sequence<GraphicalBlock>> blocks = sequences.traverse(BSTree.INORDER);
+		for(FunctionBlock func : functions) {
+			Sequence<GraphicalBlock> f = new Sequence<GraphicalBlock>();
+			f.add(func);
+			blocks.add(f);
+		}
+		return Main.run(blocks);
+	}
 }
