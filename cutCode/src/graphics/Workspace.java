@@ -44,7 +44,8 @@ public class Workspace extends Pane {
 		palette.setMinHeight(this.getMinHeight());
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
-		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(), new BooleanBlock(), new VariableCallBlock()};
+		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(), 
+				new BooleanBlock(), new VariableCallBlock(), new WhileBlock()};
 		for (GraphicalBlock b : paletteBlocks) {
 			
 			MouseHandler handler = new MouseHandler(b);
@@ -89,6 +90,8 @@ public class Workspace extends Pane {
 				offsetX = mouseX - blockX;
 				offsetY = mouseY - blockY;
 
+				current.setLayoutX(e.getSceneX() - offsetX);
+				current.setLayoutY(e.getSceneY() - offsetY);
 				
 			}else if(e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 				
@@ -105,32 +108,41 @@ public class Workspace extends Pane {
 					boolean connected = false;
 					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
 					for(Sequence<GraphicalBlock> s : sequencesSorted){
+						connected = false;
 						double endX = s.getEnd().getLayoutX();
-						double endY = s.getEnd().getLayoutY();
+						double endY = s.getEnd().getLayoutY() + s.getEnd().getHeight();
 						
-						if(Math.pow(block.getLayoutY() - endY,2) + Math.pow(block.getLayoutX() - endX, 2) < 100) {
-							s.add(block);
-							block.setSequence(s);
-							block.setLayoutX(endX);
-							block.setLayoutY(endY + s.getEnd().getHeight());
+						System.err.println(endX + "," + endY);
+						
+						if(Math.pow(current.getLayoutY() - endY,2) + Math.pow(current.getLayoutX() - endX, 2) < 225) {
+							s.add(current);
+							current.setSequence(s);
+							System.err.println("(" + current.getLayoutX() + " , " + current.getLayoutY() + ")");
+							current.setLayoutX(endX);
+							current.setLayoutY(endY);
+							System.err.println("(" + current.getLayoutX() + " , " + current.getLayoutY() + ")");
 							connected = true;
+							System.err.println("Connected!");
 							break;
 						}
 						System.err.println("Sequence passed w/o connection");
 					}
+					System.err.println(connected);
 					if(!connected) {
 						Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
-						sequence.add(block);
-						block.setSequence(sequence);
+						sequence.add(current);
+						current.setSequence(sequence);
 						sequences.add(sequence);
 						sNumber++;
 					}
 					System.err.println(sNumber);
 				}
+			}else if(e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+				current.setLayoutX(e.getSceneX() - offsetX);
+				current.setLayoutY(e.getSceneY() - offsetY);
 			}
 			
-			current.setLayoutX(e.getSceneX() - offsetX);
-			current.setLayoutY(e.getSceneY() - offsetY);
+			
 			
 		}
 
@@ -155,17 +167,85 @@ public class Workspace extends Pane {
 				offsetX = e.getSceneX() - block.getLayoutX();
 				offsetY = e.getSceneY() - block.getLayoutY();
 				
+				if(block.getSequence().size() != 1) {
+					Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
+					boolean found = false;
+					
+					int index = 0;
+					Sequence<GraphicalBlock> oldSequence = block.getSequence();
+					for(int i = 0; i < oldSequence.size(); i++) {
+						if(oldSequence.get(i).equals(block)) {
+							found = true;
+							index = 1;
+						}
+						
+						if(!found) {
+							continue;
+						}
+						sequence.add(oldSequence.get(i));
+					}
+					for(int i = index; i < oldSequence.size(); i++) {
+						oldSequence.remove(i);
+					}
+					
+					block.setSequence(sequence);
+						
+				}
+				
+				for(int i = 1; i < block.getSequence().size(); i++) {
+					GraphicalBlock b = block.getSequence().get(i);
+					b.layoutXProperty().unbind();
+					b.layoutXProperty().bind(block.layoutXProperty());
+					
+					b.layoutYProperty().unbind();
+					b.layoutYProperty().bind(block.layoutYProperty().add(b.getLayoutY() - block.getLayoutY()));
+				}
+				
+				
+				
 			}else if(e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 				Point2D mouse = new Point2D(e.getSceneX(),e.getSceneY());
 				if(palette.contains(mouse)) {
-					Workspace.this.getChildren().remove(block);
-				}else {
+					for(GraphicalBlock b : block.getSequence()) {
+						Workspace.this.getChildren().remove(b);
+					}
+				} else {
+					boolean connected = false;
+					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
+					for(Sequence<GraphicalBlock> s : sequencesSorted){
+						connected = false;
+						double endX = s.getEnd().getLayoutX();
+						double endY = s.getEnd().getLayoutY() + s.getEnd().getHeight();
+						
+						System.err.println(endX + "," + endY);
+						
+						if(Math.pow(block.getLayoutY() - endY,2) + Math.pow(block.getLayoutX() - endX, 2) < 225) {
+							for(GraphicalBlock b : block.getSequence()) {
+								s.add(b);
+								b.setSequence(s);
+							}
+							System.err.println("(" + block.getLayoutX() + " , " + block.getLayoutY() + ")");
+							block.setLayoutX(endX);
+							block.setLayoutY(endY);
+							System.err.println("(" + block.getLayoutX() + " , " + block.getLayoutY() + ")");
+							connected = true;
+							System.err.println("Connected!");
+							break;
+						}
+						System.err.println("Sequence passed w/o connection");
+					}
+					System.err.println(connected);
 					
+					System.err.println(sNumber);
 				}
 				
+			}else {
+				block.setLayoutX(e.getSceneX() - offsetX);
+				block.setLayoutY(e.getSceneY() - offsetY);
+				for(GraphicalBlock b : block.getSequence()) {
+					
+				}
 			}
-			block.setLayoutX(e.getSceneX() - offsetX);
-			block.setLayoutY(e.getSceneY() - offsetY);
 		}
 		
 	}
