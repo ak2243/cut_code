@@ -56,7 +56,7 @@ public class Executor {
 		allBlocks.put(lineLoc, block);
 		lineLoc++;
 		if (block instanceof graphics.FunctionBlock) {
-			for (GraphicalBlock b : ((graphics.FunctionBlock) block).commands) {
+			for (GraphicalBlock b : ((graphics.FunctionBlock) block).getCommands()) {
 				putInHashMap(b);
 				lineLoc++;
 			}
