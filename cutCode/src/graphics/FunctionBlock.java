@@ -106,17 +106,33 @@ public class FunctionBlock extends GraphicalBlock {
 
 	private class MouseHandler implements EventHandler<MouseEvent> {
 
+		/**
+		 * @author Arjun Khanna
+		 */
 		@Override
 		public void handle(MouseEvent event) {
 			if (event.getButton() == MouseButton.SECONDARY) {
 				BorderPane root = new BorderPane();
 				TextField name = new TextField();
-				HBox firstLine = new HBox(new Label("Name:"), name);
-				HBox secondLine = new HBox(new Label("Return type:"));
+				HBox firstLine = new HBox(new Label("Name: "), name);
+				HBox secondLine = new HBox(new Label("Return type: "));
 				ComboBox<String> returnTypes = new ComboBox<String>();
 				returnTypes.getItems().addAll("Number", "String", "Condition");
 				secondLine.getChildren().add(returnTypes);
-				root.setCenter(new VBox(firstLine, secondLine));
+
+				HBox thirdLine = new HBox(new Label("First Parameter: "));
+				ComboBox<String> firstParam = new ComboBox<String>();
+				firstParam.getItems().addAll("None", "Number", "String", "Condition");
+				firstParam.setValue("None");
+				thirdLine.getChildren().add(firstParam);
+
+				HBox fourthLine = new HBox(new Label("First Parameter: "));
+				ComboBox<String> secondParam = new ComboBox<String>();
+				secondParam.getItems().addAll("None", "Number", "String", "Condition");
+				secondParam.setValue("None");
+				fourthLine.getChildren().add(secondParam);
+
+				root.setCenter(new VBox(firstLine, secondLine, thirdLine, fourthLine));
 				Stage stage = new Stage();
 				Scene scene = new Scene(root, 400, 400);
 				stage.setScene(scene);
@@ -125,6 +141,7 @@ public class FunctionBlock extends GraphicalBlock {
 				returns.put("Number", "double");
 				returns.put("String", "String");
 				returns.put("Condition", "boolean");
+				returns.put("None", null);
 				Button done = new Button("DONE");
 				VBox bottom = new VBox(done);
 				bottom.setAlignment(Pos.BOTTOM_RIGHT);
@@ -132,10 +149,20 @@ public class FunctionBlock extends GraphicalBlock {
 				done.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent e) {
-						System.err.println("hi");
 						stage.close();
-						declaration = "public static " + returns.get(returnTypes.getValue()) + " " + name.getText() + "()";
-						System.err.println(declaration);
+						String parameterA = "";
+						String parameterB = "";
+						if (returns.get(firstParam.getValue()) != null) {
+							parameterA = returns.get(firstParam.getValue()) + " $a";
+							parameterB = ", ";
+						}
+
+						if (returns.get(secondParam.getValue()) != null) {
+							parameterB += returns.get(secondParam.getValue()) + " $b";
+						}
+
+						declaration = "public static " + returns.get(returnTypes.getValue()) + " " + name.getText()
+								+ "(" + parameterA + parameterB + ")";
 					}
 				});
 
