@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
 public class PrintBlock extends GraphicalBlock {
-	private String statement;
+	private TextField text;
 	
 	/**
 	 * @apiNote O(n)
@@ -21,7 +21,7 @@ public class PrintBlock extends GraphicalBlock {
 		super(200,40);
 		HBox line = new HBox();
 		Label label = new Label("print ");
-		TextField text = new TextField();
+		text = new TextField();
 		text.setMaxWidth(140);
 		text.setMinWidth(140);
 		line.getChildren().addAll(label, text);
@@ -38,7 +38,7 @@ public class PrintBlock extends GraphicalBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.PrintBlock ret = new logicalBlocks.PrintBlock();
-		ret.setPrint(statement);
+		ret.setPrint(text.getText());
 		return ret;
 	}
 

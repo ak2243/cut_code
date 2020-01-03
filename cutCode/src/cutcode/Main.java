@@ -3,6 +3,7 @@ package cutcode;
 import java.io.IOException;
 import java.util.List;
 
+import graphics.FunctionBlock;
 import graphics.GraphicalBlock;
 import graphics.Sequence;
 import graphics.Workspace;
@@ -33,9 +34,10 @@ public class Main extends Application {
 	 * @param blocks: a list of the sequences of GraphicalBlocks that
 	 * @author Arjun Khanna
 	 */
-	public static String run(List<Sequence<GraphicalBlock>> blocks) throws BlockCodeCompilerErrorException {
+	public static String run(List<FunctionBlock> blocks) throws BlockCodeCompilerErrorException {
 		Executor executor = new Executor();
 		String code = executor.getCode(blocks);
+		System.err.println(code);
 		FileManager manager = new FileManager();
 		try {
 			manager.setOutput(filename);
@@ -45,7 +47,9 @@ public class Main extends Application {
 		} catch (IOException e) {
 			return ERROR;
 		}
-		return executor.run(filename);
+		String s = executor.run(filename);
+		manager.delete(filename);
+		return s;
 	}
 
 }

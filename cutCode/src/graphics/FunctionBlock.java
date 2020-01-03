@@ -59,6 +59,20 @@ public class FunctionBlock extends GraphicalBlock {
 
 		}
 	}
+	
+	/**
+	 * @apiNote O(n^2)
+	 * @param commands - all the sequences of blocks to be put in the main method
+	 * @author Arjun Khanna
+	 */
+	public void makeMain(List<Sequence<GraphicalBlock>> commands) {
+		declaration = logicalBlocks.FunctionBlock.MAIN;
+		for(Sequence<GraphicalBlock> blocks : commands) {
+			for(GraphicalBlock block : blocks) {
+				this.commands.add(block);
+			}
+		}
+	}
 
 	/**
 	 * @apiNote method efficiency O(infinity)?
@@ -67,7 +81,7 @@ public class FunctionBlock extends GraphicalBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.FunctionBlock ret = new logicalBlocks.FunctionBlock();
-		ret.setSignature("public static " + declaration);
+		ret.setSignature(declaration);
 		for (GraphicalBlock g : commands) {
 			ret.commands.add(g.getLogicalBlock());
 		}

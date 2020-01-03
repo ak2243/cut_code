@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
+import graphics.FunctionBlock;
 import graphics.GraphicalBlock;
 import graphics.Sequence;
 
@@ -20,32 +21,18 @@ public class Executor {
 	 * 
 	 * @param sequences; the List of sequences of graphical blocks
 	 * @return a String of the Java code for the sequence of GraphicalBlocks
-	 * @apiNote O(n^3)
+	 * @apiNote O(infinity)
 	 * @author Arjun Khanna
 	 */
-	public String getCode(List<Sequence<GraphicalBlock>> sequences) {
+	public String getCode(List<FunctionBlock> sequences) {
+		System.err.println("hi");
 		allBlocks = new HashMap<Integer, GraphicalBlock>();
 		String output = "";
-		for (Sequence<GraphicalBlock> s : sequences) {
-			output += sequenceToJava(s);
+		for(FunctionBlock block : sequences) {
+			putInHashMap(block);
+			output += block.getLogicalBlock().toString();
 		}
 		return "public class Program {" + System.lineSeparator() + output + "}";
-	}
-
-	/**
-	 * 
-	 * @param s - the sequence of GraphicalBlocks that should be converted to java
-	 *          code
-	 * @return the java code (with new lines but no indents) of the graphical blocks
-	 * @author Arjun Khanna
-	 */
-	private String sequenceToJava(Sequence<GraphicalBlock> s) {
-		String output = "";
-		for (GraphicalBlock block : s) { // Need to go through all the blocks
-			putInHashMap(block);
-			output += block.getLogicalBlock().toString(); // calls the Block.toString() method to get the java code
-		}
-		return output;
 	}
 
 	/**
