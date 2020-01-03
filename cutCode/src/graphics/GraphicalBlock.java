@@ -15,7 +15,7 @@ public abstract class GraphicalBlock extends VBox {
 
 	public GraphicalBlock(double width, double height) {
 		setMinWidth(width);
-		setMaxWidth(width);
+		setMinHeight(height);
 
 	}
 

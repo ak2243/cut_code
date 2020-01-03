@@ -14,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 
 public class Workspace extends Pane {
@@ -34,7 +35,16 @@ public class Workspace extends Pane {
 		layout = new BorderPane();
 		this.getChildren().add(layout);
 		palette = setupPalette();
-		layout.setLeft(palette);
+		palette.setPrefHeight(palette.getHeight() + 100);
+		
+		ScrollPane paletteScroll = new ScrollPane();
+		paletteScroll.setContent(palette);
+		paletteScroll.setMinHeight(this.getMinHeight());
+		paletteScroll.setMaxHeight(this.getMaxHeight());
+		paletteScroll.setPrefHeight(this.getMaxHeight());
+		paletteScroll.setMinWidth(200);
+		
+		layout.setLeft(paletteScroll);
 
 		sequences = new BSTree<Sequence<GraphicalBlock>>();
 
@@ -45,14 +55,19 @@ public class Workspace extends Pane {
 		palette.setSpacing(40);
 		palette.setPadding(new Insets(30));
 		palette.setMinWidth(200);
+		
 
-		palette.setMinHeight(this.getMinHeight());
+		
+		
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
 
 		GraphicalBlock[] paletteBlocks = { new IfBlock(), new DoubleBlock(), new PrintBlock(), new StringBlock(), 
-				new BooleanBlock(), new VariableCallBlock(), new WhileBlock()};
-
+				new BooleanBlock(), new VariableCallBlock(), new WhileBlock(), new OrBlock(), new AndBlock(), new GreaterBlock(),
+				new GreaterEqualBlock(), new LesserBlock(), new LesserEqualBlock()};
+		
+		int height = 60;
+		
 		for (GraphicalBlock b : paletteBlocks) {
 
 			MouseHandler handler = new MouseHandler(b);
@@ -61,7 +76,14 @@ public class Workspace extends Pane {
 			b.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
 
 			palette.getChildren().add(b);
+			height = (int)(height + 40 + b.getHeight());
 		}
+		
+		
+		
+		
+		
+		
 
 		return palette;
 	}

@@ -9,6 +9,12 @@ public abstract class OperatorBlock extends GraphicalBlock {
 	 * @apiNote O(1)
 	 * @author Arjun Khanna
 	 */
+	
+	protected OperatorBlock(int width, int height) {
+		super(width,height);
+		
+	}
+	
 	public GraphicalBlock getLeftOperand() {
 		return leftOperand;
 	}

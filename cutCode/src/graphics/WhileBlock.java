@@ -13,7 +13,7 @@ public class WhileBlock extends GraphicalBlock{
 	
 	public WhileBlock() { 
 		
-		super(200,80);
+		super(200,90);
 		this.setPadding(new Insets(10));
 		this.setSpacing(10);
 		this.setStyle("-fx-background-color: #D06201");
