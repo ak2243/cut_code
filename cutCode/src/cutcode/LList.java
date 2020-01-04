@@ -44,9 +44,16 @@ public class LList<E> implements List<E> {
 														// not contain data)
 	}
 
+	/**
+	 * @apiNote O(n^2)
+	 */
 	@Override
 	public Object[] toArray() {
-		throw new UnsupportedOperationException();
+		Object[] arr = new Object[size];
+		for(int i = 0; i < size; i++) {
+			arr[i] = get(i);
+		}
+		return arr;
 	}
 
 	@Override
@@ -128,6 +135,10 @@ public class LList<E> implements List<E> {
 		size = 0; // size must be reset
 	}
 
+	/**
+	 * @apiNote O(n)
+	 * @author Arjun Khanna
+	 */
 	@Override
 	public E get(int index) throws IndexOutOfBoundsException {
 		if (index >= size || index < 0) { // Both of these are out of bounds

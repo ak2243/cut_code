@@ -46,10 +46,13 @@ public class ElseBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ElseBlock();
 	}
 
+	/**
+	 * 
+	 * @param block
+	 */
 	public void add(GraphicalBlock block) {
 		commands.add(block);
 		double incrementWidth = block.getMinWidth() - bottomLine.getMinWidth();

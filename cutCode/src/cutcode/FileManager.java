@@ -82,4 +82,9 @@ public class FileManager {
 		input = new File(in);
 		input .createNewFile();
 	}
+	
+	public void delete(String filename) {
+		File f = new File(filename);
+		f.delete();
+	}
 }
