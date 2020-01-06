@@ -10,14 +10,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
-public class IfBlock extends GraphicalBlock {
+public class IfBlock extends GraphicalBlock implements NestableCondition, NestableBlock{
 
 	public Sequence<GraphicalBlock> commands;
 	private AndBlock condition; //TODO make this OperatorBlock
+	
+	private ConditionPoint cPoint;
+	private NestPoint nPoint;
 
 	public IfBlock() {
 		super(200,80);
-
+		
+		cPoint = new ConditionPoint(0,0,this);
+		nPoint = new NestPoint(0,0,this);
+		VBox thing = new VBox();
+		
 		this.setPadding(new Insets(10));
 		this.setBackground(new Background(new BackgroundFill(Color.web("#D06201"),CornerRadii.EMPTY,Insets.EMPTY)));
 		
@@ -59,5 +66,17 @@ public class IfBlock extends GraphicalBlock {
 	public String toJSON() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void nest(GraphicalBlock b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void nest(OperatorBlock b) {
+		// TODO Auto-generated method stub
+		
 	}
 }
