@@ -163,28 +163,27 @@ public class Workspace extends Pane {
 					current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
 
 					boolean connected = false;
-					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
+					List<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
 
 					for (Sequence<GraphicalBlock> s : sequencesSorted) {
-						connected = false;
+						
 						double endX = s.getEnd().getLayoutX();
 						double endY = s.getEnd().getLayoutY() + s.getEnd().getHeight();
 
-						System.err.println(endX + "," + endY);
+						
 
 						if (Math.pow(current.getLayoutY() - endY, 2) + Math.pow(current.getLayoutX() - endX, 2) < 225) {
 							s.add(current);
 							current.setSequence(s);
-							System.err.println("(" + current.getLayoutX() + " , " + current.getLayoutY() + ")");
 							current.setLayoutX(endX);
 							current.setLayoutY(endY);
-							System.err.println("(" + current.getLayoutX() + " , " + current.getLayoutY() + ")");
+							
 
 							connected = true;
-							System.err.println("Connected!");
+							
 							break;
 						}
-						System.err.println("Sequence passed w/o connection");
+						
 					}
 
 					System.err.println(connected);
@@ -194,9 +193,8 @@ public class Workspace extends Pane {
 						sequence.add(current);
 						current.setSequence(sequence);
 						sequences.add(sequence);
-						sNumber++;
 					}
-					System.err.println(sNumber);
+					
 				}
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
 				current.setLayoutX(e.getSceneX() - offsetX);
@@ -212,6 +210,9 @@ public class Workspace extends Pane {
 		private GraphicalBlock block;
 		private double offsetX;
 		private double offsetY;
+		
+		private Sequence<GraphicalBlock> tempSequence;
+		
 
 		public BlockHandler(GraphicalBlock b) {
 			block = b;
@@ -220,91 +221,113 @@ public class Workspace extends Pane {
 		@Override
 		public void handle(MouseEvent e) {
 			// TODO Auto-generated method stub
+			
+			
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-
 				offsetX = e.getSceneX() - block.getLayoutX();
 				offsetY = e.getSceneY() - block.getLayoutY();
-
-				if (block.getSequence().size() != 1) {
-					Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
-					boolean found = false;
-
-					int index = 0;
-					Sequence<GraphicalBlock> oldSequence = block.getSequence();
-					for (int i = 0; i < oldSequence.size(); i++) {
-						if (oldSequence.get(i).equals(block)) {
-							found = true;
-							index = 1;
-						}
-
-						if (!found) {
-							continue;
-						}
-						sequence.add(oldSequence.get(i));
+				
+				Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();//Create a new sequence for the block
+				
+				Sequence<GraphicalBlock> oldSequence = block.getSequence();//Get the old sequence
+				
+				int index = -1;//Store the position of the block in the sequence
+				for(int i = 0; i < oldSequence.size(); i++) {
+					if(oldSequence.get(i) == block) {
+						index = i;//When you find the block, store it's location
 					}
-					for (int i = index; i < oldSequence.size(); i++) {
-						oldSequence.remove(i);
+					
+					if(index < 0) {//If the block hasn't been found yet, go on to the next iteration
+						continue;
 					}
-
-					block.setSequence(sequence);
-
+					
+					sequence.add(oldSequence.get(i));//Add the block to the new sequence. Only runs after the block has been found
+					oldSequence.get(i).setSequence(sequence);//Store the sequence in the blocks
 				}
-
-				for (int i = 1; i < block.getSequence().size(); i++) {
-					GraphicalBlock b = block.getSequence().get(i);
+				
+				if(oldSequence.size() == sequence.size()) {
+					System.err.println(sequences.remove(oldSequence));//If the new sequence ends up containing all the block from the old sequence, 
+				}else {								  //remove the old sequence from the list of sequences
+				
+					while(oldSequence.size() > index) {//No iteration required because the list gets smaller and smaller each time
+						oldSequence.remove(index);
+						System.err.println("remove");
+					}
+					
+				}
+				//sequences.add(sequence);
+				
+				for(int i = 1; i < sequence.size(); i++) {//Starts at 1 because we can't bind block's properties to itself
+					GraphicalBlock b = sequence.get(i);
 					b.layoutXProperty().unbind();
 					b.layoutXProperty().bind(block.layoutXProperty());
-
 					b.layoutYProperty().unbind();
 					b.layoutYProperty().bind(block.layoutYProperty().add(b.getLayoutY() - block.getLayoutY()));
 				}
+				
+				block.layoutXProperty().unbind();
+				block.layoutYProperty().unbind();
+				
+				
+				
 
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+				
+				
+				
+				
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
 					for (GraphicalBlock b : block.getSequence()) {
 						Workspace.this.getChildren().remove(b);
+						
 					}
+					
 				} else {
-					boolean connected = false;
-					ArrayList<Sequence<GraphicalBlock>> sequencesSorted = sequences.traverse(BSTree.INORDER);
-					for (Sequence<GraphicalBlock> s : sequencesSorted) {
-						connected = false;
-						double endX = s.getEnd().getLayoutX();
-						double endY = s.getEnd().getLayoutY() + s.getEnd().getHeight();
-
-						System.err.println(endX + "," + endY);
-
-						if (Math.pow(block.getLayoutY() - endY, 2) + Math.pow(block.getLayoutX() - endX, 2) < 225) {
-							for (GraphicalBlock b : block.getSequence()) {
+					sequences.add(block.getSequence());
+					
+					for(Sequence<GraphicalBlock> s : sequences.traverse(BSTree.INORDER)) {//Go through all sequences in the workspace
+						
+						if(Math.pow(block.getLayoutX() - s.getEnd().getLayoutX(), 2) + //Check if the block is close enough to the end
+								Math.pow(block.getLayoutY() - (s.getEnd().getLayoutY() + s.getEnd().getHeight()), 2) < 225) {//Distance formula
+							
+							block.setLayoutX(s.getEnd().getLayoutX());
+							block.setLayoutY(s.getEnd().getLayoutY() + s.getEnd().getHeight());
+							
+							
+							//System.err.println("Connect");
+							Sequence<GraphicalBlock> oldSequence = block.getSequence();
+							System.out.println(block.getSequence().size());
+							for(GraphicalBlock b : oldSequence) {
 								s.add(b);
 								b.setSequence(s);
 							}
-							System.err.println("(" + block.getLayoutX() + " , " + block.getLayoutY() + ")");
-							block.setLayoutX(endX);
-							block.setLayoutY(endY);
-							System.err.println("(" + block.getLayoutX() + " , " + block.getLayoutY() + ")");
-							connected = true;
-							System.err.println("Connected!");
+							
+							//for(Sequence<GraphicalBlock> se : sequences.traverse(BSTree.INORDER)) {
+								//System.err.println(se);
+							//}
+							//System.err.println(oldSequence);
+							
+							System.err.println(sequences.remove(oldSequence));
+							
 							break;
 						}
-						System.err.println("Sequence passed w/o connection");
 					}
-					System.err.println(connected);
-
-					System.err.println(sNumber);
 				}
-
+				System.err.println(sequences.traverse(BSTree.INORDER).size());
+					
 			} else {
+				//Move the blocks around the screen
+				
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
-				for (GraphicalBlock b : block.getSequence()) {
-
-				}
-
+				
+				
 			}
 		}
 	}
+	
+	
 
 	/**
 	 * @apiNote O(infinity)

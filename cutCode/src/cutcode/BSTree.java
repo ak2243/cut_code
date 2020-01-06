@@ -1,5 +1,8 @@
 package cutcode;
 
+
+
+
 import java.util.ArrayList;
 
 public class BSTree<T extends Comparable<T>> {
@@ -47,6 +50,7 @@ public class BSTree<T extends Comparable<T>> {
 		while(rem != null && rem.data.compareTo(data) != 0) {
 			par = rem;
 			
+			System.err.println("ITERATION");
 			if(data.compareTo(rem.data) < 0) {
 				rem = rem.left;
 			}else {
