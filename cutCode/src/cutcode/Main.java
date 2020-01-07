@@ -35,6 +35,7 @@ public class Main extends Application {
 	 * @author Arjun Khanna
 	 */
 	public static String run(List<FunctionBlock> blocks) throws BlockCodeCompilerErrorException {
+		System.err.println("RESET");
 		Executor executor = new Executor();
 		String code = executor.getCode(blocks);
 		System.err.println(code);
@@ -47,9 +48,17 @@ public class Main extends Application {
 		} catch (IOException e) {
 			return ERROR;
 		}
-		String s = executor.run(filename);
-		manager.delete(filename);
-		return s;
+		String s;
+		try {
+			s = executor.run(filename);
+			manager.delete(filename);
+			return s;
+		} catch (BlockCodeCompilerErrorException e) {
+			manager.delete(filename);
+			throw new BlockCodeCompilerErrorException();
+		}
+		
+		
 	}
 
 }

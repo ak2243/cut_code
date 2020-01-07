@@ -57,21 +57,13 @@ public class BooleanBlock extends GraphicalBlock {
 		return new BooleanBlock();
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addNestPoints(List<NestPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
 }

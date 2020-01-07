@@ -52,8 +52,8 @@ public class DoubleBlock extends GraphicalBlock{
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.DoubleBlock ret = new logicalBlocks.DoubleBlock();
-		ret.setValue(Double.parseDouble(box1.getText()));
-		ret.setName(box2.getText());
+		ret.setValue(Double.parseDouble(box2.getText()));
+		ret.setName(box1.getText());
 		return ret;
 	} 
 	
@@ -68,16 +68,6 @@ public class DoubleBlock extends GraphicalBlock{
 		return null;
 	}
 
-	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addNestPoints(List<NestPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }

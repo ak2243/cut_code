@@ -40,24 +40,26 @@ public class Executor {
 	 * @param block - the block to be put in the HashMap
 	 */
 	private void putInHashMap(GraphicalBlock block) {
+		System.err.println(block.getClass().toString() + lineLoc);
 		allBlocks.put(lineLoc, block);
 		lineLoc++;
 		if (block instanceof graphics.FunctionBlock) {
 			for (GraphicalBlock b : ((graphics.FunctionBlock) block).getCommands()) {
+				System.err.println(lineLoc + "iterate");
 				putInHashMap(b);
-				lineLoc++;
+				
 			}
 			lineLoc++;
 		} else if (block instanceof graphics.IfBlock) {
 			for (GraphicalBlock b : ((graphics.IfBlock) block).commands) {
 				putInHashMap(b);
-				lineLoc++;
+				
 			}
 			lineLoc++;
 		} else if (block instanceof graphics.WhileBlock) {
 			for (GraphicalBlock b : ((graphics.WhileBlock) block).commands) {
 				putInHashMap(b);
-				lineLoc++;
+				
 			}
 			lineLoc++;
 		}
@@ -91,12 +93,14 @@ public class Executor {
 				error = true;
 			}
 			if (error) {
+				
 				stream.close();
 				try {
 					handleCompilerError(errorOutput); // TODO add specific error reporting here
 				} catch (NumberFormatException e) {
 					return ERROR;
 				}
+				System.err.println("error confirmed");
 				throw new BlockCodeCompilerErrorException();
 			}
 			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
@@ -121,7 +125,12 @@ public class Executor {
 	private void handleCompilerError(String errorOutput) throws NumberFormatException {
 		String[] things = errorOutput.split(":");
 		GraphicalBlock block = allBlocks.get(Integer.parseInt(things[1]));
+		System.err.println(things[1]);
 		block.tagErrorOnBlock();
+	}
+	
+	public void reset() {
+		lineLoc = 2;
 	}
 
 }

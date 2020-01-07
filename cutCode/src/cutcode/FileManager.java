@@ -85,6 +85,6 @@ public class FileManager {
 	
 	public void delete(String filename) {
 		File f = new File(filename);
-		f.delete();
+		System.err.println(f.delete() + "whhhhhhhhhhh");
 	}
 }

@@ -1,7 +1,12 @@
 package graphics;
 
-public interface NestableBlock {
+import javafx.geometry.Point2D;
 
-	public void nest(GraphicalBlock b);
+public interface NestableBlock {
 	
+	public Point2D getPrimaryNestPoint();
+	public Point2D getSecondaryNestPoint();
+
+	public void primaryNest(GraphicalBlock block);
+	public void secondaryNest(GraphicalBlock block);
 }

@@ -67,16 +67,6 @@ public class WhileBlock extends GraphicalBlock {
 		return null;
 	}
 
-	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void addNestPoints(List<NestPoint> list) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

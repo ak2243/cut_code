@@ -3,6 +3,7 @@ package graphics;
 import java.util.List;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -12,20 +13,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
-public class IfBlock extends GraphicalBlock implements NestableCondition, NestableBlock{
+public class IfBlock extends GraphicalBlock implements NestableBlock{
 
 	public Sequence<GraphicalBlock> commands;
-	private AndBlock condition; //TODO make this OperatorBlock
+	private OperatorBlock condition; //TODO make this OperatorBlock
 	
-	private ConditionPoint cPoint;
-	private NestPoint nPoint;
+	
 
 	public IfBlock() {
 		super(200,80);
 		
-		cPoint = new ConditionPoint(0,0,this);
-		nPoint = new NestPoint(0,0,this);
-		VBox thing = new VBox();
+		
 		
 		
 		
@@ -73,27 +71,27 @@ public class IfBlock extends GraphicalBlock implements NestableCondition, Nestab
 	}
 
 	@Override
-	public void nest(GraphicalBlock b) {
+	public Point2D getPrimaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Point2D getSecondaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void primaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void nest(OperatorBlock b) {
+	public void secondaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
-		// TODO Auto-generated method stub
-		list.add(cPoint);
-	}
-
-	@Override
-	public void addNestPoints(List<NestPoint> list) {
-		// TODO Auto-generated method stub
-		list.add(nPoint);
 	}
 
 

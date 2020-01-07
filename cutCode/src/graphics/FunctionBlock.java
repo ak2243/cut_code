@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,7 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logicalBlocks.Block;
 
-public class FunctionBlock extends GraphicalBlock {
+public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 	private Sequence<GraphicalBlock> commands;
 	private VBox bottomLine;
 	private String declaration; // NOTE: this only contains return type and name
@@ -186,16 +187,32 @@ public class FunctionBlock extends GraphicalBlock {
 
 	}
 
+
 	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
+	public Point2D getPrimaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Point2D getSecondaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void primaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addNestPoints(List<NestPoint> list) {
+	public void secondaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
 
 }

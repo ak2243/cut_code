@@ -1,8 +1,7 @@
 package graphics;
 
-import java.util.List;
-
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -58,16 +57,31 @@ public class GreaterBlock extends OperatorBlock {
 		return null;
 	}
 
+
 	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
+	public Point2D getPrimaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Point2D getSecondaryNestPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void primaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addNestPoints(List<NestPoint> list) {
+	public void secondaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 	
 }

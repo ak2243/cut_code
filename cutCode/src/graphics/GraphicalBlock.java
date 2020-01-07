@@ -29,9 +29,7 @@ public abstract class GraphicalBlock extends VBox {
 
 	public abstract GraphicalBlock cloneBlock();
 	
-	public abstract void addConditionPoints(List<ConditionPoint> list);
 	
-	public abstract void addNestPoints(List<NestPoint> list);
 
 	public Sequence<GraphicalBlock> getSequence() {
 		return sequence;
@@ -50,6 +48,10 @@ public abstract class GraphicalBlock extends VBox {
 	public void tagErrorOnBlock() {
 		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-width: 3;\n" + "-fx-border-style: dashed;\n";
 		this.setStyle(cssLayout);
+	}
+	
+	public void untag() {
+		this.setStyle(null);
 	}
 
 }

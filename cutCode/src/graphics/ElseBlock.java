@@ -3,6 +3,7 @@ package graphics;
 import java.util.List;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -12,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
-public class ElseBlock extends GraphicalBlock {
+public class ElseBlock extends GraphicalBlock implements NestableBlock {
 	private VBox bottomLine;
 	private Sequence<GraphicalBlock> commands;
 
@@ -56,18 +57,7 @@ public class ElseBlock extends GraphicalBlock {
 	 * @param block
 	 */
 	public void add(GraphicalBlock block) {
-		commands.add(block);
-		double incrementWidth = block.getMinWidth() - bottomLine.getMinWidth();
-		if(incrementWidth > 0) {
-			bottomLine.setMinWidth(bottomLine.getMinWidth() + incrementWidth);
-			this.setMinWidth(this.getMinWidth() + incrementWidth);
-		}
-		double incrementHeight = block.getMinHeight() - bottomLine.getMinWidth();
-		if(incrementHeight > 0) {
-			bottomLine.setMinHeight(bottomLine.getMinHeight() + incrementHeight);
-			this.setMinHeight(this.getMinHeight() + incrementHeight);
-		}
-		bottomLine.getChildren().add(block);
+		
 	}
 
 	@Override
@@ -77,15 +67,37 @@ public class ElseBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public void addConditionPoints(List<ConditionPoint> list) {
-		// TODO Auto-generated method stub
+	public void primaryNest(GraphicalBlock block) {
+		commands.add(block);
+		double incrementWidth = block.getWidth() - bottomLine.getWidth();
+		if(incrementWidth > 0) {
+			bottomLine.setMinWidth(bottomLine.getMinWidth() + incrementWidth);
+			this.setWidth(this.getWidth() + incrementWidth);
+		}
+		double incrementHeight = block.getHeight() - bottomLine.getHeight();
+		if(incrementHeight > 0) {
+			bottomLine.setMinHeight(bottomLine.getHeight() + incrementHeight);
+			this.setHeight(this.getHeight() + incrementHeight);
+		}
+		bottomLine.getChildren().add(block);
 		
 	}
 
 	@Override
-	public void addNestPoints(List<NestPoint> list) {
+	public Point2D getPrimaryNestPoint() {
+		return new Point2D(bottomLine.getLayoutX() + this.getLayoutX(), bottomLine.getLayoutY() + this.getLayoutY() + bottomLine.getHeight());
+	}
+
+	@Override
+	public Point2D getSecondaryNestPoint() {
+		return null;
+	}
+
+	@Override
+	public void secondaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

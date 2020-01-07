@@ -1,6 +1,6 @@
 package graphics;
 
-public abstract class OperatorBlock extends GraphicalBlock {
+public abstract class OperatorBlock extends GraphicalBlock implements NestableBlock {
 	private GraphicalBlock leftOperand;
 	private GraphicalBlock rightOperand;
 	/**
