@@ -1,6 +1,9 @@
 package graphics;
 
 import logicalBlocks.Block;
+
+import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -62,6 +65,18 @@ public class WhileBlock extends GraphicalBlock {
 	public String toJSON() {
 
 		return null;
+	}
+
+	@Override
+	public void addConditionPoints(List<ConditionPoint> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNestPoints(List<NestPoint> list) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

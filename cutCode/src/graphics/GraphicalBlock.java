@@ -1,5 +1,7 @@
 package graphics;
 
+import java.util.List;
+
 import javafx.scene.layout.Border;
 import javafx.scene.layout.VBox;
 
@@ -26,6 +28,10 @@ public abstract class GraphicalBlock extends VBox {
 	public abstract Block getLogicalBlock();
 
 	public abstract GraphicalBlock cloneBlock();
+	
+	public abstract void addConditionPoints(List<ConditionPoint> list);
+	
+	public abstract void addNestPoints(List<NestPoint> list);
 
 	public Sequence<GraphicalBlock> getSequence() {
 		return sequence;

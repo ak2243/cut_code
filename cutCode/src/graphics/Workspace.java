@@ -261,12 +261,15 @@ public class Workspace extends Pane {
 				
 				for(int i = 1; i < sequence.size(); i++) {//Starts at 1 because we can't bind block's properties to itself
 					GraphicalBlock b = sequence.get(i);
+					
+					
 					b.layoutXProperty().unbind();
 					b.layoutXProperty().bind(block.layoutXProperty());
 					b.layoutYProperty().unbind();
 					b.layoutYProperty().bind(block.layoutYProperty().add(b.getLayoutY() - block.getLayoutY()));
 				}
 				
+				System.err.println(block.layoutXProperty());
 				block.layoutXProperty().unbind();
 				block.layoutYProperty().unbind();
 				

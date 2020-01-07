@@ -1,5 +1,7 @@
 package graphics;
 
+import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -72,6 +74,18 @@ public class ElseBlock extends GraphicalBlock {
 	public String toJSON() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addConditionPoints(List<ConditionPoint> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNestPoints(List<NestPoint> list) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

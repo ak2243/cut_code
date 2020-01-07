@@ -1,5 +1,7 @@
 package graphics;
 
+import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -24,6 +26,8 @@ public class IfBlock extends GraphicalBlock implements NestableCondition, Nestab
 		cPoint = new ConditionPoint(0,0,this);
 		nPoint = new NestPoint(0,0,this);
 		VBox thing = new VBox();
+		
+		
 		
 		this.setPadding(new Insets(10));
 		this.setBackground(new Background(new BackgroundFill(Color.web("#D06201"),CornerRadii.EMPTY,Insets.EMPTY)));
@@ -78,6 +82,18 @@ public class IfBlock extends GraphicalBlock implements NestableCondition, Nestab
 	public void nest(OperatorBlock b) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void addConditionPoints(List<ConditionPoint> list) {
+		// TODO Auto-generated method stub
+		list.add(cPoint);
+	}
+
+	@Override
+	public void addNestPoints(List<NestPoint> list) {
+		// TODO Auto-generated method stub
+		list.add(nPoint);
 	}
 
 

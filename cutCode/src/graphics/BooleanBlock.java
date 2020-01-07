@@ -1,5 +1,7 @@
 package graphics;
 
+import java.util.List;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -59,5 +61,17 @@ public class BooleanBlock extends GraphicalBlock {
 	public String toJSON() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addConditionPoints(List<ConditionPoint> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNestPoints(List<NestPoint> list) {
+		// TODO Auto-generated method stub
+		
 	}
 }
