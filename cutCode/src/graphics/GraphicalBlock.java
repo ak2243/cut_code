@@ -33,7 +33,7 @@ public abstract class GraphicalBlock extends VBox {
 	
 	/**
 	 * 
-	 * @return - the json representation of this block 
+	 * @deprecated
 	 */
 	public abstract String toJSON();
 

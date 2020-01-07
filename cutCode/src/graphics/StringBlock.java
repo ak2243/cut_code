@@ -50,6 +50,9 @@ public class StringBlock extends GraphicalBlock {
 		return new StringBlock();
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub

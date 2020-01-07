@@ -42,9 +42,12 @@ public class OrBlock extends OperatorBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return null;
+		return new OrBlock();
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub

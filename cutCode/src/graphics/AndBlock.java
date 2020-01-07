@@ -42,8 +42,11 @@ public class AndBlock extends OperatorBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return null;
+		return new AndBlock();
 	}
+	/**
+	 * @deprecated
+	 */
 
 	@Override
 	public String toJSON() {

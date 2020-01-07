@@ -47,7 +47,7 @@ public class GreaterEqualBlock extends OperatorBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return null;
+		return new GreaterEqualBlock();
 	}
 
 	@Override

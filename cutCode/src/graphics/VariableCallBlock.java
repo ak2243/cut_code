@@ -53,6 +53,9 @@ public class VariableCallBlock extends GraphicalBlock {
 		return new VariableCallBlock();
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub

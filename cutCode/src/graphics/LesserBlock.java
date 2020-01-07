@@ -47,7 +47,7 @@ public class LesserBlock extends OperatorBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return null;
+		return new LesserBlock();
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class ElseBlock extends GraphicalBlock {
 		this.setBackground(new Background(new BackgroundFill(Color.web("#D06201"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 		HBox topLine = new HBox();
-		topLine.getChildren().addAll(new Label("if"));
+		topLine.getChildren().addAll(new Label("else"));
 		bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		bottomLine.setMinWidth(40);

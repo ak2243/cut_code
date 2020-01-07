@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
@@ -27,10 +26,13 @@ public class Workspace extends Pane {
 
 	private BSTree<Sequence<GraphicalBlock>> sequences;
 	private LList<FunctionBlock> functions;
+	private ArrayList<ConditionPoint> cPoints;
+	private ArrayList<NestPoint> nPoints;
 	// private Pane playArea;
 	private BorderPane layout;
 	private VBox palette;
-	private static int sNumber;
+	private ScrollPane paletteScroll;
+
 
 	public Workspace(double width, double height) {
 
@@ -43,7 +45,7 @@ public class Workspace extends Pane {
 		palette = setupPalette();
 		palette.setPrefHeight(palette.getHeight() + 100);
 		
-		ScrollPane paletteScroll = new ScrollPane();
+		paletteScroll = new ScrollPane();
 		paletteScroll.setContent(palette);
 		paletteScroll.setMinHeight(this.getMinHeight());
 		paletteScroll.setMaxHeight(this.getMaxHeight());
@@ -134,6 +136,9 @@ public class Workspace extends Pane {
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 
 				current = block.cloneBlock();
+				
+				double scrollPos = paletteScroll.getVvalue() * paletteScroll.getHeight();
+				System.err.println(scrollPos);
 
 				// add.setPrefWidth(200);
 				// add.setPrefHeight(40);
@@ -147,8 +152,8 @@ public class Workspace extends Pane {
 				offsetX = mouseX - blockX;
 				offsetY = mouseY - blockY;
 
-				current.setLayoutX(e.getSceneX() - offsetX);
-				current.setLayoutY(e.getSceneY() - offsetY);
+				current.setLayoutX(e.getSceneX());
+				current.setLayoutY(e.getSceneY());
 
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 
@@ -186,7 +191,7 @@ public class Workspace extends Pane {
 						
 					}
 
-					System.err.println(connected);
+					
 					if (!connected) {
 
 						Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
@@ -197,8 +202,8 @@ public class Workspace extends Pane {
 					
 				}
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
-				current.setLayoutX(e.getSceneX() - offsetX);
-				current.setLayoutY(e.getSceneY() - offsetY);
+				current.setLayoutX(e.getSceneX());
+				current.setLayoutY(e.getSceneY());
 			}
 
 		}
@@ -211,9 +216,6 @@ public class Workspace extends Pane {
 		private double offsetX;
 		private double offsetY;
 		
-		private Sequence<GraphicalBlock> tempSequence;
-		
-
 		public BlockHandler(GraphicalBlock b) {
 			block = b;
 		}
