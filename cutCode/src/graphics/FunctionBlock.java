@@ -189,21 +189,30 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 
 
 	@Override
+	public void primaryNest(GraphicalBlock block) {
+		commands.add(block);
+		double incrementWidth = block.getWidth() - bottomLine.getWidth();
+		if(incrementWidth > 0) {
+			bottomLine.setMinWidth(bottomLine.getMinWidth() + incrementWidth);
+			this.setWidth(this.getWidth() + incrementWidth);
+		}
+		double incrementHeight = block.getHeight() - bottomLine.getHeight();
+		if(incrementHeight > 0) {
+			bottomLine.setMinHeight(bottomLine.getHeight() + incrementHeight);
+			this.setHeight(this.getHeight() + incrementHeight);
+		}
+		bottomLine.getChildren().add(block);
+		
+	}
+
+	@Override
 	public Point2D getPrimaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Point2D(bottomLine.getLayoutX() + this.getLayoutX(), bottomLine.getLayoutY() + this.getLayoutY() + bottomLine.getHeight());
 	}
 
 	@Override
 	public Point2D getSecondaryNestPoint() {
-		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void primaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

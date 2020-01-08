@@ -127,6 +127,7 @@ public class Executor {
 		GraphicalBlock block = allBlocks.get(Integer.parseInt(things[1]));
 		System.err.println(things[1]);
 		block.tagErrorOnBlock();
+		
 	}
 	
 	public void reset() {

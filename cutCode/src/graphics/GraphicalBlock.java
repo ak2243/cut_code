@@ -46,8 +46,9 @@ public abstract class GraphicalBlock extends VBox {
 	}
 
 	public void tagErrorOnBlock() {
-		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-width: 3;\n" + "-fx-border-style: dashed;\n";
+		String cssLayout = "-fx-border-color: white;\n" + "-fx-border-width: 5;\n" + "-fx-border-style: dashed;\n";
 		this.setStyle(cssLayout);
+		
 	}
 	
 	public void untag() {

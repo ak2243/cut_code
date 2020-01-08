@@ -1,7 +1,5 @@
 package graphics;
 
-import java.util.List;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
@@ -17,25 +15,27 @@ public class IfBlock extends GraphicalBlock implements NestableBlock{
 
 	public Sequence<GraphicalBlock> commands;
 	private OperatorBlock condition; //TODO make this OperatorBlock
-	
-	
+	private VBox bottomLine;
+	private VBox conditionSpace;
 
 	public IfBlock() {
 		super(200,80);
-		
-		
-		
-		
 		
 		this.setPadding(new Insets(10));
 		this.setBackground(new Background(new BackgroundFill(Color.web("#D06201"),CornerRadii.EMPTY,Insets.EMPTY)));
 		
 		HBox topLine = new HBox();
 		topLine.getChildren().addAll(new Label("if"));
-		VBox bottomLine = new VBox();
+		bottomLine = new VBox();
 			bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE,CornerRadii.EMPTY,Insets.EMPTY)));
 		bottomLine.setMinWidth(40);
 		bottomLine.setMinHeight(40);
+		conditionSpace = new VBox();
+		conditionSpace.setMinHeight(30);
+		conditionSpace.setMinWidth(140);
+		conditionSpace.setBackground(new Background(new BackgroundFill(Color.web("#D96969"),CornerRadii.EMPTY,Insets.EMPTY)));
+		topLine.getChildren().add(conditionSpace);
+		
 		this.getChildren().addAll(topLine,bottomLine);
 		commands = new Sequence<GraphicalBlock>();
 	}
@@ -52,7 +52,8 @@ public class IfBlock extends GraphicalBlock implements NestableBlock{
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.IfBlock ret = new logicalBlocks.IfBlock();
-		ret.setCondition((logicalBlocks.OperatorBlock) condition.getLogicalBlock());
+		if(condition != null)
+			ret.setCondition((logicalBlocks.OperatorBlock) condition.getLogicalBlock());
 		for (GraphicalBlock g : commands) {
 			ret.commands.add(g.getLogicalBlock());
 		}
@@ -71,21 +72,30 @@ public class IfBlock extends GraphicalBlock implements NestableBlock{
 	}
 
 	@Override
+	public void primaryNest(GraphicalBlock block) {
+		commands.add(block);
+		double incrementWidth = block.getWidth() - bottomLine.getWidth();
+		if(incrementWidth > 0) {
+			bottomLine.setMinWidth(bottomLine.getMinWidth() + incrementWidth);
+			this.setWidth(this.getWidth() + incrementWidth);
+		}
+		double incrementHeight = block.getHeight() - bottomLine.getHeight();
+		if(incrementHeight > 0) {
+			bottomLine.setMinHeight(bottomLine.getHeight() + incrementHeight);
+			this.setHeight(this.getHeight() + incrementHeight);
+		}
+		bottomLine.getChildren().add(block);
+		
+	}
+
+	@Override
 	public Point2D getPrimaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Point2D(bottomLine.getLayoutX() + this.getLayoutX(), bottomLine.getLayoutY() + this.getLayoutY() + bottomLine.getHeight());
 	}
 
 	@Override
 	public Point2D getSecondaryNestPoint() {
-		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void primaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -93,6 +103,5 @@ public class IfBlock extends GraphicalBlock implements NestableBlock{
 		// TODO Auto-generated method stub
 		
 	}
-
 
 }

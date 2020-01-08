@@ -60,6 +60,9 @@ public class ElseBlock extends GraphicalBlock implements NestableBlock {
 		
 	}
 
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub

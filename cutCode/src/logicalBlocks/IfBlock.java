@@ -31,7 +31,8 @@ public class IfBlock implements Block {
 		for (Block b : commands) {
 			command = command + b.toString();
 		}
-		return "if (" + condition.toString() + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
+		String conditional = (condition == null) ? "" : condition.toString();
+		return "if (" + conditional + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}
 
 }

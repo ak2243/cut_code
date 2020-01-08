@@ -180,15 +180,13 @@ public class Workspace extends Pane {
 							if (nest.getPrimaryNestPoint() != null
 									&& currentPoint.distance(nest.getPrimaryNestPoint()) < 15) {
 								nest.primaryNest(current);
-								current.setLayoutX(nest.getPrimaryNestPoint().getX());
-								current.setLayoutY(nest.getPrimaryNestPoint().getY());
+								
 								nested = true;
 								break;
 							} else if (nest.getSecondaryNestPoint() != null
 									&& currentPoint.distance(nest.getSecondaryNestPoint()) < 15) {
 								nest.secondaryNest(current);
-								current.setLayoutX(nest.getSecondaryNestPoint().getX());
-								current.setLayoutY(nest.getSecondaryNestPoint().getY());
+								
 								nested = true;
 								break;
 							}
@@ -293,12 +291,20 @@ public class Workspace extends Pane {
 					boolean nested = false;
 					Point2D currentPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 					for (NestableBlock nest : nestables) {
-						System.err.println("nest");
 						if (nest.getPrimaryNestPoint() != null
 								&& currentPoint.distance(nest.getPrimaryNestPoint()) < 15) {
 							nest.primaryNest(block);
 							block.setLayoutX(nest.getPrimaryNestPoint().getX());
 							block.setLayoutY(nest.getPrimaryNestPoint().getY());
+							for(GraphicalBlock b : block.getSequence()) {
+								if(b == block) {
+									continue;
+								}
+								b.layoutXProperty().unbind();
+								b.layoutYProperty().unbind();
+								nest.primaryNest(b);
+								
+							}
 							nested = true;
 							break;
 						} else if (nest.getSecondaryNestPoint() != null
@@ -306,6 +312,15 @@ public class Workspace extends Pane {
 							nest.secondaryNest(block);
 							block.setLayoutX(nest.getSecondaryNestPoint().getX());
 							block.setLayoutY(nest.getSecondaryNestPoint().getY());
+							for(GraphicalBlock b : block.getSequence()) {
+								if(b == block) {
+									continue;
+								}
+								b.layoutXProperty().unbind();
+								b.layoutYProperty().unbind();
+								nest.primaryNest(b);
+								
+							}
 							nested = true;
 							break;
 						}
@@ -384,6 +399,7 @@ public class Workspace extends Pane {
 	}
 
 	private void unTagAll(List<FunctionBlock> funcs, List<Sequence<GraphicalBlock>> blocks) {
+		System.err.println("fuker");
 		for (Sequence<GraphicalBlock> bs : blocks) {
 			for (GraphicalBlock b : bs) {
 				b.untag();

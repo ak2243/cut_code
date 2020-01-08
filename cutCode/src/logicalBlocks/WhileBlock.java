@@ -31,6 +31,7 @@ public class WhileBlock implements Block{
 		for (Block b : commands) {
 			command = command + b.toString();
 		}
-		return "while (" + condition.toString() + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
+		String conditional = (condition == null) ? "" : condition.toString();
+		return "while (" + conditional + ") {" + System.lineSeparator() + command + "}" + System.lineSeparator();
 	}
 }
