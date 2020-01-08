@@ -187,7 +187,7 @@ public class Workspace extends Pane {
 									&& currentPoint.distance(secondaryPoint) < 25) {
 								nest.secondaryNest(current);
 								nested = true;
-								if (nest instanceof IfBlock && !(current instanceof OperatorBlock))
+								if ((nest instanceof IfBlock || nest instanceof WhileBlock) && !(current instanceof OperatorBlock))
 									nested = false;
 
 								break;
@@ -259,7 +259,7 @@ public class Workspace extends Pane {
 
 				if (oldSequence.size() == sequence.size()) {
 					sequences.remove(oldSequence);// If the new sequence ends up containing all the
-																		// block from the old sequence,
+													// block from the old sequence,
 				} else { // remove the old sequence from the list of sequences
 
 					while (oldSequence.size() > index) {// No iteration required because the list gets smaller and
@@ -299,6 +299,8 @@ public class Workspace extends Pane {
 
 					Point2D currentPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 					for (NestableBlock nest : nestables) {
+						if(nest == block)
+							continue;
 						Node node = nest;
 						Point2D primaryPoint = nest.getPrimaryNestPoint();
 						Point2D secondaryPoint = nest.getSecondaryNestPoint();
@@ -309,11 +311,22 @@ public class Workspace extends Pane {
 								secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
 						}
 						if (nest.getPrimaryNestPoint() != null && currentPoint.distance(primaryPoint) < 25) {
-							nest.primaryNest(block);
+							if(nest instanceof OperatorBlock && block.getSequence().size() > 1) {
+								System.err.println("SOmething happened");
+								continue;
+							}
+								
+							for (GraphicalBlock b : block.getSequence()) {
+								b.layoutXProperty().unbind();
+								b.layoutYProperty().unbind();
+								nest.primaryNest(b);
+								
+							}
 
 							nested = true;
 							break;
-						} else if (nest.getSecondaryNestPoint() != null && currentPoint.distance(secondaryPoint) < 25) {
+						} else if (nest.getSecondaryNestPoint() != null && currentPoint.distance(secondaryPoint) < 25
+								&& (block.getSequence().size() == 1)) {
 							nest.secondaryNest(block);
 							nested = true;
 							if (nest instanceof IfBlock && !(block instanceof OperatorBlock))
@@ -338,7 +351,6 @@ public class Workspace extends Pane {
 								block.setLayoutY(s.getEnd().getLayoutY() + s.getEnd().getHeight());
 
 								Sequence<GraphicalBlock> oldSequence = block.getSequence();
-								System.out.println(block.getSequence().size());
 								for (GraphicalBlock b : oldSequence) {
 									s.add(b);
 									b.setSequence(s);
@@ -355,7 +367,7 @@ public class Workspace extends Pane {
 					} else {
 						block.setSequence(null);
 					}
-				}				
+				}
 
 			} else {
 				// Move the blocks around the screen
@@ -410,8 +422,8 @@ public class Workspace extends Pane {
 	 */
 	private void removeNestable(NestableBlock block) {
 		nestables.remove(block);
-		for(NestableBlock nest : nestables) {
-			if(nest.getParent().getParent() == block) {
+		for (NestableBlock nest : nestables) {
+			if (nest.getParent().getParent() == block) {
 				removeNestable(nest);
 			}
 		}
