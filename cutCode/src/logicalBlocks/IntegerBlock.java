@@ -1,6 +1,6 @@
 package logicalBlocks;
 
-public class DoubleBlock extends VariableBlock<Double> {
+public class IntegerBlock extends VariableBlock<Integer> {
 
 	/**
 	 * @return the java code to make a double block with the given name and value
@@ -9,7 +9,7 @@ public class DoubleBlock extends VariableBlock<Double> {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "double " + super.getName() + " = " + super.getValue() + ";" + System.lineSeparator();
+		return "int " + super.getName() + " = " + super.getValue() + ";" + System.lineSeparator();
 	}
 
 }
