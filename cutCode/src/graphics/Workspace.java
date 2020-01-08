@@ -176,18 +176,22 @@ public class Workspace extends Pane {
 						boolean nested = false;
 						Point2D currentPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
 						for (NestableBlock nest : nestables) {
-							System.err.println("nest");
+							System.err.print("nest");
 							if (nest.getPrimaryNestPoint() != null
-									&& currentPoint.distance(nest.getPrimaryNestPoint()) < 15) {
+									&& currentPoint.distance(nest.getPrimaryNestPoint()) < 25) {
+								System.err.println(" primary");
 								nest.primaryNest(current);
 								
 								nested = true;
 								break;
 							} else if (nest.getSecondaryNestPoint() != null
-									&& currentPoint.distance(nest.getSecondaryNestPoint()) < 15) {
+									&& currentPoint.distance(nest.getSecondaryNestPoint()) < 25) {
+								System.err.println(" secondary");
 								nest.secondaryNest(current);
-								
 								nested = true;
+								if(nest instanceof IfBlock && !(current instanceof OperatorBlock))
+									nested = false;
+								
 								break;
 							}
 						}
@@ -291,8 +295,10 @@ public class Workspace extends Pane {
 					boolean nested = false;
 					Point2D currentPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 					for (NestableBlock nest : nestables) {
+						if(nest == block)
+							continue;
 						if (nest.getPrimaryNestPoint() != null
-								&& currentPoint.distance(nest.getPrimaryNestPoint()) < 15) {
+								&& currentPoint.distance(nest.getPrimaryNestPoint()) < 25) {
 							nest.primaryNest(block);
 							block.setLayoutX(nest.getPrimaryNestPoint().getX());
 							block.setLayoutY(nest.getPrimaryNestPoint().getY());
@@ -308,7 +314,7 @@ public class Workspace extends Pane {
 							nested = true;
 							break;
 						} else if (nest.getSecondaryNestPoint() != null
-								&& currentPoint.distance(nest.getSecondaryNestPoint()) < 15) {
+								&& currentPoint.distance(nest.getSecondaryNestPoint()) < 25) {
 							nest.secondaryNest(block);
 							block.setLayoutX(nest.getSecondaryNestPoint().getX());
 							block.setLayoutY(nest.getSecondaryNestPoint().getY());
@@ -336,7 +342,7 @@ public class Workspace extends Pane {
 																							// close enough to the end
 									Math.pow(block.getLayoutY() - (s.getEnd().getLayoutY() + s.getEnd().getHeight()),
 											2) < 225) {// Distance formula
-
+							
 								block.setLayoutX(s.getEnd().getLayoutX());
 								block.setLayoutY(s.getEnd().getLayoutY() + s.getEnd().getHeight());
 
@@ -364,16 +370,13 @@ public class Workspace extends Pane {
 
 			} else {
 				// Move the blocks around the screen
-				if (block instanceof IfBlock) {
-
-				}
+				
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
 
 			}
 		}
 	}
-
 	/**
 	 * @apiNote O(infinity)
 	 * @return - the output from the program

@@ -19,11 +19,11 @@ public class LesserBlock extends OperatorBlock {
 	public LesserBlock() {
 		super(30,50);
 		HBox line = new HBox();
-		VBox op1 = new VBox();
+		op1 = new VBox();
 		op1.setMinWidth(70);
 		op1.setMinHeight(30);
 		op1.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90),CornerRadii.EMPTY,Insets.EMPTY)));
-		VBox op2 = new VBox();
+		op2 = new VBox();
 		op2.setMinWidth(70);
 		op2.setMinHeight(30);
 		op2.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90),CornerRadii.EMPTY,Insets.EMPTY)));
@@ -42,8 +42,14 @@ public class LesserBlock extends OperatorBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.LesserBlock ret = new logicalBlocks.LesserBlock();
-		ret.setLeftOperand(getLeftOperand().getLogicalBlock());
-		ret.setRightOperand(getRightOperand().getLogicalBlock());
+		if(leftOperand == null)
+			ret.setLeftOperand(null);
+		else
+			ret.setLeftOperand(leftOperand.getLogicalBlock());
+		if(rightOperand == null)
+			ret.setRightOperand(null);
+		else
+			ret.setRightOperand(rightOperand.getLogicalBlock());
 		return ret;
 	}
 
@@ -59,25 +65,5 @@ public class LesserBlock extends OperatorBlock {
 		return null;
 	}
 
-	@Override
-	public Point2D getPrimaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public Point2D getSecondaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void primaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void secondaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

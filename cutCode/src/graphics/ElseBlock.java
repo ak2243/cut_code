@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
-public class ElseBlock extends GraphicalBlock implements NestableBlock {
+public class ElseBlock extends NestableBlock {
 	private VBox bottomLine;
 	private Sequence<GraphicalBlock> commands;
 
@@ -31,6 +31,8 @@ public class ElseBlock extends GraphicalBlock implements NestableBlock {
 		bottomLine.setMinHeight(40);
 		this.getChildren().addAll(topLine, bottomLine);
 		commands = new Sequence<GraphicalBlock>();
+		bottomLine.setSpacing(5);
+		bottomLine.setPadding(new Insets(5));
 	}
 
 	/**

@@ -15,11 +15,11 @@ public class AndBlock extends OperatorBlock {
 	protected AndBlock() {
 		super(30,50);
 		HBox line = new HBox();
-		VBox op1 = new VBox();
+		op1 = new VBox();
 		op1.setMinWidth(70);
 		op1.setMinHeight(30);
 		op1.setStyle("-fx-background-color: D96969");
-		VBox op2 = new VBox();
+		op2 = new VBox();
 		op2.setMinWidth(70);
 		op2.setMinHeight(30);
 		op2.setStyle("-fx-background-color: D96969");
@@ -37,8 +37,14 @@ public class AndBlock extends OperatorBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.AndBlock ret = new logicalBlocks.AndBlock();
-		ret.setLeftOperand(getLeftOperand().getLogicalBlock());
-		ret.setRightOperand(getRightOperand().getLogicalBlock());
+		if(leftOperand == null)
+			ret.setLeftOperand(null);
+		else
+			ret.setLeftOperand(leftOperand.getLogicalBlock());
+		if(rightOperand == null)
+			ret.setRightOperand(null);
+		else
+			ret.setRightOperand(rightOperand.getLogicalBlock());
 		return ret;
 	}
 
@@ -57,29 +63,6 @@ public class AndBlock extends OperatorBlock {
 	}
 
 
-	@Override
-	public Point2D getPrimaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Point2D getSecondaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void primaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void secondaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	
 

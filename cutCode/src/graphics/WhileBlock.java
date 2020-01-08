@@ -13,7 +13,7 @@ public class WhileBlock extends GraphicalBlock {
 
 	public Sequence<GraphicalBlock> commands;
 	private OperatorBlock condition;
-
+	private VBox bottomLine;
 	public WhileBlock() {
 
 		super(200, 90);
@@ -29,13 +29,14 @@ public class WhileBlock extends GraphicalBlock {
 		conditionSpace.setMinWidth(140);
 		conditionSpace.setBackground(new Background(new BackgroundFill(Color.web("#D96969"),CornerRadii.EMPTY,Insets.EMPTY)));
 		topLine.getChildren().add(conditionSpace);
-		VBox bottomLine = new VBox();
+		bottomLine = new VBox();
 		bottomLine.setMinWidth(160);
 		bottomLine.setMinHeight(30);
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.web("#DFDFDF"),CornerRadii.EMPTY,Insets.EMPTY)));
 
 		this.getChildren().addAll(topLine, bottomLine);
 		commands = new Sequence<GraphicalBlock>();
+		bottomLine.setPadding(new Insets(5));
 	}
 
 	/**

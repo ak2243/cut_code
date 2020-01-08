@@ -25,7 +25,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logicalBlocks.Block;
 
-public class FunctionBlock extends GraphicalBlock implements NestableBlock {
+/**
+
+ * @author Arjun Khanna
+ *
+ */
+public class FunctionBlock extends  NestableBlock {//THIS FILE IS NOT BEING USED IN THE CURRENT VERSION OF CUT_CODE
 	private Sequence<GraphicalBlock> commands;
 	private VBox bottomLine;
 	private String declaration; // NOTE: this only contains return type and name
@@ -34,11 +39,16 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 	/**
 	 * @apiNote O(1)
 	 * @author Arjun Khanna
+	
 	 */
 	public FunctionBlock() {
 		this(true);
 	}
 
+	/**
+
+	 * @param inPalette
+	 */
 	public FunctionBlock(boolean inPalette) {
 		super(200, 80);
 
@@ -60,16 +70,17 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 
 		}
 	}
-	
+
 	/**
 	 * @apiNote O(n^2)
 	 * @param commands - all the sequences of blocks to be put in the main method
 	 * @author Arjun Khanna
+
 	 */
 	public void makeMain(List<Sequence<GraphicalBlock>> commands) {
 		declaration = logicalBlocks.FunctionBlock.MAIN;
-		for(Sequence<GraphicalBlock> blocks : commands) {
-			for(GraphicalBlock block : blocks) {
+		for (Sequence<GraphicalBlock> blocks : commands) {
+			for (GraphicalBlock block : blocks) {
 				this.commands.add(block);
 			}
 		}
@@ -78,32 +89,47 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 	/**
 	 * @apiNote method efficiency O(infinity)?
 	 * @author Arjun Khanna
+
 	 */
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.FunctionBlock ret = new logicalBlocks.FunctionBlock();
 		ret.setSignature(declaration);
 		for (GraphicalBlock g : commands) {
-			ret.commands.add(g.getLogicalBlock());
+			ret.commands.add(g.getLogicalBlock());	
 		}
 		return ret;
 	}
 
+	/**
+
+	 */
 	@Override
 	public GraphicalBlock cloneBlock() {
 		return new FunctionBlock(false);
 	}
 
+	/**
+
+	 */
 	@Override
 	public String toJSON() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+
+	 * @return
+	 */
 	public List<GraphicalBlock> getCommands() {
 		return commands;
 	}
 
+	/**
+	 * @deprecated
+	 * @param block
+	 */
 	public void add(GraphicalBlock block) {
 		commands.add(block);
 		double incrementWidth = block.getMinWidth() - bottomLine.getMinWidth();
@@ -135,19 +161,7 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 				returnTypes.getItems().addAll("Number", "String", "Condition");
 				secondLine.getChildren().add(returnTypes);
 
-				HBox thirdLine = new HBox(new Label("First Parameter: "));
-				ComboBox<String> firstParam = new ComboBox<String>();
-				firstParam.getItems().addAll("None", "Number", "String", "Condition");
-				firstParam.setValue("None");
-				thirdLine.getChildren().add(firstParam);
-
-				HBox fourthLine = new HBox(new Label("First Parameter: "));
-				ComboBox<String> secondParam = new ComboBox<String>();
-				secondParam.getItems().addAll("None", "Number", "String", "Condition");
-				secondParam.setValue("None");
-				fourthLine.getChildren().add(secondParam);
-
-				root.setCenter(new VBox(firstLine, secondLine, thirdLine, fourthLine));
+				root.setCenter(new VBox(firstLine, secondLine));
 				Stage stage = new Stage();
 				Scene scene = new Scene(root, 400, 400);
 				stage.setScene(scene);
@@ -165,19 +179,9 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 					@Override
 					public void handle(MouseEvent e) {
 						stage.close();
-						String parameterA = "";
-						String parameterB = "";
-						if (returns.get(firstParam.getValue()) != null) {
-							parameterA = returns.get(firstParam.getValue()) + " $a";
-							parameterB = ", ";
-						}
-
-						if (returns.get(secondParam.getValue()) != null) {
-							parameterB += returns.get(secondParam.getValue()) + " $b";
-						}
-
+						
 						declaration = "public static " + returns.get(returnTypes.getValue()) + " " + name.getText()
-								+ "(" + parameterA + parameterB + ")";
+								+ "()";
 					}
 				});
 
@@ -187,41 +191,50 @@ public class FunctionBlock extends GraphicalBlock implements NestableBlock {
 
 	}
 
-
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public void primaryNest(GraphicalBlock block) {
 		commands.add(block);
 		double incrementWidth = block.getWidth() - bottomLine.getWidth();
-		if(incrementWidth > 0) {
+		if (incrementWidth > 0) {
 			bottomLine.setMinWidth(bottomLine.getMinWidth() + incrementWidth);
 			this.setWidth(this.getWidth() + incrementWidth);
 		}
 		double incrementHeight = block.getHeight() - bottomLine.getHeight();
-		if(incrementHeight > 0) {
+		if (incrementHeight > 0) {
 			bottomLine.setMinHeight(bottomLine.getHeight() + incrementHeight);
 			this.setHeight(this.getHeight() + incrementHeight);
 		}
 		bottomLine.getChildren().add(block);
-		
+
 	}
 
+	/**
+
+	 */
 	@Override
 	public Point2D getPrimaryNestPoint() {
-		return new Point2D(bottomLine.getLayoutX() + this.getLayoutX(), bottomLine.getLayoutY() + this.getLayoutY() + bottomLine.getHeight());
+		return new Point2D(bottomLine.getLayoutX() + this.getLayoutX(),
+				bottomLine.getLayoutY() + this.getLayoutY() + bottomLine.getHeight());
 	}
 
+	/**
+
+	 */
 	@Override
 	public Point2D getSecondaryNestPoint() {
 		return null;
 	}
 
+	/**
+
+	 */
 	@Override
 	public void secondaryNest(GraphicalBlock block) {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
-
 
 }

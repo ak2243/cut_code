@@ -4,6 +4,8 @@ public class AndBlock extends OperatorBlock {
 
 	@Override
 	public String toString() {
-		return getLeftOperand().toString() + " && " + getRightOperand().toString();
+		String leftOperand = (getLeftOperand() == null) ? "" : getLeftOperand().toString();
+		String rightOperand = (getRightOperand() == null) ? "" : getRightOperand().toString();
+		return leftOperand + " && " + rightOperand;
 	}
 }

@@ -13,12 +13,13 @@ public abstract class GraphicalBlock extends VBox {
 
 	public GraphicalBlock() {
 		super();
+		sequence = new Sequence<GraphicalBlock>();
 	}
 
 	public GraphicalBlock(double width, double height) {
 		setMinWidth(width);
 		setMinHeight(height);
-
+		sequence = new Sequence<GraphicalBlock>();
 	}
 
 	/**

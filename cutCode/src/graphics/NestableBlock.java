@@ -2,11 +2,17 @@ package graphics;
 
 import javafx.geometry.Point2D;
 
-public interface NestableBlock {
+public abstract class NestableBlock extends GraphicalBlock {
 	
-	public Point2D getPrimaryNestPoint();
-	public Point2D getSecondaryNestPoint();
+	protected NestableBlock(double width, double height) {
+		super(width, height);
 
-	public void primaryNest(GraphicalBlock block);
-	public void secondaryNest(GraphicalBlock block);
+	}
+	
+	public abstract Point2D getPrimaryNestPoint();
+	public abstract Point2D getSecondaryNestPoint();
+
+	public abstract void primaryNest(GraphicalBlock block);
+	public abstract void secondaryNest(GraphicalBlock block);
+	
 }

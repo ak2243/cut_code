@@ -1,9 +1,6 @@
 package graphics;
 
-import java.util.List;
-
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -14,27 +11,27 @@ import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
 public class LesserEqualBlock extends OperatorBlock {
-	
+
 	public LesserEqualBlock() {
-		super(30,50);
+		super(30, 50);
 		HBox line = new HBox();
-		VBox op1 = new VBox();
+		op1 = new VBox();
 		op1.setMinWidth(70);
 		op1.setMinHeight(30);
-		op1.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90),CornerRadii.EMPTY,Insets.EMPTY)));
-		VBox op2 = new VBox();
+		op1.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90), CornerRadii.EMPTY, Insets.EMPTY)));
+		op2 = new VBox();
 		op2.setMinWidth(70);
 		op2.setMinHeight(30);
-		op2.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90),CornerRadii.EMPTY,Insets.EMPTY)));
-		Label l = new Label(" <= ");
+		op2.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90), CornerRadii.EMPTY, Insets.EMPTY)));
+		Label l = new Label(" >= ");
 		l.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
-		line.getChildren().addAll(op1, l ,op2);
+		line.getChildren().addAll(op1, l, op2);
 		this.getChildren().add(line);
 		this.setMaxWidth(200);
 		this.setStyle("-fx-background-color: D90000");
 		this.setPadding(new Insets(10));
 	}
-	
+
 	/**
 	 * @apiNote O(1)
 	 * @author Arjun Khanna
@@ -42,49 +39,30 @@ public class LesserEqualBlock extends OperatorBlock {
 	@Override
 	public Block getLogicalBlock() {
 		logicalBlocks.LesserEqualBlock ret = new logicalBlocks.LesserEqualBlock();
-		ret.setLeftOperand(getLeftOperand().getLogicalBlock());
-		ret.setRightOperand(getRightOperand().getLogicalBlock());
+		if(leftOperand == null)
+			ret.setLeftOperand(null);
+		else
+			ret.setLeftOperand(leftOperand.getLogicalBlock());
+		if(rightOperand == null)
+			ret.setRightOperand(null);
+		else
+			ret.setRightOperand(rightOperand.getLogicalBlock());
 		return ret;
 	}
 
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return new LesserEqualBlock();
+		return new GreaterEqualBlock();
 	}
 
-	/**
-	 * @deprecated
-	 */
 	@Override
 	public String toJSON() {
-		return null;
-	}
-
-
-	@Override
-	public Point2D getPrimaryNestPoint() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Point2D getSecondaryNestPoint() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void primaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void secondaryNest(GraphicalBlock block) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 }
+

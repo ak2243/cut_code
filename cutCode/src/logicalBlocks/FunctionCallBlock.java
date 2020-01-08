@@ -3,33 +3,35 @@ package logicalBlocks;
 import cutcode.LList;
 
 public class FunctionCallBlock implements Block {
-	public LList<Block> parameters;
 	private String name;
 
-	public FunctionCallBlock() {
-		parameters = new LList<Block>();
+
+	/**
+	 * @return the code to call a function (no semicolons or line separators)
+	 * @apiNote O(1)
+	 * @author Arjun Khanna
+	 * @deprecated
+	 */
+	@Override
+	public String toString() {
+		return name + "()";
 	}
 
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 
+
+	/**
+	 * @deprecated
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	/**
-	 * @return the code to call a function (no semicolons or line separators)
-	 * @apiNote O(n^2)
-	 * @author Arjun Khanna
-	 */
-	@Override
-	public String toString() {
-		String params = "";
-		for(Block b : parameters) {
-			params += b.toString() + ", ";
-		}
-		params.substring(0, params.length() - 1);
-		return name + "( " + params + ")";
 	}
 }
