@@ -9,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -70,7 +69,6 @@ public class Workspace extends Pane {
 					stage.setScene(scene);
 					stage.show();
 				} catch (BlockCodeCompilerErrorException e1) {
-					System.err.println("?");
 				}
 			}
 		});
@@ -125,7 +123,6 @@ public class Workspace extends Pane {
 				current = block.cloneBlock();
 
 				double scrollPos = paletteScroll.getVvalue() * paletteScroll.getHeight();
-				System.err.println(scrollPos);
 
 				// add.setPrefWidth(200);
 				// add.setPrefHeight(40);
@@ -175,28 +172,24 @@ public class Workspace extends Pane {
 							Node node = nest;
 							Point2D primaryPoint = nest.getPrimaryNestPoint();
 							Point2D secondaryPoint = nest.getSecondaryNestPoint();
-							while(node.getParent() != Workspace.this) {
+							while (node.getParent() != Workspace.this) {
 								node = node.getParent();
 								primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
-								if(secondaryPoint != null)
+								if (secondaryPoint != null)
 									secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
 							}
-							System.err.println(currentPoint.distance(secondaryPoint) + "updated distance" + nest.getClass().toString());
-							if (nest.getPrimaryNestPoint() != null
-									&& currentPoint.distance(primaryPoint) < 25) {
-								System.err.println(" primary");
+							if (nest.getPrimaryNestPoint() != null && currentPoint.distance(primaryPoint) < 25) {
 								nest.primaryNest(current);
-								
+
 								nested = true;
 								break;
 							} else if (nest.getSecondaryNestPoint() != null
 									&& currentPoint.distance(secondaryPoint) < 25) {
-								System.err.println(" secondary");
 								nest.secondaryNest(current);
 								nested = true;
-								if(nest instanceof IfBlock && !(current instanceof OperatorBlock))
+								if (nest instanceof IfBlock && !(current instanceof OperatorBlock))
 									nested = false;
-								
+
 								break;
 							}
 						}
@@ -205,6 +198,8 @@ public class Workspace extends Pane {
 							sequence.add(current);
 							current.setSequence(sequence);
 							sequences.add(sequence);
+						} else {
+							current.setSequence(null);
 						}
 						if (current instanceof NestableBlock)
 							nestables.add((NestableBlock) current);
@@ -242,12 +237,11 @@ public class Workspace extends Pane {
 				Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();// Create a new sequence for the
 																					// block
 
-				
-				if(block.getSequence() == null)
+				if (block.getSequence() == null)
 					block = (GraphicalBlock) block.getParent().getParent();
-				
+
 				Sequence<GraphicalBlock> oldSequence = block.getSequence();// Get the old sequence
-				
+
 				int index = -1;// Store the position of the block in the sequence
 				for (int i = 0; i < oldSequence.size(); i++) {
 					if (oldSequence.get(i) == block) {
@@ -264,14 +258,13 @@ public class Workspace extends Pane {
 				}
 
 				if (oldSequence.size() == sequence.size()) {
-					System.err.println(sequences.remove(oldSequence));// If the new sequence ends up containing all the
+					sequences.remove(oldSequence);// If the new sequence ends up containing all the
 																		// block from the old sequence,
 				} else { // remove the old sequence from the list of sequences
 
 					while (oldSequence.size() > index) {// No iteration required because the list gets smaller and
 														// smaller each time
 						oldSequence.remove(index);
-						System.err.println("remove");
 					}
 
 				}
@@ -287,50 +280,45 @@ public class Workspace extends Pane {
 					b.layoutYProperty().bind(block.layoutYProperty().add(b.getLayoutY() - block.getLayoutY()));
 				}
 
-				System.err.println(block.layoutXProperty());
 				block.layoutXProperty().unbind();
 				block.layoutYProperty().unbind();
-				
+
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
 					for (GraphicalBlock b : block.getSequence()) {
 						Workspace.this.getChildren().remove(b);
-						if(b instanceof NestableBlock)
-							nestables.remove((NestableBlock) b);
+						if (b instanceof NestableBlock) {
+							removeNestable((NestableBlock) b);
+						}
 					}
 
 				} else {
 					boolean nested = false;
-					
+
 					Point2D currentPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 					for (NestableBlock nest : nestables) {
 						Node node = nest;
 						Point2D primaryPoint = nest.getPrimaryNestPoint();
 						Point2D secondaryPoint = nest.getSecondaryNestPoint();
-						while(node.getParent() != Workspace.this) {
+						while (node.getParent() != Workspace.this) {
 							node = node.getParent();
 							primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
-							if(secondaryPoint != null)
+							if (secondaryPoint != null)
 								secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
 						}
-						System.err.println(currentPoint.distance(secondaryPoint) + "updated distance" + nest.getClass().toString());
-						if (nest.getPrimaryNestPoint() != null
-								&& currentPoint.distance(primaryPoint) < 25) {
-							System.err.println(" primary");
+						if (nest.getPrimaryNestPoint() != null && currentPoint.distance(primaryPoint) < 25) {
 							nest.primaryNest(block);
-							
+
 							nested = true;
 							break;
-						} else if (nest.getSecondaryNestPoint() != null
-								&& currentPoint.distance(secondaryPoint) < 25) {
-							System.err.println(" secondary");
+						} else if (nest.getSecondaryNestPoint() != null && currentPoint.distance(secondaryPoint) < 25) {
 							nest.secondaryNest(block);
 							nested = true;
-							if(nest instanceof IfBlock && !(block instanceof OperatorBlock))
+							if (nest instanceof IfBlock && !(block instanceof OperatorBlock))
 								nested = false;
-							
+
 							break;
 						}
 					}
@@ -345,11 +333,10 @@ public class Workspace extends Pane {
 																							// close enough to the end
 									Math.pow(block.getLayoutY() - (s.getEnd().getLayoutY() + s.getEnd().getHeight()),
 											2) < 225) {// Distance formula
-							
+
 								block.setLayoutX(s.getEnd().getLayoutX());
 								block.setLayoutY(s.getEnd().getLayoutY() + s.getEnd().getHeight());
 
-								// System.err.println("Connect");
 								Sequence<GraphicalBlock> oldSequence = block.getSequence();
 								System.out.println(block.getSequence().size());
 								for (GraphicalBlock b : oldSequence) {
@@ -358,11 +345,9 @@ public class Workspace extends Pane {
 								}
 
 								// for(Sequence<GraphicalBlock> se : sequences.traverse(BSTree.INORDER)) {
-								// System.err.println(se);
 								// }
-								// System.err.println(oldSequence);
 
-								System.err.println(sequences.remove(oldSequence));
+								sequences.remove(oldSequence);
 
 								break;
 							}
@@ -370,18 +355,18 @@ public class Workspace extends Pane {
 					} else {
 						block.setSequence(null);
 					}
-				}
-				System.err.println(sequences.traverse(BSTree.INORDER).size());
+				}				
 
 			} else {
 				// Move the blocks around the screen
-				
+
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
 
 			}
 		}
 	}
+
 	/**
 	 * @apiNote O(infinity)
 	 * @return - the output from the program
@@ -407,7 +392,6 @@ public class Workspace extends Pane {
 	}
 
 	private void unTagAll(List<FunctionBlock> funcs, List<Sequence<GraphicalBlock>> blocks) {
-		System.err.println("fuker");
 		for (Sequence<GraphicalBlock> bs : blocks) {
 			for (GraphicalBlock b : bs) {
 				b.untag();
@@ -416,6 +400,20 @@ public class Workspace extends Pane {
 		}
 		for (FunctionBlock b : funcs) {
 			b.untag();
+		}
+	}
+
+	/**
+	 * @author Arjun Khanna
+	 * @apiNote O(n^2)
+	 * @param block
+	 */
+	private void removeNestable(NestableBlock block) {
+		nestables.remove(block);
+		for(NestableBlock nest : nestables) {
+			if(nest.getParent().getParent() == block) {
+				removeNestable(nest);
+			}
 		}
 	}
 }

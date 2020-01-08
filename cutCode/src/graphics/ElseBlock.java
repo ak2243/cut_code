@@ -1,7 +1,5 @@
 package graphics;
 
-import java.util.List;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
@@ -15,7 +13,7 @@ import logicalBlocks.Block;
 
 public class ElseBlock extends NestableBlock {
 	private VBox bottomLine;
-	private Sequence<GraphicalBlock> commands;
+	public Sequence<GraphicalBlock> commands;
 
 	public ElseBlock() {
 		super(200, 80);

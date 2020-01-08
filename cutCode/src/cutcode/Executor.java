@@ -8,11 +8,10 @@ import java.util.List;
 
 import graphics.FunctionBlock;
 import graphics.GraphicalBlock;
-import graphics.Sequence;
 
 public class Executor {
-	private int lineLoc = 2;
-	private HashMap<Integer, GraphicalBlock> allBlocks;
+	private int lineLoc = 2; //This keeps track of the line numbers for blocks
+	private HashMap<Integer, GraphicalBlock> allBlocks; //used later to get which block caused the error (java gives you a line number)
 	public static final String ERROR = "An error occured, please try again later.";
 
 	/**
@@ -25,7 +24,6 @@ public class Executor {
 	 * @author Arjun Khanna
 	 */
 	public String getCode(List<FunctionBlock> sequences) {
-		System.err.println("hi");
 		allBlocks = new HashMap<Integer, GraphicalBlock>();
 		String output = "";
 		for(FunctionBlock block : sequences) {
@@ -40,9 +38,9 @@ public class Executor {
 	 * @param block - the block to be put in the HashMap
 	 */
 	private void putInHashMap(GraphicalBlock block) {
-		System.err.println(block.getClass().toString() + lineLoc);
-		allBlocks.put(lineLoc, block);
+		allBlocks.put(lineLoc, block); //adds the block and line number
 		lineLoc++;
+		//These three cases have line braces at the end
 		if (block instanceof graphics.FunctionBlock) {
 			for (GraphicalBlock b : ((graphics.FunctionBlock) block).getCommands()) {
 				System.err.println(lineLoc + "iterate");
@@ -62,17 +60,23 @@ public class Executor {
 				
 			}
 			lineLoc++;
+		} else if (block instanceof graphics.ElseBlock) {
+			for (GraphicalBlock b : ((graphics.ElseBlock) block).commands) {
+				putInHashMap(b);
+				
+			}
+			lineLoc++;
 		}
 	}
 
 	/**
 	 * @param filename the .java file to be run
 	 * @return the console output from running the file
-	 * @apiNote O(?)
+	 * @apiNote O(infinite)
 	 * @author Arjun Khanna
 	 * @throws BlockCodeCompilerErrorException 
 	 */
-	public String run(String filename) throws BlockCodeCompilerErrorException { // TODO: find efficiency of this method
+	public String run(String filename) throws BlockCodeCompilerErrorException { 
 		String output = "";
 		Process p;
 		Process p2;
@@ -96,11 +100,10 @@ public class Executor {
 				
 				stream.close();
 				try {
-					handleCompilerError(errorOutput); // TODO add specific error reporting here
+					handleCompilerError(errorOutput); //this takes the error messages, parses it, and marks the block causing the error
 				} catch (NumberFormatException e) {
 					return ERROR;
 				}
-				System.err.println("error confirmed");
 				throw new BlockCodeCompilerErrorException();
 			}
 			BufferedReader inStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));

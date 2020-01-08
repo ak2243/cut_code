@@ -72,12 +72,12 @@ public abstract class OperatorBlock extends NestableBlock {
 			double incrementWidth = block.getWidth() - op1.getWidth();
 			if (incrementWidth > 0) {
 				op1.setMinWidth(op1.getMinWidth() + incrementWidth);
-				this.setBothWidth(this.getWidth() + incrementWidth);
+				this.setMinWidth(this.getWidth() + incrementWidth);
 			}
 			double incrementHeight = block.getHeight() - op1.getHeight();
 			if (incrementHeight > 0) {
 				op1.setMinHeight(op1.getHeight() + incrementHeight);				
-				this.setBothHeight(this.getHeight() + incrementHeight);
+				this.setMinHeight(this.getHeight() + incrementHeight);
 			}
 			op1.getChildren().add(block);
 		}
@@ -92,12 +92,12 @@ public abstract class OperatorBlock extends NestableBlock {
 			double incrementWidth = block.getWidth() - op2.getWidth();
 			if (incrementWidth > 0) {
 				op2.setMinWidth(op2.getMinWidth() + incrementWidth);
-				this.setBothWidth(this.getWidth() + incrementWidth);
+				this.setMinWidth(this.getWidth() + incrementWidth);
 			}
 			double incrementHeight = block.getHeight() - op2.getHeight();
 			if (incrementHeight > 0) {
 				op2.setMinHeight(op2.getHeight() + incrementHeight);				
-				this.setBothHeight(this.getHeight() + incrementHeight);
+				this.setMinHeight(this.getHeight() + incrementHeight);
 			}
 			op2.getChildren().add(block);
 		}
@@ -105,7 +105,6 @@ public abstract class OperatorBlock extends NestableBlock {
 	}
 	
 	private void setBothHeight(double height) {
-		this.setMaxHeight(height);
 		this.setMinHeight(height);
 	}
 	

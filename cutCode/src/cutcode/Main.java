@@ -22,8 +22,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Workspace workspace = new Workspace(1000, 700);
-		Scene scene = new Scene(workspace, 1000, 700);
+		Workspace workspace = new Workspace(1400, 700);
+		Scene scene = new Scene(workspace, 1400, 700);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		filename = "program.java";

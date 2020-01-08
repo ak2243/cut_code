@@ -24,7 +24,7 @@ public class OrBlock extends OperatorBlock {
 		op2.setStyle("-fx-background-color: D96969");
 		line.getChildren().addAll(op1,new Label(" or "),op2);
 		this.getChildren().add(line);
-		this.setMaxWidth(180);
+		this.setMinWidth(180);
 		this.setStyle("-fx-background-color: D90000");
 		this.setPadding(new Insets(10));
 		

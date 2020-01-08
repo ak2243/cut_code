@@ -31,7 +31,7 @@ public class LesserBlock extends OperatorBlock {
 		l.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 		line.getChildren().addAll(op1, l ,op2);
 		this.getChildren().add(line);
-		this.setMaxWidth(200);
+		this.setMinWidth(200);
 		this.setStyle("-fx-background-color: D90000");
 		this.setPadding(new Insets(10));
 	}

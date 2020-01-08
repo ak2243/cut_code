@@ -24,7 +24,6 @@ public class PrintBlock extends GraphicalBlock {
 		HBox line = new HBox();
 		Label label = new Label("print ");
 		text = new TextField();
-		text.setMaxWidth(140);
 		text.setMinWidth(140);
 		line.getChildren().addAll(label, text);
 		line.setSpacing(5);
