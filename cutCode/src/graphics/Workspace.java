@@ -1,26 +1,28 @@
 package graphics;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import cutcode.BSTree;
 import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LList;
 import cutcode.Main;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-
-import javafx.scene.control.ScrollPane;
-
 import javafx.scene.control.Label;
-
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class Workspace extends Pane {
 
@@ -118,7 +120,6 @@ public class Workspace extends Pane {
 
 		@Override
 		public void handle(MouseEvent e) {
-			// TODO Auto-generated method stub
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 
 				current = block.cloneBlock();
@@ -129,11 +130,6 @@ public class Workspace extends Pane {
 				// add.setPrefWidth(200);
 				// add.setPrefHeight(40);
 				Workspace.this.getChildren().add(current);
-				double mouseX = e.getSceneX();
-				double mouseY = e.getSceneY();
-
-				double blockX = block.getLayoutX();
-				double blockY = block.getLayoutY();
 
 				current.setLayoutX(e.getSceneX());
 				current.setLayoutY(e.getSceneY());
@@ -176,16 +172,25 @@ public class Workspace extends Pane {
 						boolean nested = false;
 						Point2D currentPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
 						for (NestableBlock nest : nestables) {
-							System.err.print("nest");
+							Node node = nest;
+							Point2D primaryPoint = nest.getPrimaryNestPoint();
+							Point2D secondaryPoint = nest.getSecondaryNestPoint();
+							while(node.getParent() != Workspace.this) {
+								node = node.getParent();
+								primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
+								if(secondaryPoint != null)
+									secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
+							}
+							System.err.println(currentPoint.distance(secondaryPoint) + "updated distance" + nest.getClass().toString());
 							if (nest.getPrimaryNestPoint() != null
-									&& currentPoint.distance(nest.getPrimaryNestPoint()) < 25) {
+									&& currentPoint.distance(primaryPoint) < 25) {
 								System.err.println(" primary");
 								nest.primaryNest(current);
 								
 								nested = true;
 								break;
 							} else if (nest.getSecondaryNestPoint() != null
-									&& currentPoint.distance(nest.getSecondaryNestPoint()) < 25) {
+									&& currentPoint.distance(secondaryPoint) < 25) {
 								System.err.println(" secondary");
 								nest.secondaryNest(current);
 								nested = true;
@@ -237,8 +242,12 @@ public class Workspace extends Pane {
 				Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();// Create a new sequence for the
 																					// block
 
+				
+				if(block.getSequence() == null)
+					block = (GraphicalBlock) block.getParent().getParent();
+				
 				Sequence<GraphicalBlock> oldSequence = block.getSequence();// Get the old sequence
-
+				
 				int index = -1;// Store the position of the block in the sequence
 				for (int i = 0; i < oldSequence.size(); i++) {
 					if (oldSequence.get(i) == block) {
@@ -281,53 +290,47 @@ public class Workspace extends Pane {
 				System.err.println(block.layoutXProperty());
 				block.layoutXProperty().unbind();
 				block.layoutYProperty().unbind();
-
+				
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
 
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
 					for (GraphicalBlock b : block.getSequence()) {
 						Workspace.this.getChildren().remove(b);
-
+						if(b instanceof NestableBlock)
+							nestables.remove((NestableBlock) b);
 					}
 
 				} else {
 					boolean nested = false;
+					
 					Point2D currentPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 					for (NestableBlock nest : nestables) {
-						if(nest == block)
-							continue;
+						Node node = nest;
+						Point2D primaryPoint = nest.getPrimaryNestPoint();
+						Point2D secondaryPoint = nest.getSecondaryNestPoint();
+						while(node.getParent() != Workspace.this) {
+							node = node.getParent();
+							primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
+							if(secondaryPoint != null)
+								secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
+						}
+						System.err.println(currentPoint.distance(secondaryPoint) + "updated distance" + nest.getClass().toString());
 						if (nest.getPrimaryNestPoint() != null
-								&& currentPoint.distance(nest.getPrimaryNestPoint()) < 25) {
+								&& currentPoint.distance(primaryPoint) < 25) {
+							System.err.println(" primary");
 							nest.primaryNest(block);
-							block.setLayoutX(nest.getPrimaryNestPoint().getX());
-							block.setLayoutY(nest.getPrimaryNestPoint().getY());
-							for(GraphicalBlock b : block.getSequence()) {
-								if(b == block) {
-									continue;
-								}
-								b.layoutXProperty().unbind();
-								b.layoutYProperty().unbind();
-								nest.primaryNest(b);
-								
-							}
+							
 							nested = true;
 							break;
 						} else if (nest.getSecondaryNestPoint() != null
-								&& currentPoint.distance(nest.getSecondaryNestPoint()) < 25) {
+								&& currentPoint.distance(secondaryPoint) < 25) {
+							System.err.println(" secondary");
 							nest.secondaryNest(block);
-							block.setLayoutX(nest.getSecondaryNestPoint().getX());
-							block.setLayoutY(nest.getSecondaryNestPoint().getY());
-							for(GraphicalBlock b : block.getSequence()) {
-								if(b == block) {
-									continue;
-								}
-								b.layoutXProperty().unbind();
-								b.layoutYProperty().unbind();
-								nest.primaryNest(b);
-								
-							}
 							nested = true;
+							if(nest instanceof IfBlock && !(block instanceof OperatorBlock))
+								nested = false;
+							
 							break;
 						}
 					}
@@ -364,6 +367,8 @@ public class Workspace extends Pane {
 								break;
 							}
 						}
+					} else {
+						block.setSequence(null);
 					}
 				}
 				System.err.println(sequences.traverse(BSTree.INORDER).size());

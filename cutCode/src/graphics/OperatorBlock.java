@@ -55,6 +55,7 @@ public abstract class OperatorBlock extends NestableBlock {
 		this.rightOperand = rightOperand;
 	}
 
+	@Override
 	public Point2D getPrimaryNestPoint() {
 		return new Point2D(op1.getLayoutX() + this.getLayoutX(), op1.getLayoutY() + this.getLayoutY());
 	}

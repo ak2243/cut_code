@@ -8,7 +8,7 @@ public abstract class NestableBlock extends GraphicalBlock {
 		super(width, height);
 
 	}
-	
+	protected double offsetX, offsetY;
 	public abstract Point2D getPrimaryNestPoint();
 	public abstract Point2D getSecondaryNestPoint();
 
