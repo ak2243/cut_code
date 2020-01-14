@@ -304,7 +304,7 @@ public class Workspace extends Pane {
 						Node node = nest;
 						Point2D primaryPoint = nest.getPrimaryNestPoint();
 						Point2D secondaryPoint = nest.getSecondaryNestPoint();
-						while (node.getParent() != Workspace.this || node.getParent() != Workspace.this) {
+						while (node.getParent() != Workspace.this && node.getParent() != null) {
 							node = node.getParent();
 							primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
 							if (secondaryPoint != null)
@@ -424,7 +424,7 @@ public class Workspace extends Pane {
 		
 		for (NestableBlock nest : nestables) {
 			Node node = block;
-			while(node.getParent() != Workspace.this) {
+			while(node.getParent() != Workspace.this && node.getParent() != null) {
 				node = node.getParent();
 				if (node == block) {
 					removeNestable(nest);
