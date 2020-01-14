@@ -85,7 +85,7 @@ public class Workspace extends Pane {
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
 
-		GraphicalBlock[] paletteBlocks = { new ElseBlock(), new IfBlock(), new DoubleBlock(), new PrintBlock(),
+		GraphicalBlock[] paletteBlocks = { new ElseBlock(), new IfBlock(), new IntegerBlock(), new PrintBlock(),
 				new StringBlock(), new BooleanBlock(), new VariableCallBlock(), new WhileBlock(), new OrBlock(),
 				new AndBlock(), new GreaterBlock(), new GreaterEqualBlock(), new LesserBlock(), new LesserEqualBlock(),
 				new FunctionBlock() };
@@ -122,8 +122,6 @@ public class Workspace extends Pane {
 
 				current = block.cloneBlock();
 
-				double scrollPos = paletteScroll.getVvalue() * paletteScroll.getHeight();
-
 				// add.setPrefWidth(200);
 				// add.setPrefHeight(40);
 				Workspace.this.getChildren().add(current);
@@ -135,7 +133,6 @@ public class Workspace extends Pane {
 
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
-
 					Workspace.this.getChildren().remove(current);
 				} else {
 
@@ -172,7 +169,8 @@ public class Workspace extends Pane {
 							Node node = nest;
 							Point2D primaryPoint = nest.getPrimaryNestPoint();
 							Point2D secondaryPoint = nest.getSecondaryNestPoint();
-							while (node.getParent() != Workspace.this) {
+							while (node.getParent() != Workspace.this && node.getParent() != null) {
+								System.err.println(node.getClass().toString());
 								node = node.getParent();
 								primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
 								if (secondaryPoint != null)
@@ -197,7 +195,6 @@ public class Workspace extends Pane {
 							Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
 							sequence.add(current);
 							current.setSequence(sequence);
-							sequences.add(sequence);
 						} else {
 							current.setSequence(null);
 						}
@@ -288,10 +285,13 @@ public class Workspace extends Pane {
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
 					for (GraphicalBlock b : block.getSequence()) {
-						Workspace.this.getChildren().remove(b);
+						if(b == block) 
+							System.err.println("The apotheoisis is upon us");
 						if (b instanceof NestableBlock) {
 							removeNestable((NestableBlock) b);
+						
 						}
+						Workspace.this.getChildren().remove(b);
 					}
 
 				} else {
@@ -304,7 +304,7 @@ public class Workspace extends Pane {
 						Node node = nest;
 						Point2D primaryPoint = nest.getPrimaryNestPoint();
 						Point2D secondaryPoint = nest.getSecondaryNestPoint();
-						while (node.getParent() != Workspace.this) {
+						while (node.getParent() != Workspace.this || node.getParent() != Workspace.this) {
 							node = node.getParent();
 							primaryPoint = primaryPoint.add(node.getLayoutX(), node.getLayoutY());
 							if (secondaryPoint != null)
@@ -312,7 +312,6 @@ public class Workspace extends Pane {
 						}
 						if (nest.getPrimaryNestPoint() != null && currentPoint.distance(primaryPoint) < 25) {
 							if(nest instanceof OperatorBlock && block.getSequence().size() > 1) {
-								System.err.println("SOmething happened");
 								continue;
 							}
 								
@@ -320,6 +319,7 @@ public class Workspace extends Pane {
 								b.layoutXProperty().unbind();
 								b.layoutYProperty().unbind();
 								nest.primaryNest(b);
+								
 								
 							}
 
@@ -421,11 +421,19 @@ public class Workspace extends Pane {
 	 * @param block
 	 */
 	private void removeNestable(NestableBlock block) {
-		nestables.remove(block);
+		
 		for (NestableBlock nest : nestables) {
-			if (nest.getParent().getParent() == block) {
-				removeNestable(nest);
+			Node node = block;
+			while(node.getParent() != Workspace.this) {
+				node = node.getParent();
+				if (node == block) {
+					removeNestable(nest);
+					Workspace.this.getChildren().remove(nest);
+					break;
+				}
 			}
+			
 		}
+		nestables.remove(block);
 	}
 }

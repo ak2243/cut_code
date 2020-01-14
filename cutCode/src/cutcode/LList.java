@@ -35,7 +35,14 @@ public class LList<E> implements List<E> {
 
 	@Override
 	public boolean contains(Object o) {
-		throw new UnsupportedOperationException();
+		Node<E> node = head;
+		while(node != null) {
+			node = node.getNext();
+			if(o == node.data) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
