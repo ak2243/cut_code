@@ -87,8 +87,7 @@ public class Workspace extends Pane {
 
 		GraphicalBlock[] paletteBlocks = { new ElseBlock(), new IfBlock(), new IntegerBlock(), new PrintBlock(),
 				new StringBlock(), new BooleanBlock(), new VariableCallBlock(), new WhileBlock(), new OrBlock(),
-				new AndBlock(), new GreaterBlock(), new GreaterEqualBlock(), new LesserBlock(), new LesserEqualBlock(),
-				new FunctionBlock() };
+				new AndBlock(), new GreaterBlock(), new GreaterEqualBlock(), new LesserBlock(), new LesserEqualBlock() };
 
 		int height = 60;
 
@@ -235,8 +234,15 @@ public class Workspace extends Pane {
 				Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();// Create a new sequence for the
 																					// block
 
-				if (block.getSequence() == null)
-					block = (GraphicalBlock) block.getParent().getParent();
+				if (block.getSequence() == null) {
+					Node node = block;
+					while(node.getParent() != Workspace.this && node.getParent() != null) {
+						node = node.getParent();
+						if(node instanceof GraphicalBlock) {
+							block = (GraphicalBlock) node;
+						}
+					}
+				}
 
 				Sequence<GraphicalBlock> oldSequence = block.getSequence();// Get the old sequence
 
@@ -286,14 +292,13 @@ public class Workspace extends Pane {
 				Point2D mouse = new Point2D(e.getSceneX(), e.getSceneY());
 				if (palette.contains(mouse)) {
 					for (GraphicalBlock b : block.getSequence()) {
-						if(b == block) 
-							System.err.println("The apotheoisis is upon us");
 						if (b instanceof NestableBlock) {
 							removeNestable((NestableBlock) b);
 						
 						}
 						Workspace.this.getChildren().remove(b);
 					}
+					sequences.remove(block.getSequence());
 
 				} else {
 					boolean nested = false;
@@ -312,7 +317,7 @@ public class Workspace extends Pane {
 								secondaryPoint = secondaryPoint.add(node.getLayoutX(), node.getLayoutY());
 						}
 						if (nest.getPrimaryNestPoint() != null && currentPoint.distance(primaryPoint) < 25) {
-							if(nest instanceof OperatorBlock && block.getSequence().size() > 1) {
+							if(nest instanceof OperatorBlock && block.getSequence().size() >= 1) {
 								continue;
 							}
 								
@@ -320,8 +325,6 @@ public class Workspace extends Pane {
 								b.layoutXProperty().unbind();
 								b.layoutYProperty().unbind();
 								nest.primaryNest(b);
-								
-								
 							}
 
 							nested = true;
@@ -369,12 +372,13 @@ public class Workspace extends Pane {
 						block.setSequence(null);
 					}
 				}
-
+				System.err.println(sequences.traverse(BSTree.INORDER).size());
 			} else {
 				// Move the blocks around the screen
 
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
+				
 
 			}
 		}

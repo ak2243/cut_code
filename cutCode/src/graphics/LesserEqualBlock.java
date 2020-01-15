@@ -23,7 +23,7 @@ public class LesserEqualBlock extends OperatorBlock {
 		op2.setMinWidth(70);
 		op2.setMinHeight(30);
 		op2.setBackground(new Background(new BackgroundFill(Color.rgb(90, 150, 90), CornerRadii.EMPTY, Insets.EMPTY)));
-		Label l = new Label(" >= ");
+		Label l = new Label(" <= ");
 		l.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 		line.getChildren().addAll(op1, l, op2);
 		this.getChildren().add(line);
@@ -53,7 +53,7 @@ public class LesserEqualBlock extends OperatorBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		// TODO Auto-generated method stub
-		return new GreaterEqualBlock();
+		return new LesserEqualBlock();
 	}
 
 	@Override
