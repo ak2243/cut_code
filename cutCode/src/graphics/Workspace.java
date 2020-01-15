@@ -195,6 +195,7 @@ public class Workspace extends Pane {
 							Sequence<GraphicalBlock> sequence = new Sequence<GraphicalBlock>();
 							sequence.add(current);
 							current.setSequence(sequence);
+							sequences.add(sequence);
 						} else {
 							current.setSequence(null);
 						}
