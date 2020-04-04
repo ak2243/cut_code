@@ -2,10 +2,6 @@ package cutcode;
 
 import java.io.IOException;
 import java.util.List;
-
-import graphics.FunctionBlock;
-import graphics.GraphicalBlock;
-import graphics.Sequence;
 import graphics.Workspace;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,38 +23,6 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		filename = "program.java";
-	}
-
-	/**
-	 * 
-	 * @param blocks: a list of the sequences of GraphicalBlocks that
-	 * @author Arjun Khanna
-	 */
-	public static String run(List<FunctionBlock> blocks) throws BlockCodeCompilerErrorException {
-		System.err.println("RESET");
-		Executor executor = new Executor();
-		String code = executor.getCode(blocks);
-		System.err.println(code);
-		FileManager manager = new FileManager();
-		try {
-			manager.setOutput(filename);
-			manager.openWriter();
-			manager.write(code);
-			manager.closeWriter();
-		} catch (IOException e) {
-			return ERROR;
-		}
-		String s;
-		try {
-			s = executor.run(filename);
-			manager.delete(filename);
-			return s;
-		} catch (BlockCodeCompilerErrorException e) {
-			manager.delete(filename);
-			throw new BlockCodeCompilerErrorException();
-		}
-		
-		
 	}
 
 }

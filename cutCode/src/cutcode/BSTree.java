@@ -1,8 +1,5 @@
 package cutcode;
 
-
-
-
 import java.util.ArrayList;
 
 public class BSTree<T extends Comparable<T>> {
