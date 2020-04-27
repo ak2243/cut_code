@@ -1,5 +1,7 @@
 package graphics;
 
+
+
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
@@ -8,6 +10,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import logicalBlocks.Block;
 
@@ -18,13 +21,16 @@ public class PrintBlock extends GraphicalBlock {
 	}
 	public PrintBlock(double width, double height) {
 		super(width, height);
-		Label label = new Label("PRINT");
-		value = new TextField();
-		HBox firstLine = new HBox(label, value);
-		this.getChildren().add(firstLine);
+		HBox firstLine = new HBox();
 		firstLine.setSpacing(5);
 		firstLine.setPadding(new Insets(8));
-		this.setBackground(new Background(new BackgroundFill(Color.AQUA,CornerRadii.EMPTY,Insets.EMPTY)));
+		Label label = new Label("print");
+		value = new TextField();
+		value.setMaxWidth(140);
+		firstLine.getChildren().addAll(label, value);
+		this.getChildren().add(firstLine);
+		
+		this.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
 
 	}
 	
@@ -46,7 +52,7 @@ public class PrintBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public void nest(int index) throws InvalidNestException {
+	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
 		throw new InvalidNestException();
 		
 	}

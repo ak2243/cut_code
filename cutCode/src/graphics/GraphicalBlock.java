@@ -1,17 +1,13 @@
 package graphics;
 
-import java.util.List;
-
-import javafx.scene.layout.Border;
-import javafx.scene.layout.VBox;
 import javafx.geometry.Point2D;
-
+import javafx.scene.layout.VBox;
 import logicalBlocks.Block;
 
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
-	public boolean boundTo;
+	private GraphicalBlock boundTo;
 	private GraphicalBlock bound;
-	
+
 	@Override
 	public int compareTo(GraphicalBlock other) {
 		return Double.compare(this.getLayoutY(), other.getLayoutY());
@@ -20,19 +16,44 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 
 	public GraphicalBlock() {
 		super();
-		boundTo = false;
+		boundTo = null;
 	}
 
 	public GraphicalBlock(double width, double height) {
 		setMinWidth(width);
 		setMinHeight(height);
-		boundTo = false;
+		setMaxWidth(width);
+		setMaxHeight(height);
+		boundTo = null;
 	}
-	
+
+	/**
+	 *
+	 * @param b the block that is bound to this block (b is below)
+	 */
+	public void setBoundTo(GraphicalBlock b) {
+		boundTo = b;
+	}
+
+	/**
+	 *
+	 * @return the block that is bound to this block (below)
+	 */
+	public GraphicalBlock getBoundTo() {return boundTo;}
+
+
+	/**
+	 * 
+	 * @param b the block this block is bound to (b is above)
+	 */
 	public void setBound(GraphicalBlock b) {
 		bound = b;
 	}
 	
+	/**
+	 * 
+	 * @return the block this block is bound to (above)
+	 */
 	public GraphicalBlock getBound() {return bound;}
 	
 
@@ -55,5 +76,5 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 	
 	public abstract Point2D[] getNestables();
-	public abstract void nest(int index) throws InvalidNestException;
+	public abstract void nest(int index, GraphicalBlock nest) throws InvalidNestException;
 }

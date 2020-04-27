@@ -52,7 +52,7 @@ public class LList<E> implements List<E> {
 	}
 
 	/**
-	 * @apiNote O(n^2)
+	 * O(n^2)
 	 */
 	@Override
 	public Object[] toArray() {
@@ -143,7 +143,7 @@ public class LList<E> implements List<E> {
 	}
 
 	/**
-	 * @apiNote O(n)
+	 * O(n)
 	 * @author Arjun Khanna
 	 */
 	@Override

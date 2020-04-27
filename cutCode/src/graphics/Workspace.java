@@ -1,14 +1,10 @@
 package graphics;
 
-import java.util.List;
 import cutcode.BSTree;
 import cutcode.BlockCodeCompilerErrorException;
-import cutcode.LList;
-import cutcode.Main;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,17 +19,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * @author Arjun Khanna and Peter Timpane
+ *
+ */
 public class Workspace extends Pane {
 
 	private BSTree<GraphicalBlock> blocks;
 	private BorderPane layout;
 	private VBox palette;
 	private ScrollPane paletteScroll;
+	@SuppressWarnings("unused")
+	private int childrenStartIndex; // the index from which blocks start appearing in Workspace.this.getChildren()
 
 	public Workspace(double width, double height) {
 		blocks = new BSTree<GraphicalBlock>();
-		
-		
+
 		this.setMinHeight(height);
 		this.setMaxHeight(height);
 		this.setMinWidth(width);
@@ -69,6 +74,8 @@ public class Workspace extends Pane {
 			}
 		});
 		layout.setTop(run);
+
+		childrenStartIndex = Workspace.this.getChildren().size();
 	}
 
 	public VBox setupPalette() {
@@ -80,7 +87,7 @@ public class Workspace extends Pane {
 		palette.setBackground(
 				new Background(new BackgroundFill(Color.rgb(255, 10, 10, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
 
-		GraphicalBlock[] paletteBlocks = { new PrintBlock() }; //TODO: Add new Blocks here
+		GraphicalBlock[] paletteBlocks = { new PrintBlock(), new VariableBlock(), new VariableCallBlock(), new BooleanBinaryOperatorBlock()}; // TODO: Add new Blocks here
 
 		int height = 60;
 
@@ -110,7 +117,7 @@ public class Workspace extends Pane {
 
 		@Override
 		public void handle(MouseEvent e) {
-			
+
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 
 				current = block.cloneBlock();
@@ -118,31 +125,53 @@ public class Workspace extends Pane {
 
 				current.setLayoutX(e.getSceneX());
 				current.setLayoutY(e.getSceneY());
-				
+
 				BlockHandler handler = new BlockHandler(current);
 				current.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
 				current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 				current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
 
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				
-				for(GraphicalBlock b : blocks.traverse(BSTree.INORDER)) {
-					Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY());
-					double distance = point.distance(new Point2D(current.getLayoutX(), current.getLayoutY()));
-					System.err.println(distance);
-					if(distance < 50 && !b.boundTo) {
-						current.setBound(b);
-						b.boundTo = true;
-						current.layoutXProperty().bind(b.layoutXProperty());
-						current.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
-						break;
-					}
-				}
-				blocks.add(current);
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
 				current.setLayoutX(e.getSceneX());
 				current.setLayoutY(e.getSceneY());
 
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+				if (palette.contains(e.getSceneX(), e.getSceneY())) {
+					Workspace.this.getChildren().remove(current);
+					return;
+				}
+
+				
+				for (GraphicalBlock b : blocks.traverse(BSTree.INORDER)) {
+					Point2D checkPoint = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
+					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
+					double distance = checkPoint.distance(clickPoint);
+					if (b.getBound() == current)
+						continue;
+					if (distance < 15 && (b.getBoundTo() == null)) {
+						current.setBound(b);
+						b.setBoundTo(current);
+						current.layoutXProperty().bind(b.layoutXProperty());
+						current.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
+						break;
+					}
+
+					Point2D[] nestables = b.getNestables();
+					for(int i = 0; i < nestables.length; i++) {
+
+						distance = clickPoint.distance(nestables[i]);
+						if(distance < 40) {
+							try {
+								b.nest(i, current);
+								Workspace.this.getChildren().remove(current);
+							} catch (InvalidNestException invalidNestException) {
+								invalidNestException.printStackTrace();
+							}
+
+						}
+					}
+				}
+				blocks.add(current);
 			}
 
 		}
@@ -153,6 +182,7 @@ public class Workspace extends Pane {
 
 		private GraphicalBlock block;
 		private double offsetX, offsetY;
+		private List<GraphicalBlock> clickSequence;
 
 		public BlockHandler(GraphicalBlock b) {
 			block = b;
@@ -163,44 +193,86 @@ public class Workspace extends Pane {
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 				block.layoutXProperty().unbind();
 				block.layoutYProperty().unbind();
+				// If the block was bound, it unbinds. All the blocks bound to this block will
+				// stay that way
+
 				offsetX = e.getSceneX() - block.getLayoutX();
 				offsetY = e.getSceneY() - block.getLayoutY();
-				if(block.getBound() != null)
-					block.getBound().boundTo = false;
+				// offsets make it so the point you clicked on the block follows your mouse.
+				// Looks better
+
+				GraphicalBlock above = block.getBound();
+				if (above != null)
+					above.setBoundTo(null); // Allows for things to be bound to "above"
+
 				block.setBound(null);
-				
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				for(GraphicalBlock b : blocks.traverse(BSTree.INORDER)) {
-					Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY());
-					double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
-					if(distance < 50 && !b.boundTo && block != b && b.getBound() != block) {
-						b.boundTo = true;
-						block.setBound(b);
-						block.layoutXProperty().bind(b.layoutXProperty());
-						block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
-						break;
-					}
+				GraphicalBlock rem = block;
+				int count = 0;
+				clickSequence = new ArrayList<GraphicalBlock>();
+				while (rem != null) {
+					rem.toFront();
+					clickSequence.add(blocks.remove(rem));
+					rem = rem.getBoundTo();
 				}
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
 
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+				if (palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY)) {
+					for(GraphicalBlock rem : clickSequence)
+						Workspace.this.getChildren().remove(rem);
+					return;
+				}
+
+
+
+				for (GraphicalBlock b : blocks.traverse(BSTree.INORDER)) {
+					Point2D clickPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
+					Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
+					double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
+					if(b == block)
+						System.err.println("wuh oh");
+					if (b.getBound() == block)
+						continue;
+					if (distance < 15 && (b.getBoundTo() == null)) {
+						b.setBoundTo(block);
+						block.setBound(b);
+						block.layoutXProperty().bind(b.layoutXProperty());
+						block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
+						break;
+					}
+
+					Point2D[] nestables = b.getNestables();
+					for(int i = 0; i < nestables.length; i++) {
+						distance = clickPoint.distance(nestables[i]);
+						if(distance < 40) {
+							try {
+								b.nest(i, block);
+								Workspace.this.getChildren().remove(block);
+							} catch (InvalidNestException invalidNestException) {
+								invalidNestException.printStackTrace();
+							}
+						}
+					}
+				}
+
+				for(GraphicalBlock add : clickSequence)
+					blocks.add(add); // Height of the block is now set, can add back to BSTree
+				
 			}
 
 		}
 	}
 
 	/**
-	 * @apiNote O(infinity)
+	 * O(infinity)
 	 * @return - the output from the program
-	 * @throws BlockCodeCompilerErrorException
+	 * @throws BlockCodeCompilerErrorException if the block code doesn't compile
 	 * 
 	 */
 	private String run() throws BlockCodeCompilerErrorException {
-
 		return "asfd";
 	}
-
-	
 
 }

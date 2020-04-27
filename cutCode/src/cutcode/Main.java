@@ -7,6 +7,11 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * @author Arjun Khanna
+ *
+ */
 public class Main extends Application {
 	private static String filename;
 	public static final String ERROR = "An error occured, please try again later.";

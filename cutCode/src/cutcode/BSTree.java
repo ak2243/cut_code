@@ -2,6 +2,12 @@ package cutcode;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author Peter Timpane
+ *
+ * @param <T> the type of data put in the nodes of the Binary Search Tree
+ */
 public class BSTree<T extends Comparable<T>> {
 	private BSTNode<T> root;
 
@@ -46,8 +52,6 @@ public class BSTree<T extends Comparable<T>> {
 		//Find the parent and the node being removed
 		while(rem != null && rem.data.compareTo(data) != 0) {
 			par = rem;
-			
-			System.err.println("ITERATION");
 			if(data.compareTo(rem.data) < 0) {
 				rem = rem.left;
 			}else {
