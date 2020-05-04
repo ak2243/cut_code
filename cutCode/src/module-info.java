@@ -1,7 +1,7 @@
 module cutCode {
-	exports graphics;
+	exports python;
 	exports cutcode;
-	exports logicalBlocks;
+	exports factories;
 	requires javafx.graphics;
 	requires javafx.controls;
 	requires javafx.base;
