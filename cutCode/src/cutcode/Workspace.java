@@ -150,8 +150,6 @@ public class Workspace extends Pane {
                     if (distance < 15 && (b.getBoundTo() == null)) {
                         current.setBound(b);
                         b.setBoundTo(current);
-                        current.layoutXProperty().bind(b.layoutXProperty());
-                        current.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
                         break;
                     }
 
@@ -162,7 +160,6 @@ public class Workspace extends Pane {
                             try {
                                 b.nest(i, current);
                                 current.setNestedIn(b);
-                                return;
                             } catch (InvalidNestException invalidNestException) {
                                 continue; //TODO action here?
                             }
@@ -182,6 +179,7 @@ public class Workspace extends Pane {
         private GraphicalBlock block;
         private double offsetX, offsetY;
         private List<GraphicalBlock> clickSequence;
+        private List<GraphicalBlock> ignoring;
 
         public BlockHandler(GraphicalBlock b) {
             block = b;
@@ -189,8 +187,11 @@ public class Workspace extends Pane {
 
         @Override
         public void handle(MouseEvent e) {
-            if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED) && !block.ignoreStatus()) {
-
+            if(block.ignoreStatus() && !e.getEventType().equals(MouseEvent.MOUSE_RELEASED))
+                return;
+            else
+                block.actionIgnored();
+            if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
                 GraphicalBlock add = block;
 
                 clickSequence = new ArrayList<>();
@@ -199,9 +200,6 @@ public class Workspace extends Pane {
                     clickSequence.add(add);
                     add = add.getBoundTo();
                 }
-
-                block.layoutXProperty().unbind();
-                block.layoutYProperty().unbind();
                 // If the block was bound, it unbinds. All the blocks bound to this block will
                 // stay that way
 
@@ -229,11 +227,15 @@ public class Workspace extends Pane {
                             Workspace.this.getChildren().add(block);
                             block.setNestedIn(null);
                         }
-                        block.layoutXProperty().unbind();
-                        block.layoutYProperty().unbind();
                         block.setLayoutX(e.getSceneX() - offsetX);
                         block.setLayoutY(e.getSceneY() - offsetY);
-                        nestedIn.ignoreNextAction();
+                        GraphicalBlock ignore = nestedIn;
+                        ignoring = new ArrayList<>();
+                        do {
+                            ignoring.add(ignore);
+                            ignore.ignoreNextAction();
+                            ignore = ignore.getNestedIn();
+                        } while(ignore != null);
                     } catch (ClassCastException | InvalidNestException castException) {
                         //TODO this should never happen. Maybe institute a failsafe here
                         castException.printStackTrace();
@@ -241,16 +243,12 @@ public class Workspace extends Pane {
 
                 }
 
-            } else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED) && !block.ignoreStatus()) {
+            } else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
                 block.setLayoutX(e.getSceneX() - offsetX);
                 block.setLayoutY(e.getSceneY() - offsetY);
 
 
             } else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                if(!block.ignoreStatus()) {
-                    block.actionIgnored();
-                    return;
-                }
                 if (palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY)) {
                     for (GraphicalBlock rem : clickSequence) {
                         Workspace.this.getChildren().remove(rem);
@@ -259,6 +257,12 @@ public class Workspace extends Pane {
                     return;
                 }
 
+                if(ignoring != null) {
+                    for(GraphicalBlock b : ignoring) {
+                        b.actionIgnored();
+                    }
+                    ignoring = null;
+                }
 
                 for (GraphicalBlock b : blocks) {
                     if(b == block)
@@ -279,15 +283,21 @@ public class Workspace extends Pane {
                     Point2D[] nestables = b.getNestables();
                     for (int i = 0; i < nestables.length; i++) {
                         distance = clickPoint.distance(nestables[i]);
+                        System.err.println("Distance from " + block + " to " + b + ", which is at (" + b.getX() + ", " + b.getY() + "), is " + distance);
+                        System.err.println("Comparing to (" + nestables[i].getX() + ", " + nestables[i].getY() + ")");
+                        System.err.println("Mouse at (" + e.getSceneX() + ", " + e.getSceneY() + ")");
                         if (distance < 40) {
                             //This needs to be done before returning
                             try {
                                 b.nest(i, block);
+                                System.err.println("Nesting " + block + " in " + b);
+                                block.setNestedIn(b);
                                 for (GraphicalBlock add : clickSequence) {
                                     if (add == block)
                                         continue;
                                     try {
                                         b.nest(i, add);
+                                        System.err.println("Nesting " + add + " in " + b);
                                         add.setNestedIn(b);
                                         //Workspace.this.getChildren().remove(add);
                                     } catch(InvalidNestException innerNestException) {
@@ -308,8 +318,6 @@ public class Workspace extends Pane {
                         }
                     }
                 }
-
-
             }
         }
     }

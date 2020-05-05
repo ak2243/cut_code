@@ -74,24 +74,19 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 
     @Override
     public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-        System.err.println("NEST");
+        if(nestBoxes[index].getChildren().size() != 0)
+            throw new InvalidNestException();
         try {
             VBox box = nestBoxes[index];
             double incrementWidth = nest.getWidth() - box.getWidth();
-            if (incrementWidth > 0) {
-                box.setMaxWidth(box.getMinWidth() + incrementWidth);
-                this.setMaxWidth(this.getWidth() + incrementWidth);
-            }
             double incrementHeight = nest.getHeight() - box.getHeight();
-            if (incrementHeight > 0) {
-                box.setMinHeight(box.getHeight() + incrementHeight);
-                this.setMaxHeight(this.getHeight() + incrementHeight);
-            }
+            increment(box, incrementHeight, incrementWidth);
             box.getChildren().add(nest);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new InvalidNestException();
         }
     }
+
 
     @Override
     public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {

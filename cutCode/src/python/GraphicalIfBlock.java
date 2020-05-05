@@ -65,66 +65,63 @@ public class GraphicalIfBlock extends GraphicalBlock {
     }
 
     /**
-     *
      * @return an array of 2 points, the top left of the slots of the operand spaces, regardless of whether something
      * is already nested there or not.
      */
     @Override
     public Point2D[] getNestables() {
         Point2D[] ret = new Point2D[nestBoxes.length];
-        for(int i = 0; i < nestBoxes.length; i++)
-            ret[i] = new Point2D(this.getLayoutX() + nestBoxes[i].getLayoutX(), this.getLayoutY() + nestBoxes[i].getLayoutY());
+        for (int i = 0; i < nestBoxes.length; i++)
+            ret[i] = new Point2D(this.getX() + nestBoxes[i].getLayoutX(), this.getY() + nestBoxes[i].getLayoutY());
         return ret;
     }
 
 
     @Override
     public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-        if(nest.getBoundTo() != null) {
-            nest.getBoundTo().setBoundTo(null);
-            nest.getBoundTo().layoutXProperty().unbind();
-            nest.getBoundTo().layoutYProperty().unbind();
-        }
-        nest.setNestedIn(this);
-        try {
-            VBox box = nestBoxes[index];
+        if (index == 0) {
+            VBox box = nestBoxes[0];
+            if(!box.getChildren().isEmpty())
+                throw new InvalidNestException();
             double incrementWidth = nest.getWidth() - box.getWidth();
             double incrementHeight = nest.getHeight() - box.getHeight();
-            GraphicalBlock curr = nest;
+            increment(box, incrementHeight, incrementWidth);
             box.getChildren().add(nest);
-            while(curr.getNestedIn() != null) {
-                if (incrementWidth > 0) {
-                    box.setMaxWidth(box.getWidth() + incrementWidth);
-                    this.setMaxWidth(this.getWidth() + incrementWidth);
-                }
 
-                if (incrementHeight > 0) {
-                    box.setMaxHeight(box.getHeight() + incrementHeight);
-                    this.setMaxHeight(this.getHeight() + incrementHeight);
-                }
-                box = (VBox) curr.getParent();
-                curr = curr.getNestedIn();
+        } else if (index == 1) {
+            VBox box = nestBoxes[1];
+            double incrementWidth = nest.getWidth() - box.getWidth();
+            double incrementHeight = nest.getHeight() - box.getHeight();
+            increment(box, incrementHeight, incrementWidth);
+            int bindIndex = box.getChildren().size() - 1;
+            box.getChildren().add(nest);
+            if(bindIndex >= 0) {
+                GraphicalBlock prevBlock = (GraphicalBlock) box.getChildren().get(bindIndex);
+                prevBlock.setBoundTo(nest);
+                nest.setBound(prevBlock);
+                nest.layoutXProperty().unbind();
+                nest.layoutYProperty().unbind();
+                nest.layoutXProperty().bind(prevBlock.layoutXProperty());
+                nest.layoutYProperty().bind(prevBlock.layoutYProperty().add(prevBlock.getHeight()));
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } else
             throw new InvalidNestException();
-        }
     }
+
 
     @Override
     public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
         box.getChildren().remove(rem);
         double[] dimensions = nestDimensions.get(box);
-        if(dimensions != null && dimensions.length == 2) {
+        if (dimensions != null && dimensions.length == 2) {
             box.setMinWidth(dimensions[0]);
             box.setMinHeight(dimensions[1]);
         }
-        if(nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
+        if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
             this.setMaxWidth(200);
             this.setMaxHeight(80);
         }
     }
-
-
 
 
 }
