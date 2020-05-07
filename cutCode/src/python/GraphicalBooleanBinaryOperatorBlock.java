@@ -11,6 +11,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+
 /**
  * @author Arjun Khanna
  */
@@ -67,7 +69,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
     public Point2D[] getNestables() {
         Point2D[] ret = new Point2D[nestBoxes.length];
         for (int i = 0; i < nestBoxes.length; i++)
-            ret[i] = new Point2D(this.getX() + nestBoxes[i].getLayoutX(), this.getY() + nestBoxes[i].getLayoutY());
+            ret[i] = nestBoxes[i].localToScene(nestBoxes[i].getLayoutBounds().getMinX(), nestBoxes[i].getLayoutBounds().getMinY());
         return ret;
     }
 
@@ -85,19 +87,33 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new InvalidNestException();
         }
+        nest.setNestedIn(this);
     }
 
 
     @Override
     public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+        if(box == null || rem == null)
+            throw new InvalidNestException();
         box.getChildren().remove(rem);
         box.setMinWidth(50);
         box.setMinHeight(30);
         if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-            this.setMaxWidth(200);
-            this.setMaxHeight(40);
+            this.setWidth(200);
+            this.setHeight(40);
         }
     }
 
-
+    @Override
+    public ArrayList<GraphicalBlock> getChildBlocks() {
+        ArrayList<GraphicalBlock> ret = new ArrayList<>();
+        for(VBox box : nestBoxes) {
+            for(Node b : box.getChildren()) {
+                if(b instanceof GraphicalBlock) {
+                    ret.add((GraphicalBlock) b);
+                }
+            }
+        }
+        return ret;
+    }
 }

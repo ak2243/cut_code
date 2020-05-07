@@ -16,6 +16,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ import factories.GUIFactory;
  * @author Arjun Khanna and Peter Timpane
  */
 public class Workspace extends Pane {
-
+    private static final int bindDistance = 15;
+    private static final int nestDistance = 15;
     private ArrayList<GraphicalBlock> blocks;
     private BorderPane layout;
     private VBox palette;
@@ -113,9 +115,7 @@ public class Workspace extends Pane {
 
         @Override
         public void handle(MouseEvent e) {
-
-            if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-
+            if(e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
                 current = block.cloneBlock();
                 Workspace.this.getChildren().add(current);
 
@@ -138,7 +138,7 @@ public class Workspace extends Pane {
                     return;
                 }
 
-                blocks.add(current);
+                blocks.add(current); //Need to add the new block to
                 for (GraphicalBlock b : blocks) {
                     if (b == current)
                         continue;
@@ -147,7 +147,7 @@ public class Workspace extends Pane {
                     double distance = checkPoint.distance(clickPoint);
                     if (b.getBound() == current)
                         continue;
-                    if (distance < 15 && (b.getBoundTo() == null)) {
+                    if (distance < bindDistance && (b.getBoundTo() == null)) {
                         current.setBound(b);
                         b.setBoundTo(current);
                         break;
@@ -156,10 +156,9 @@ public class Workspace extends Pane {
                     Point2D[] nestables = b.getNestables();
                     for (int i = 0; i < nestables.length; i++) {
                         distance = clickPoint.distance(nestables[i]);
-                        if (distance < 40) {
+                        if (distance < nestDistance) {
                             try {
                                 b.nest(i, current);
-                                current.setNestedIn(b);
                             } catch (InvalidNestException invalidNestException) {
                                 continue; //TODO action here?
                             }
@@ -187,7 +186,7 @@ public class Workspace extends Pane {
 
         @Override
         public void handle(MouseEvent e) {
-            if(block.ignoreStatus() && !e.getEventType().equals(MouseEvent.MOUSE_RELEASED))
+            if (block.ignoreStatus() && !e.getEventType().equals(MouseEvent.MOUSE_RELEASED))
                 return;
             else
                 block.actionIgnored();
@@ -235,7 +234,7 @@ public class Workspace extends Pane {
                             ignoring.add(ignore);
                             ignore.ignoreNextAction();
                             ignore = ignore.getNestedIn();
-                        } while(ignore != null);
+                        } while (ignore != null);
                     } catch (ClassCastException | InvalidNestException castException) {
                         //TODO this should never happen. Maybe institute a failsafe here
                         castException.printStackTrace();
@@ -249,72 +248,73 @@ public class Workspace extends Pane {
 
 
             } else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                if (palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY)) {
-                    for (GraphicalBlock rem : clickSequence) {
-                        Workspace.this.getChildren().remove(rem);
-                        blocks.remove(rem);
-                    }
-                    return;
-                }
-
-                if(ignoring != null) {
-                    for(GraphicalBlock b : ignoring) {
+                if (ignoring != null) { //Need to unignore all listeners being ignored, otherwise problems occur
+                    for (GraphicalBlock b : ignoring) {
                         b.actionIgnored();
                     }
                     ignoring = null;
                 }
 
-                for (GraphicalBlock b : blocks) {
-                    if(b == block)
-                        continue;
-                    Point2D clickPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
-                    Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
-                    double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
-                    if (b == block || b.getBound() == block)
-                        continue;
-                    if (distance < 15 && (b.getBoundTo() == null)) {
-                        b.setBoundTo(block);
-                        block.setBound(b);
-                        block.layoutXProperty().bind(b.layoutXProperty());
-                        block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
-                        break;
+                if (palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY)) {
+                    for (GraphicalBlock rem : clickSequence) {
+                        remove(rem);
                     }
+                    return;
+                } else {
+                    for (GraphicalBlock b : blocks) {
+                        if (b == block)
+                            continue;
+                        Point2D clickPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
+                        Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
+                        double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
+                        if (b == block || b.getBound() == block)
+                            continue;
+                        if (distance < bindDistance && (b.getBoundTo() == null)) {
+                            b.setBoundTo(block);
+                            block.setBound(b);
+                            block.layoutXProperty().bind(b.layoutXProperty());
+                            block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
+                            break;
+                        }
 
-                    Point2D[] nestables = b.getNestables();
-                    for (int i = 0; i < nestables.length; i++) {
-                        distance = clickPoint.distance(nestables[i]);
-                        System.err.println("Distance from " + block + " to " + b + ", which is at (" + b.getX() + ", " + b.getY() + "), is " + distance);
-                        System.err.println("Comparing to (" + nestables[i].getX() + ", " + nestables[i].getY() + ")");
-                        System.err.println("Mouse at (" + e.getSceneX() + ", " + e.getSceneY() + ")");
-                        if (distance < 40) {
-                            //This needs to be done before returning
-                            try {
-                                b.nest(i, block);
-                                System.err.println("Nesting " + block + " in " + b);
-                                block.setNestedIn(b);
-                                for (GraphicalBlock add : clickSequence) {
-                                    if (add == block)
-                                        continue;
+                        Point2D[] nestables = b.getNestables();
+                        boolean cycle = false;
+                        GraphicalBlock cycleCheck = b;
+                        while (cycleCheck.getNestedIn() != null && !cycle) {
+                            cycle = b == block;
+                            cycleCheck = cycleCheck.getNestedIn();
+                        }
+                        if (!cycle) {
+                            for (int i = 0; i < nestables.length; i++) {
+                                distance = clickPoint.distance(nestables[i]);
+
+                                if (distance < nestDistance) {
+                                    //This needs to be done before returning
                                     try {
-                                        b.nest(i, add);
-                                        System.err.println("Nesting " + add + " in " + b);
-                                        add.setNestedIn(b);
-                                        //Workspace.this.getChildren().remove(add);
-                                    } catch(InvalidNestException innerNestException) {
-                                        add.getBound().setBoundTo(null);
-                                        add.setBound(null);
-                                        add.layoutXProperty().unbind();
-                                        add.layoutYProperty().unbind();
-                                        add.setLayoutX(add.getLayoutX() + 10);
-                                        add.setLayoutY(add.getLayoutY() + 10);
+                                        b.nest(i, block);
+                                        for (GraphicalBlock add : clickSequence) {
+                                            if (add == block)
+                                                continue;
+                                            try {
+                                                b.nest(i, add);
+                                            } catch (InvalidNestException innerNestException) {
+                                                add.getBound().setBoundTo(null);
+                                                add.setBound(null);
+                                                add.layoutXProperty().unbind();
+                                                add.layoutYProperty().unbind();
+                                                add.setLayoutX(add.getLayoutX() + 10);
+                                                add.setLayoutY(add.getLayoutY() + 10);
+                                                break;
+                                            }
+                                        }
+                                    } catch (InvalidNestException | IllegalArgumentException invalidNestException) { //In case it finds a cycle
+                                        continue;
                                     }
+
+                                    return;
+
                                 }
-                            } catch (InvalidNestException invalidNestException) {
-                                continue;
                             }
-
-                            return;
-
                         }
                     }
                 }
@@ -330,6 +330,16 @@ public class Workspace extends Pane {
      */
     private String run() throws BlockCodeCompilerErrorException {
         return "asfd";
+    }
+
+    private void remove(GraphicalBlock rem) {
+        blocks.remove(rem);
+        this.getChildren().remove(rem);
+        ArrayList<GraphicalBlock> rems = rem.getChildBlocks();
+        if (rems != null) {
+            for (GraphicalBlock recurseRem : rems)
+                remove(recurseRem);
+        }
     }
 
 }

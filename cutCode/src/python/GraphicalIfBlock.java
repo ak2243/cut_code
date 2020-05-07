@@ -2,13 +2,16 @@ package python;
 
 import cutcode.Block;
 import cutcode.GraphicalBlock;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import cutcode.InvalidNestException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GraphicalIfBlock extends GraphicalBlock {
@@ -17,7 +20,6 @@ public class GraphicalIfBlock extends GraphicalBlock {
     private HashMap<VBox, double[]> nestDimensions;
 
     public GraphicalIfBlock() {
-
         super(200, 80);
 
         nestDimensions = new HashMap<>();
@@ -72,16 +74,18 @@ public class GraphicalIfBlock extends GraphicalBlock {
     public Point2D[] getNestables() {
         Point2D[] ret = new Point2D[nestBoxes.length];
         for (int i = 0; i < nestBoxes.length; i++)
-            ret[i] = new Point2D(this.getX() + nestBoxes[i].getLayoutX(), this.getY() + nestBoxes[i].getLayoutY());
+            ret[i] = nestBoxes[i].localToScene(nestBoxes[i].getLayoutBounds().getMinX(), nestBoxes[i].getLayoutBounds().getMinY());
         return ret;
     }
 
 
     @Override
     public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
+        System.err.println("NEST " + nest + " IN " + this);
+        System.err.println("    " + index);
         if (index == 0) {
             VBox box = nestBoxes[0];
-            if(!box.getChildren().isEmpty())
+            if(nestBoxes[index].getChildren().size() != 0)
                 throw new InvalidNestException();
             double incrementWidth = nest.getWidth() - box.getWidth();
             double incrementHeight = nest.getHeight() - box.getHeight();
@@ -106,6 +110,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
             }
         } else
             throw new InvalidNestException();
+        nest.setNestedIn(this);
     }
 
 
@@ -118,9 +123,23 @@ public class GraphicalIfBlock extends GraphicalBlock {
             box.setMinHeight(dimensions[1]);
         }
         if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-            this.setMaxWidth(200);
-            this.setMaxHeight(80);
+            this.setWidth(200);
+            this.setHeight(80);
         }
+    }
+
+
+    @Override
+    public ArrayList<GraphicalBlock> getChildBlocks() {
+        ArrayList<GraphicalBlock> ret = new ArrayList<>();
+        for(VBox box : nestBoxes) {
+            for(Node b : box.getChildren()) {
+                if(b instanceof GraphicalBlock) {
+                    ret.add((GraphicalBlock) b);
+                }
+            }
+        }
+        return ret;
     }
 
 

@@ -4,6 +4,8 @@ import factories.LogicalFactory;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
     private GraphicalBlock boundTo;
     private GraphicalBlock bound;
@@ -11,6 +13,10 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
     private LogicalFactory logicalFactory;
     private boolean ignoreNext;
 
+
+    public ArrayList<GraphicalBlock> getChildBlocks() {
+        return null;
+    }
     public boolean ignoreStatus() {
         return ignoreNext;
     }
@@ -66,9 +72,10 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
         if(b == null) {
             this.layoutXProperty().unbind();
             this.layoutYProperty().unbind();
+        } else {
+            this.layoutXProperty().bind(b.layoutXProperty());
+            this.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
         }
-        this.layoutXProperty().bind(b.layoutXProperty());
-        this.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
     }
 
     /**
@@ -134,8 +141,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
     public double getX() {
         double x = this.getLayoutX();
         if (this.getNestedIn() != null) {
-            System.err.println(this + " is allegedly nested in " + this.getNestedIn());
-            x += this.getNestedIn().getX() + this.getParent().getLayoutX();
+            x += this.getNestedIn().getX() + this.getParent().getLayoutX()  + this.getNestedIn().getPadding().getLeft();
         }
         return x;
     }
@@ -143,7 +149,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
     public double getY() {
         double y = this.getLayoutY();
         if (this.getNestedIn() != null)
-            y += this.getNestedIn().getY() + this.getParent().getLayoutY();
+            y += this.getNestedIn().getY() + this.getParent().getLayoutY() + this.getNestedIn().getPadding().getLeft();
         return y;
     }
 
