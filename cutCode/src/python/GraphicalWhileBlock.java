@@ -2,32 +2,34 @@ package python;
 
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
+import cutcode.InvalidNestException;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import cutcode.InvalidNestException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GraphicalIfBlock extends GraphicalBlock {
+public class GraphicalWhileBlock extends GraphicalBlock {
+
 	private GraphicalBooleanBinaryOperatorBlock condition; // TODO make this OperatorBlock
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 
-	public GraphicalIfBlock() {
+	public GraphicalWhileBlock() {
 		super(200, 80);
 
 		nestDimensions = new HashMap<>();
 
 		this.setPadding(new Insets(10));
-		this.setBackground(new Background(new BackgroundFill(Color.web("#907FDE"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#8079D8"), CornerRadii.EMPTY, Insets.EMPTY)));
+
 
 		HBox topLine = new HBox();
-		topLine.getChildren().addAll(new Label("if"));
+		topLine.getChildren().addAll(new Label("while"));
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		bottomLine.setMinWidth(140);
@@ -40,8 +42,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		double[] conditionSpaceDimensions = {140.0, 30.0};
 		nestDimensions.put(conditionSpace, conditionSpaceDimensions);
 		conditionSpace.setBackground(
-				new Background(new BackgroundFill(Color.web("#9B8AE1"), CornerRadii.EMPTY, Insets.EMPTY)));
-
+				new Background(new BackgroundFill(Color.web("#8D85DC"), CornerRadii.EMPTY, Insets.EMPTY)));
 		topLine.getChildren().add(conditionSpace);
 
 		this.getChildren().addAll(topLine, bottomLine);
@@ -51,7 +52,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		nestBoxes[1] = bottomLine;
 	}
 
-	public GraphicalIfBlock(double width, double height) {
+	public GraphicalWhileBlock(double width, double height) {
 		super(width, height);
 	}
 
@@ -62,7 +63,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalIfBlock();
+		return new GraphicalWhileBlock();
 	}
 
 	/**
@@ -83,7 +84,6 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		System.err.println("NESTING");
 		if (index == 0) {
 			VBox box = nestBoxes[0];
 			if (nestBoxes[index].getChildren().size() != 0)
@@ -97,19 +97,17 @@ public class GraphicalIfBlock extends GraphicalBlock {
 			VBox box = nestBoxes[1];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
-			if (box.getChildren().size() != 0) {
-				for (Node n : box.getChildren()) {
-					incrementWidth += ((GraphicalBlock) n).getWidth();
-					incrementHeight += ((GraphicalBlock) n).getHeight();
-				}
-			}
-			System.err.println(incrementWidth + ", " + incrementHeight);
 			increment(box, incrementHeight, incrementWidth);
+			int bindIndex = box.getChildren().size() - 1;
 			box.getChildren().add(nest);
+			if (bindIndex >= 0) {
+				GraphicalBlock prevBlock = (GraphicalBlock) box.getChildren().get(bindIndex);
+				prevBlock.setBoundTo(nest);
+				nest.setBound(prevBlock);
+			}
 		} else
 			throw new InvalidNestException();
 		nest.setNestedIn(this);
-		System.err.println("-----------------------");
 	}
 
 
@@ -143,3 +141,5 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 
 }
+
+

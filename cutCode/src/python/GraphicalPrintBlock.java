@@ -2,7 +2,7 @@ package python;
 
 
 
-import cutcode.Block;
+import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -29,12 +29,12 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 		firstLine.getChildren().addAll(label, value);
 		this.getChildren().add(firstLine);
 		
-		this.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#F0A3FF"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 	}
 	
 	@Override
-	public Block getLogicalBlock() {
+	public LogicalBlock getLogicalBlock() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,6 +1,6 @@
 package python;
 
-import cutcode.Block;
+import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -11,17 +11,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-public class GraphicalVariableCallBlock extends GraphicalBlock {
+public class GraphicalValueBlock extends GraphicalBlock {
 	private TextField name;
 	/**
 	 * O(1)
 	 * @author Arjun Khanna
 	 */
-	public GraphicalVariableCallBlock() {
+	public GraphicalValueBlock() {
 		super(200, 40);
 		name = new TextField();
-		Text label = new Text("var:");
-		label.setFill(Color.WHITE);
+		Text label = new Text("value ");
 		name.setMinHeight(32);
 		HBox line = new HBox();
 		line.setSpacing(5);
@@ -29,7 +28,8 @@ public class GraphicalVariableCallBlock extends GraphicalBlock {
 		line.getChildren().add(label);
 		line.getChildren().add(name);
 		this.getChildren().add(line);
-		this.setBackground(new Background(new BackgroundFill(Color.DARKOLIVEGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(
+				new Background(new BackgroundFill(Color.web("#E09DFA"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 	}
 
@@ -38,7 +38,7 @@ public class GraphicalVariableCallBlock extends GraphicalBlock {
 	 * @author Arjun Khanna
 	 */
 	@Override
-	public Block getLogicalBlock() {
+	public LogicalBlock getLogicalBlock() {
 		return null;
 	}
 
@@ -48,7 +48,7 @@ public class GraphicalVariableCallBlock extends GraphicalBlock {
 	 */
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalVariableCallBlock();
+		return new GraphicalValueBlock();
 	}
 
 

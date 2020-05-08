@@ -37,8 +37,8 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		guiFactory = new factories.PythonGUIFactory();
 		logicalFactory = new factories.PythonLogicalFactory();
-		Workspace workspace = new Workspace(1400, 700, guiFactory);
-		Scene scene = new Scene(workspace, 1400, 700);
+		Workspace workspace = new Workspace(1400, 865.248, guiFactory);
+		Scene scene = new Scene(workspace, 1400, 865.248);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		filename = "program.java";

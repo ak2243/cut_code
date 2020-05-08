@@ -1,6 +1,6 @@
 package python;
 
-import cutcode.Block;
+import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
 import javafx.collections.FXCollections;
@@ -32,18 +32,18 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
         VBox op1 = new VBox();
         op1.setMinWidth(50);
         op1.setMinHeight(24);
-        op1.setStyle("-fx-background-color: D96969");
+        op1.setStyle("-fx-background-color: #AA90E7");
         VBox op2 = new VBox();
         op2.setMinWidth(50);
         op2.setMinHeight(24);
-        op2.setStyle("-fx-background-color: D96969");
+        op2.setStyle("-fx-background-color: #AA90E7");
         String[] choiceOp = {"or", "and", "not"};
         operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
         operatorChoice.setMinWidth(75);
         line.getChildren().addAll(op1, operatorChoice, op2);
         this.getChildren().add(line);
         this.setMinWidth(200);
-        this.setStyle("-fx-background-color: D90000");
+        this.setStyle("-fx-background-color: #A085E4");
         this.setPadding(new Insets(8));
 
         nestBoxes[0] = op1;
@@ -52,7 +52,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 
 
     @Override
-    public Block getLogicalBlock() {
+    public LogicalBlock getLogicalBlock() {
         return null;
     }
 
