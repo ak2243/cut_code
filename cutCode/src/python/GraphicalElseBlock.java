@@ -1,58 +1,49 @@
 package python;
 
-import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
+import cutcode.LogicalBlock;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import python.GraphicalBooleanBinaryOperatorBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GraphicalWhileBlock extends GraphicalBlock {
+public class GraphicalElseBlock extends GraphicalBlock {
 
 	private GraphicalBooleanBinaryOperatorBlock condition; // TODO make this OperatorBlock
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 
-	public GraphicalWhileBlock() {
+	public GraphicalElseBlock() {
 		super(200, 80);
 
 		nestDimensions = new HashMap<>();
 
 		this.setPadding(new Insets(10));
-		this.setBackground(new Background(new BackgroundFill(Color.web("#6F73D2"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#8079D8"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 
 		HBox topLine = new HBox();
-		topLine.getChildren().addAll(new Label("while"));
+		topLine.getChildren().addAll(new Label("else"));
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		bottomLine.setMinWidth(140);
-		bottomLine.setMinHeight(32);
-		double[] bottomLineDimensions = {140.0, 32.0};
+		bottomLine.setMinHeight(40);
+		double[] bottomLineDimensions = {40.0, 40.0};
 		nestDimensions.put(bottomLine, bottomLineDimensions);
-		VBox conditionSpace = new VBox();
-		conditionSpace.setMinHeight(30);
-		conditionSpace.setMinWidth(140);
-		double[] conditionSpaceDimensions = {140.0, 30.0};
-		nestDimensions.put(conditionSpace, conditionSpaceDimensions);
-		conditionSpace.setBackground(
-				new Background(new BackgroundFill(Color.web("#7D80D7"), CornerRadii.EMPTY, Insets.EMPTY)));
-		topLine.getChildren().add(conditionSpace);
-
 		this.getChildren().addAll(topLine, bottomLine);
 
-		nestBoxes = new VBox[2];
-		nestBoxes[0] = conditionSpace;
-		nestBoxes[1] = bottomLine;
+		nestBoxes = new VBox[1];
+		nestBoxes[0] = bottomLine;
 	}
 
-	public GraphicalWhileBlock(double width, double height) {
+	public GraphicalElseBlock(double width, double height) {
 		super(width, height);
 	}
 
@@ -63,7 +54,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalWhileBlock();
+		return new python.GraphicalElseBlock();
 	}
 
 	/**
@@ -73,11 +64,10 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 	@Override
 	public Point2D[] getNestables() {
 		Point2D[] ret = new Point2D[nestBoxes.length];
-		ret[0] = nestBoxes[0].localToScene(nestBoxes[0].getLayoutBounds().getMinX(), nestBoxes[0].getLayoutBounds().getMinY());
 		double secondaryIncrementY = 0;
-		for (Node n : nestBoxes[1].getChildren())
+		for (Node n : nestBoxes[0].getChildren())
 			secondaryIncrementY += ((GraphicalBlock) n).getHeight();
-		ret[1] = nestBoxes[1].localToScene(nestBoxes[1].getLayoutBounds().getMinX(), nestBoxes[0].getLayoutBounds().getMinY() + secondaryIncrementY);
+		ret[0] = nestBoxes[0].localToScene(nestBoxes[0].getLayoutBounds().getMinX(), nestBoxes[0].getLayoutBounds().getMinY() + secondaryIncrementY);
 		return ret;
 	}
 
@@ -86,15 +76,6 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
 		if (index == 0) {
 			VBox box = nestBoxes[0];
-			if (nestBoxes[index].getChildren().size() != 0)
-				throw new InvalidNestException();
-			double incrementWidth = nest.getWidth() - box.getWidth();
-			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
-			box.getChildren().add(nest);
-
-		} else if (index == 1) {
-			VBox box = nestBoxes[1];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
 			increment(box, incrementHeight, incrementWidth);
@@ -113,9 +94,9 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 			box.setMinWidth(dimensions[0]);
 			box.setMinHeight(dimensions[1]);
 		}
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-			this.setMaxWidth(200);
-			this.setMaxHeight(80);
+		if (nestBoxes[0].getChildren().size() == 0) {
+			this.setWidth(200);
+			this.setHeight(80);
 		}
 	}
 
@@ -135,5 +116,3 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 
 }
-
-

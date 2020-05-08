@@ -16,7 +16,7 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 		Label label = new Label("break loop");
 		this.getChildren().add(label);
 		this.setAlignment(Pos.CENTER);
-		this.setBackground(new Background(new BackgroundFill(Color.web("#6F73D2"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#6366B8"), CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 	@Override
 	public LogicalBlock getLogicalBlock() {

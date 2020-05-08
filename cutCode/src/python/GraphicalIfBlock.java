@@ -31,8 +31,8 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		bottomLine.setMinWidth(140);
-		bottomLine.setMinHeight(40);
-		double[] bottomLineDimensions = {40.0, 40.0};
+		bottomLine.setMinHeight(32);
+		double[] bottomLineDimensions = {140.0, 32.0};
 		nestDimensions.put(bottomLine, bottomLineDimensions);
 		VBox conditionSpace = new VBox();
 		conditionSpace.setMinHeight(30);
@@ -103,7 +103,6 @@ public class GraphicalIfBlock extends GraphicalBlock {
 					incrementHeight += ((GraphicalBlock) n).getHeight();
 				}
 			}
-			System.err.println(incrementWidth + ", " + incrementHeight);
 			increment(box, incrementHeight, incrementWidth);
 			box.getChildren().add(nest);
 		} else
@@ -122,8 +121,8 @@ public class GraphicalIfBlock extends GraphicalBlock {
 			box.setMinHeight(dimensions[1]);
 		}
 		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-			this.setWidth(200);
-			this.setHeight(80);
+			this.setMaxWidth(200);
+			this.setMaxHeight(80);
 		}
 	}
 
