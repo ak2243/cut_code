@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
 import cutcode.LogicalBlock;
@@ -9,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import python.GraphicalBooleanBinaryOperatorBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,8 +48,13 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
+		for(Node n : nestBoxes[0].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
+			((GraphicalBlock) n).setIndentFactor(indentFactor + 1);
+			executeBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		return logicalFactory.createElseBlock(indentFactor, executeBlocks);
 	}
 
 	@Override

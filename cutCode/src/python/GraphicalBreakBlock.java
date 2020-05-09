@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
@@ -19,12 +20,12 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 		this.setBackground(new Background(new BackgroundFill(Color.web("#6366B8"), CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		return logicalFactory.createBreak(indentFactor);
 	}
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return null;
+		return new GraphicalBreakBlock();
 	}
 }

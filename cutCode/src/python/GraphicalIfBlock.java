@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
@@ -56,8 +57,15 @@ public class GraphicalIfBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() != 1)
+			throw new BlockCodeCompilerErrorException();
+		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
+		for(Node n : nestBoxes[1].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
+			((GraphicalBlock) n).setIndentFactor(indentFactor + 1);
+			executeBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		return logicalFactory.createIf(indentFactor, ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), executeBlocks);
 	}
 
 	@Override
@@ -83,7 +91,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		System.err.println("NESTING");
+
 		if (index == 0) {
 			VBox box = nestBoxes[0];
 			if (nestBoxes[index].getChildren().size() != 0)
@@ -108,7 +116,6 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		} else
 			throw new InvalidNestException();
 		nest.setNestedIn(this);
-		System.err.println("-----------------------");
 	}
 
 

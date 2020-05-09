@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
@@ -57,8 +58,15 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() != 1)
+			throw new BlockCodeCompilerErrorException();
+		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
+		for(Node n : nestBoxes[1].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
+			((GraphicalBlock) n).setIndentFactor(indentFactor + 1);
+			executeBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		return logicalFactory.createWhileLoop(indentFactor, ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), executeBlocks);
 	}
 
 	@Override
@@ -97,6 +105,12 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 			VBox box = nestBoxes[1];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
+			if (box.getChildren().size() != 0) {
+				for (Node n : box.getChildren()) {
+					incrementWidth += ((GraphicalBlock) n).getWidth();
+					incrementHeight += ((GraphicalBlock) n).getHeight();
+				}
+			}
 			increment(box, incrementHeight, incrementWidth);
 			box.getChildren().add(nest);
 		} else

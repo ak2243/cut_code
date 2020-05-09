@@ -7,11 +7,25 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
-	private GraphicalBlock boundTo;
-	private GraphicalBlock bound;
+	private GraphicalBlock below;
+	private GraphicalBlock above;
 	private GraphicalBlock nestedIn;
-	private LogicalFactory logicalFactory;
+	protected LogicalFactory logicalFactory;
 	private boolean ignoreNext;
+
+	public int getIndentFactor() {
+		return indentFactor;
+	}
+
+	public void setIndentFactor(int indentFactor) {
+		this.indentFactor = indentFactor;
+	}
+
+	protected int indentFactor;
+
+	public void setLogicalFactory(LogicalFactory logicalFactory) {
+		this.logicalFactory = logicalFactory;
+	}
 
 
 	public ArrayList<GraphicalBlock> getChildBlocks() {
@@ -45,6 +59,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 	public GraphicalBlock(double width, double height) {
+		indentFactor = 0;
 		setMinWidth(width);
 		setMinHeight(height);
 		setMaxWidth(width);
@@ -68,43 +83,43 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	/**
 	 * @param b the block that is bound to this block (b is below)
 	 */
-	public void setBoundTo(GraphicalBlock b) {
-		boundTo = b;
+	public void setBelow(GraphicalBlock b) {
+		below = b;
 	}
 
 	/**
 	 * @return the block that is bound to this block (below)
 	 */
-	public GraphicalBlock getBoundTo() {
-		return boundTo;
+	public GraphicalBlock getBelow() {
+		return below;
 	}
 
 
 	/**
 	 * @param b the block this block is bound to (b is above)
 	 */
-	public void setBound(GraphicalBlock b) {
-		bound = b;
+	public void setAbove(GraphicalBlock b) {
+		above = b;
 		this.layoutXProperty().unbind();
 		this.layoutYProperty().unbind();
 		if (b != null) {
 			this.layoutXProperty().bind(b.layoutXProperty());
-			this.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
+			this.layoutYProperty().bind(b.layoutYProperty().add(b.getMaxHeight()));
 		}
 	}
 
 	/**
 	 * @return the block this block is bound to (above)
 	 */
-	public GraphicalBlock getBound() {
-		return bound;
+	public GraphicalBlock getAbove() {
+		return above;
 	}
 
 
 	/**
 	 * @return the logical block object for the graphical block
 	 */
-	public abstract LogicalBlock getLogicalBlock();
+	public abstract LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException;
 
 	public abstract GraphicalBlock cloneBlock();
 
@@ -169,6 +184,9 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		}
 		if (this.getNestedIn() != null)
 			this.getNestedIn().increment((VBox) this.getParent(), heightIncrement, widthIncrement);
+		if(this.getBelow() != null)
+			this.getBelow().setAbove(this);
+
 	}
 
 }

@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
@@ -97,8 +98,10 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	 * @author Arjun Khanna
 	 */
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() != 1)
+			throw new BlockCodeCompilerErrorException();
+		return logicalFactory.createVariable(getIndentFactor(), name.getText(), ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 
 	@Override

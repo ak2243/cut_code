@@ -1,6 +1,7 @@
 package cutcode;
 
 
+import factories.LogicalFactory;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -16,7 +17,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -37,8 +37,10 @@ public class Workspace extends Pane {
 	private GUIFactory guiFactory;
 	private static final double paletteWidth = 200;
 	private static final double runButtonHeight = 20;
+	private LogicalFactory logicalFactory;
 
-	public Workspace(double width, double height, GUIFactory guiFactory) {
+	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass) {
+		this.logicalFactory = logicalFactory;
 		this.guiFactory = guiFactory;
 		blocks = new ArrayList<>();
 
@@ -69,7 +71,22 @@ public class Workspace extends Pane {
 				BorderPane root = new BorderPane();
 
 				try {
-					root.setCenter(new Label(run()));
+
+					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
+					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
+					for(GraphicalBlock b : blocks) {
+						if(b.getAbove() == null && b.getNestedIn() == null) {
+							orderedHeadBlocks.add(b);
+						}
+					}
+					for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
+						for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow()) {
+							orderedBlocks.add(curr.getLogicalBlock());
+						}
+					}
+					String ret = mainClass.run(orderedBlocks);
+					System.err.print(ret);
+					root.setCenter(new Label(ret));
 					Scene scene = new Scene(root, 400, 400);
 					stage.setScene(scene);
 					stage.show();
@@ -127,8 +144,7 @@ public class Workspace extends Pane {
 				current.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
 				current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 				current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-
-
+				current.setLogicalFactory(logicalFactory);
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
 				current.setLayoutX(e.getSceneX());
 				current.setLayoutY(e.getSceneY());
@@ -146,9 +162,9 @@ public class Workspace extends Pane {
 					Point2D checkPoint = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
 					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
 					double distance = checkPoint.distance(clickPoint);
-					if (distance < bindDistance && (b.getBoundTo() == null)) {
-						current.setBound(b);
-						b.setBoundTo(current);
+					if (distance < bindDistance && (b.getBelow() == null)) {
+						current.setAbove(b);
+						b.setBelow(current);
 						break;
 					}
 
@@ -196,7 +212,7 @@ public class Workspace extends Pane {
 				while (add != null) {
 					add.toFront();
 					clickSequence.add(add);
-					add = add.getBoundTo();
+					add = add.getBelow();
 				}
 				// If the block was bound, it unbinds. All the blocks bound to this block will
 				// stay that way
@@ -206,11 +222,11 @@ public class Workspace extends Pane {
 				// offsets make it so the point you clicked on the block follows your mouse instead of the top left.
 				// Looks better
 
-				GraphicalBlock above = block.getBound();
+				GraphicalBlock above = block.getAbove();
 				if (above != null)
-					above.setBoundTo(null); // Allows for things to be bound to "above"
+					above.setBelow(null); // Allows for things to be bound to "above"
 
-				block.setBound(null);
+				block.setAbove(null);
 
 
 				//TODO: need to check if the click is on a nested block as opposed to it's parent block
@@ -247,6 +263,8 @@ public class Workspace extends Pane {
 
 
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+
+
 				if (ignoring != null) { //Need to unignore all listeners being ignored, otherwise problems occur
 					for (GraphicalBlock b : ignoring) {
 						b.actionIgnored();
@@ -266,11 +284,11 @@ public class Workspace extends Pane {
 						Point2D clickPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 						Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
 						double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
-						if (b == block || b.getBound() == block)
+						if (b == block || b.getAbove() == block)
 							continue;
-						if (distance < bindDistance && (b.getBoundTo() == null)) {
-							b.setBoundTo(block);
-							block.setBound(b);
+						if (distance < bindDistance && (b.getBelow() == null)) {
+							b.setBelow(block);
+							block.setAbove(b);
 							block.layoutXProperty().bind(b.layoutXProperty());
 							block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
 							break;
@@ -291,14 +309,19 @@ public class Workspace extends Pane {
 									//This needs to be done before returning
 									try {
 										b.nest(i, block);
+
 										for (GraphicalBlock add : clickSequence) {
 											if (add == block)
 												continue;
 											try {
+												if(add.getAbove() != null) {
+													add.getAbove().setBelow(null);
+												}
+												add.setAbove(null);
 												b.nest(i, add);
 											} catch (InvalidNestException innerNestException) {
-												add.getBound().setBoundTo(null);
-												add.setBound(null);
+												add.getAbove().setBelow(null);
+												add.setAbove(null);
 												add.setLayoutX(add.getLayoutX() + 10);
 												add.setLayoutY(add.getLayoutY() + 10);
 												break;
@@ -318,15 +341,8 @@ public class Workspace extends Pane {
 		}
 	}
 
-	/**
-	 * O(infinity)
-	 *
-	 * @return - the output from the program
-	 * @throws BlockCodeCompilerErrorException if the block code doesn't compile
-	 */
-	private String run() throws BlockCodeCompilerErrorException {
-		return "asfd";
-	}
+
+
 
 	private void remove(GraphicalBlock rem) {
 		blocks.remove(rem);

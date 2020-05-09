@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
@@ -12,21 +13,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class GraphicalValueBlock extends GraphicalBlock {
-	private TextField name;
+	private TextField value;
 	/**
 	 * O(1)
 	 * @author Arjun Khanna
 	 */
 	public GraphicalValueBlock() {
 		super(200, 40);
-		name = new TextField();
+		value = new TextField();
 		Text label = new Text("value ");
-		name.setMinHeight(32);
+		value.setMinHeight(32);
 		HBox line = new HBox();
 		line.setSpacing(5);
 		line.setPadding(new Insets(8));
 		line.getChildren().add(label);
-		line.getChildren().add(name);
+		line.getChildren().add(value);
 		this.getChildren().add(line);
 		this.setBackground(
 				new Background(new BackgroundFill(Color.web("#E09DFA"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -38,8 +39,8 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	 * @author Arjun Khanna
 	 */
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		return logicalFactory.createValue(value.getText());
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package python;
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
@@ -52,8 +53,10 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() != 1 || nestBoxes[1].getChildren().size() != 1)
+			throw new BlockCodeCompilerErrorException();
+		return logicalFactory.createBinaryMathOperator(((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) nestBoxes[1].getChildren().get(0)).getLogicalBlock());
 	}
 
 	@Override

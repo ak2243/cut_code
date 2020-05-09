@@ -17,7 +17,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	private GUIFactory guiFactory;
 	private LogicalFactory logicalFactory;
-	private static String filename;
+	private String filename;
+	private String language;
 	public static final String ERROR = "An error occured, please try again later.";
 
 	// This method is the one Java always runs first
@@ -26,22 +27,54 @@ public class Main extends Application {
 	}
 
 	public void setLanguage(String language) {
+		this.language = language;
 		if(language.equals("python")) {
 			guiFactory = new factories.PythonGUIFactory();
 			logicalFactory = new factories.PythonLogicalFactory();
+			filename = "program.py";
 		}
 
 	}
 
+	public String run(List<LogicalBlock> logicalBlocks) {
+		try {
+			export(logicalBlocks, this.filename);
+		} catch (IOException e) {
+			return "An unexpected error occured when writing the code. Please ensure that permissions are enabled";
+		}
+		try {
+			Executor executor = new Executor(this.filename, "python3");
+			return executor.execute("python");
+		} catch(BlockCodeCompilerErrorException e) {
+			return "There was an error in your code";
+		}
+	}
+
+
+	public void export(String code, String filename) throws IOException {
+		FileManager manager = new FileManager();
+		manager.delete(filename);
+		manager.setOutput(filename);
+		manager.openWriter();
+		manager.write(code);
+		manager.closeWriter();
+	}
+	public void export(List<LogicalBlock> logicalBlocks, String filename) throws IOException {
+		FileManager manager = new FileManager();
+		manager.setOutput(filename);
+		manager.openWriter();
+		for(LogicalBlock block : logicalBlocks)
+			manager.write(block.toString());
+		manager.closeWriter();
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		guiFactory = new factories.PythonGUIFactory();
-		logicalFactory = new factories.PythonLogicalFactory();
-		Workspace workspace = new Workspace(1400, 865.248, guiFactory);
+		setLanguage("python");
+		Workspace workspace = new Workspace(1400, 865.248, guiFactory, logicalFactory, this);
 		Scene scene = new Scene(workspace, 1400, 865.248);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		filename = "program.java";
 	}
 
 }

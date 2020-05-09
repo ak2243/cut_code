@@ -2,6 +2,7 @@ package python;
 
 
 
+import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
@@ -34,9 +35,8 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 	}
 	
 	@Override
-	public LogicalBlock getLogicalBlock() {
-		// TODO Auto-generated method stub
-		return null;
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		return logicalFactory.createPrint(indentFactor, value.getText());
 	}
 
 	@Override

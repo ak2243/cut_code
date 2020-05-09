@@ -1,176 +1,135 @@
 package cutcode;
-
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * 
- * @author Peter Timpane
- *
- * @param <T> the type of data put in the nodes of the Binary Search Tree
- */
 public class BSTree<T extends Comparable<T>> {
-	private BSTNode<T> root;
+	private Node<T> root;
 
-	//Keys used for traversal method
-	public static final int PREORDER = 0;
-	public static final int POSTORDER = 1;
-	public static final int INORDER = 2;
-
+	/**
+	 * @param data -- value added to the tree
+	 */
 	public void add(T data) {
-		if (root == null) {//Account for if there are no nodes in the tree
-			root = new BSTNode<T>(data);
+		if (root == null) {
+			root = new Node<T>(data);
 			return;
 		}
-		BSTNode<T> current = root;
-		BSTNode<T> parent = current;
-		int direction = 0;
-		while (current != null) {//Finds the current spot and the parent, as well as which side 
-			parent = current;
-			int compare = data.compareTo(current.data);
-			if (compare <= 0) {//Go left 
-				current = current.left;
-				direction = -1;
-			} else {//Go right
-				current = current.right;
-				direction = 1;
+
+		Node<T> check = root;
+
+		int compare = data.compareTo(check.data);
+		while (check != null) {
+			if (compare <= 0) {
+				if (check.left == null) {
+					check.left = new Node<T>(data);
+					break;
+				} else {
+					check = check.left;
+				}
+			} else {
+				if (check.right == null) {
+					check.right = new Node<T>(data);
+					break;
+				} else {
+					check = check.right;
+				}
 			}
-		}
-		//Create the node and attach it to the parent
-		BSTNode<T> addMe = new BSTNode<T>(data);
-		if (direction == -1) {
-			parent.left = addMe;
-		} else if (direction == 1) {
-			parent.right = addMe;
+			compare = data.compareTo(check.data);
 		}
 
 	}
-	
+
+	/**
+	 * @param data -- value to be removed
+	 * @return the value of the removed. null if it doesn't exist
+	 */
 	public T remove(T data) {
-		
-		BSTNode<T> par = null;
-		BSTNode<T> rem = root;
-		//Find the parent and the node being removed
-		while(rem != null && rem.data.compareTo(data) != 0) {
-			par = rem;
-			if(data.compareTo(rem.data) < 0) {
+		Node<T> rem = root; //Starts with root
+		Node<T> par = null; //parent of root is null
+		while (rem != null && rem.data.compareTo(data) != 0) { //Looks for the node to be removed and it's parent
+			par = rem; //rem will go left or right
+			if (data.compareTo(rem.data) < 0) { //if value less than, go left
 				rem = rem.left;
-			}else {
+			} else {
 				rem = rem.right;
 			}
+			//rem is null if it can't be found
 		}
-		
-		if(rem != null) {
-			//Return the data and remove the node
-			T ret = rem.data;
-			removeNode(rem,par);
+		if (rem != null) {
+			T ret = rem.data; //data needs to be saved in case nodes are switched (2 children remove)
+			removeNode(rem, par); //removes the node
 			return ret;
 		}
-		//Return null if the data isn't in the tree
-		return null;
 
+		return null; //if not found
 	}
 
-	
-
-	private void removeNode(BSTNode<T> node, BSTNode<T> parent) {
-		
-		//Zero/One child removal
-		if(node.left == null || node.right == null) {
-			
-			//Get the only child. Will be null if node has 0 parents
-			BSTNode<T> child = node.left;
-			if(node.left == null) {
-				child = node.right;
+	private void removeNode(Node<T> rem, Node<T> par) {
+		if (rem.left == null || rem.right == null) { //zero or one children
+			Node<T> child = rem.left;
+			if (rem.left == null) {
+				child = rem.right;
 			}
-			//Handle the root
-			if(parent == null) {
+			//child is the child of rem, null if 0 children
+			if (par == null) { //root is being removed
 				root = child;
-			}else {
-				boolean leftChild = true;
-				if(parent.left != node) {
-					leftChild = false;
+			} else {
+				boolean lc = true; //is the child the left child
+				if (par.left != rem) {
+					lc = false;
 				}
-				if(leftChild) {
-					parent.left = child;
-					
-				}else {
-					parent.right = child;
+				if (lc) { //child is left child
+					par.left = child; //null if no child
+				} else { //child is right child
+					par.right = child; //null if no child
 				}
 			}
-		}else {//Two child removal
-			BSTNode<T> rmlPar = node;
-			BSTNode<T> rml = node.left;
-			//Get the rightmost left node and its parent
-			while(rml.right != null) {
-				rmlPar = rml;
-				rml = rml.right;
+		} else { //two children
+			Node<T> rmlPar = rem; //parent of rightmost left
+			Node<T> rml = rem.left; //rightmost left
+			while (rml.right != null) {
+				rmlPar = rml; //follows rml and makes sure we keep track of the parent
+				rml = rml.right; //goes right as far as possible
 			}
-			
-			//Switch data between rml and the node
-			T temp = rml.data;
-			rml.data = node.data;
-			node.data = temp;
-			
-			//Remove the rightmost left. Guaranteed to have 1/0 children
-			removeNode(rml,rmlPar);
-		}
-		
-
-	}
-
-	public ArrayList<T> traverse(int order) throws IllegalArgumentException {
-		ArrayList<T> ret = new ArrayList<T>();//The arraylist that's returned
-		
-		//Run the correct traversal method
-		switch (order) {
-		case INORDER:
-			inorder(ret, this.root);
-			break;
-		case PREORDER:
-			preorder(ret, this.root);
-			break;
-		case POSTORDER:
-			postorder(ret, this.root);
-			break;
-		default:
-			throw new IllegalArgumentException("Not a valid order. Use variables from BSTree");
+			T tmp = rml.data; //placeholder
+			rml.data = rem.data;
+			rem.data = tmp;
+			//data has been switched
+			removeNode(rml, rmlPar); //now we have to remove the rightmost left
 
 		}
-
-		return ret;
 	}
 
-	private void preorder(ArrayList<T> addTo, BSTNode<T> node) {
-		if (node == null)
-			return;
-		addTo.add(node.data);
-		preorder(addTo, node.left);
-		preorder(addTo, node.right);
+	/**
+	 *
+	 * @return Inorder traversal of the list
+	 */
+	public List<T> inOrder() {
+		if (root == null)
+			return null;
+		List<T> list = new ArrayList<T>();
+		lcr(list, root); //recursion
+		return list;
 	}
 
-	private void postorder(ArrayList<T> addTo, BSTNode<T> node) {
-		if (node == null)
-			return;
-		postorder(addTo, node.left);
-		postorder(addTo, node.right);
-		addTo.add(node.data);
+	private void lcr(List<T> list, Node<T> node) {
+		if (node.left != null) { //goes left first
+			lcr(list, node.left); //algorithm resets when you go left
+		}
+		list.add(node.data); //next, add the value
+		if (node.right != null) { //goes right
+			lcr(list, node.right); //algorithm resets when you go right
+		}
 	}
 
-	private void inorder(ArrayList<T> addTo, BSTNode<T> node) {
-		if (node == null)
-			return;
-		inorder(addTo, node.left);
-		addTo.add(node.data);
-		inorder(addTo, node.right);
-	}
+	private class Node<E extends Comparable<E>> {
 
-	private class BSTNode<E extends Comparable<T>> {
-		public BSTNode<E> left;//Left child
-		public BSTNode<E> right;//Right child
-		public T data;//Data stored in node
+		public Node<E> left;
+		public Node<E> right;
+		public E data;
 
-		public BSTNode(T data) {
+		public Node(E data) {
 			this.data = data;
 		}
 	}
+
 }
