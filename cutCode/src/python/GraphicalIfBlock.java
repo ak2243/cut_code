@@ -20,7 +20,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 	private HashMap<VBox, double[]> nestDimensions;
 
 	public GraphicalIfBlock() {
-		super(200, 80);
+		super(200, 80, 3);
 
 		nestDimensions = new HashMap<>();
 
@@ -53,7 +53,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 	}
 
 	public GraphicalIfBlock(double width, double height) {
-		super(width, height);
+		super(width, height, 3);
 	}
 
 	@Override
@@ -128,6 +128,8 @@ public class GraphicalIfBlock extends GraphicalBlock {
 			box.setMinHeight(dimensions[1]);
 		}
 		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
+			this.setMinWidth(200);
+			this.setMinHeight(80);
 			this.setMaxWidth(200);
 			this.setMaxHeight(80);
 		}

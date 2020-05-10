@@ -1,4 +1,4 @@
-package python;
+package Java;
 
 import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
@@ -17,34 +17,34 @@ import java.util.ArrayList;
 /**
  * @author Arjun Khanna
  */
-public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
+public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 	private ComboBox<String> operatorChoice;
 	private VBox[] nestBoxes;
 
 
-	public GraphicalMathBinaryOperatorBlock() {
+	public GraphicalBooleanBinaryOperatorBlock() {
 		this(200, 40);
 	}
 
-	public GraphicalMathBinaryOperatorBlock(int width, int height) {
+	public GraphicalBooleanBinaryOperatorBlock(int width, int height) {
 		super(width, height, 3);
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
 		op1.setMinWidth(50);
 		op1.setMinHeight(24);
-		op1.setStyle("-fx-background-color: #B895EB");
+		op1.setStyle("-fx-background-color: #AA90E7");
 		VBox op2 = new VBox();
 		op2.setMinWidth(50);
 		op2.setMinHeight(24);
-		op2.setStyle("-fx-background-color: #B895EB");
-		String[] choiceOp = {"+", "-", "÷", "X", "%"};
+		op2.setStyle("-fx-background-color: #AA90E7");
+		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="};
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
 		operatorChoice.setMinWidth(75);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);
 		this.setMinWidth(200);
-		this.setStyle("-fx-background-color: #B08BE9");
+		this.setStyle("-fx-background-color: #A085E4");
 		this.setPadding(new Insets(8));
 
 		nestBoxes[0] = op1;
@@ -54,14 +54,12 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1 || nestBoxes[1].getChildren().size() != 1)
-			throw new BlockCodeCompilerErrorException();
-		return logicalFactory.createBinaryMathOperator(((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) nestBoxes[1].getChildren().get(0)).getLogicalBlock());
+		return logicalFactory.createBinaryBooleanOperator(((GraphicalBlock) (nestBoxes[0].getChildren().get(0))).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) (nestBoxes[1].getChildren().get(0))).getLogicalBlock());
 	}
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalMathBinaryOperatorBlock();
+		return new GraphicalBooleanBinaryOperatorBlock();
 	}
 
 	/**
@@ -79,7 +77,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		if(nestBoxes[index].getChildren().size() != 0)
+		if (nestBoxes[index].getChildren().size() != 0)
 			throw new InvalidNestException();
 		try {
 			VBox box = nestBoxes[index];
@@ -96,7 +94,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
-		if(box == null || rem == null)
+		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
 		box.setMinWidth(50);
@@ -112,9 +110,9 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	@Override
 	public ArrayList<GraphicalBlock> getChildBlocks() {
 		ArrayList<GraphicalBlock> ret = new ArrayList<>();
-		for(VBox box : nestBoxes) {
-			for(Node b : box.getChildren()) {
-				if(b instanceof GraphicalBlock) {
+		for (VBox box : nestBoxes) {
+			for (Node b : box.getChildren()) {
+				if (b instanceof GraphicalBlock) {
 					ret.add((GraphicalBlock) b);
 				}
 			}

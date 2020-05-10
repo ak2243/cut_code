@@ -1,4 +1,4 @@
-package python;
+package Java;
 
 import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;

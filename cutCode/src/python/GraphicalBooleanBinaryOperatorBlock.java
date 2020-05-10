@@ -27,7 +27,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 	}
 
 	public GraphicalBooleanBinaryOperatorBlock(int width, int height) {
-		super(width, height);
+		super(width, height, 3);
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
@@ -100,8 +100,10 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 		box.setMinWidth(50);
 		box.setMinHeight(30);
 		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-			this.setWidth(200);
-			this.setHeight(40);
+			this.setMinWidth(200);
+			this.setMinHeight(40);
+			this.setMaxWidth(200);
+			this.setMaxHeight(40);
 		}
 	}
 

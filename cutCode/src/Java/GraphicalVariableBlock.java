@@ -1,12 +1,14 @@
-package python;
+package Java;
 
 import cutcode.BlockCodeCompilerErrorException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -17,20 +19,26 @@ import java.util.ArrayList;
 public class GraphicalVariableBlock extends GraphicalBlock {
 	private TextField name;
 	private VBox[] nestBoxes;
+	private ComboBox<String> types;
 
 	public GraphicalVariableBlock() {
 		super(200, 40, 3);
 		nestBoxes = new VBox[1];
+		String[] typeChoices = {"num", "T/F", "str"};
+		types = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(typeChoices)));
+		types.setMinWidth(80);
 		name = new TextField();
-		name.setMaxWidth(100);
+		name.setMaxWidth(40);
+		name.setMinWidth(40);
 		VBox value = new VBox();
-		value.setMinWidth(50);
+		value.setMinWidth(30);
 		value.setMinHeight(24);
 		value.setStyle("-fx-background-color: #D59FF5");
 		nestBoxes[0] = value;
 		HBox line = new HBox();
 		line.setSpacing(5);
 		line.setPadding(new Insets(8));
+		line.getChildren().add(types);
 		line.getChildren().add(name);
 		line.getChildren().add(new Label("="));
 		line.getChildren().add(value);
@@ -64,6 +72,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 			throw new InvalidNestException();
 		}
 		nest.setNestedIn(this);
+		System.err.println(name.getMaxWidth());
 	}
 
 
@@ -72,13 +81,12 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
-		box.setMinWidth(50);
+		box.setMinWidth(30);
 		box.setMinHeight(24);
 		this.setMinWidth(200);
 		this.setMinHeight(40);
 		this.setMaxWidth(200);
 		this.setMaxHeight(40);
-
 	}
 
 	@Override
@@ -103,7 +111,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
 		if(nestBoxes[0].getChildren().size() != 1)
 			throw new BlockCodeCompilerErrorException();
-		return logicalFactory.createVariable(getIndentFactor(), name.getText(), ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock());
+		return logicalFactory.createVariable(getIndentFactor(), types.getValue(), name.getText(), ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 
 	@Override

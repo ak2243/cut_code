@@ -29,9 +29,10 @@ public class FileManager {
 	 */
 	public void write(String write) {
 		try {
+			System.err.println(write);
 			writer.write(write);
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		}
 	}
 

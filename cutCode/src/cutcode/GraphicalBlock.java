@@ -54,12 +54,12 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 
-	public GraphicalBlock() {
-		this(200, 40);
+	public GraphicalBlock(int indentFactor) {
+		this(200, 40, indentFactor);
 	}
 
-	public GraphicalBlock(double width, double height) {
-		indentFactor = 0;
+	public GraphicalBlock(double width, double height, int indentFactor) {
+		this.indentFactor = indentFactor;
 		setMinWidth(width);
 		setMinHeight(height);
 		setMaxWidth(width);
