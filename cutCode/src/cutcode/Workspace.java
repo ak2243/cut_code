@@ -5,22 +5,22 @@ import factories.LogicalFactory;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import factories.GUIFactory;
 
@@ -38,8 +38,12 @@ public class Workspace extends Pane {
 	private static final double paletteWidth = 200;
 	private static final double runButtonHeight = 20;
 	private LogicalFactory logicalFactory;
+	private Button run;
+	private Button changeLanguage;
+	private double height; //necessary for reset
 
-	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass) {
+	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass, int baseLineNumber) {
+		this.height = height;
 		this.logicalFactory = logicalFactory;
 		this.guiFactory = guiFactory;
 		blocks = new ArrayList<>();
@@ -62,39 +66,92 @@ public class Workspace extends Pane {
 
 		layout.setLeft(paletteScroll);
 
-		Button run = new Button("RUN");
+
+		run = new Button("run");
 		run.setMaxHeight(runButtonHeight);
 		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				Stage stage = new Stage();
-				BorderPane root = new BorderPane();
-
 				try {
-
+					HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
 					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
 					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
+					int lineLoc = baseLineNumber;
 					for(GraphicalBlock b : blocks) {
-						if(b.getAbove() == null && b.getNestedIn() == null) {
-							orderedHeadBlocks.add(b);
+						if(b.getNestedIn() == null) {
+							b.setLineNumber(lineLoc);
+							lineLoc = b.putInHashMap(lineLocations);
+							if(b.getAbove() == null)
+								orderedHeadBlocks.add(b);
 						}
+					}
+
+					if(orderedHeadBlocks.inOrder() == null) {
+						OutputView.output("Please create some blocks before exporting", new Stage());
+						return;
 					}
 					for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
-						for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow()) {
+						for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow())
 							orderedBlocks.add(curr.getLogicalBlock());
-						}
 					}
-					String ret = mainClass.run(orderedBlocks);
-					System.err.print(ret);
-					root.setCenter(new Label(ret));
-					Scene scene = new Scene(root, 400, 400);
-					stage.setScene(scene);
-					stage.show();
+					String ret = mainClass.run(orderedBlocks, lineLocations);
+					OutputView.output(ret, new Stage());
 				} catch (BlockCodeCompilerErrorException e1) {
 				}
 			}
 		});
-		layout.setTop(run);
+		changeLanguage = new Button("change language");
+		changeLanguage.setMaxHeight(runButtonHeight);
+		changeLanguage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				mainClass.reset();
+			}
+		});
+		Button export = new Button("export");
+		export.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
+				ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
+				for(GraphicalBlock b : blocks) {
+					if(b.getNestedIn() == null) {
+						if(b.getAbove() == null)
+							orderedHeadBlocks.add(b);
+					}
+				}
+				if(orderedHeadBlocks.inOrder() == null) {
+					OutputView.output("Please create some blocks before exporting", new Stage());
+					return;
+				}
+
+				for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
+					for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow()) {
+						try {
+							orderedBlocks.add(curr.getLogicalBlock());
+						} catch (BlockCodeCompilerErrorException blockCodeCompilerErrorException) {
+							OutputView.output("Export failed, please check your code", new Stage());
+						}
+					}
+				}
+				String file = FilePicker.chooseFile(new Stage());
+				if(file == null)
+					OutputView.output("Please pick a valid file", new Stage());
+				else {
+					try {
+						OutputView.output(mainClass.export(orderedBlocks, file), new Stage());
+					} catch (IOException ioException) {
+						OutputView.output("An unexpected error occurred in exporting your code to " + file, new Stage());
+					}
+				}
+			}
+		});
+		export.setMaxHeight(runButtonHeight);
+
+
+		HBox topButtons = new HBox(run, changeLanguage, export);
+		topButtons.setAlignment(Pos.TOP_LEFT);
+		layout.setTop(topButtons);
 
 	}
 
@@ -351,6 +408,58 @@ public class Workspace extends Pane {
 		if (rems != null) {
 			for (GraphicalBlock recurseRem : rems)
 				remove(recurseRem);
+		}
+	}
+
+	public void reset( GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass, int baseLineNumber) {
+		this.guiFactory = guiFactory;
+		this.logicalFactory = logicalFactory;
+		palette = setupPalette(paletteWidth, height - runButtonHeight);
+		palette.setPrefHeight(palette.getHeight() + 100);
+		paletteScroll = new ScrollPane();
+		paletteScroll.setContent(palette);
+		paletteScroll.setMinHeight(this.getMinHeight());
+		paletteScroll.setMaxHeight(this.getMaxHeight());
+		paletteScroll.setPrefHeight(this.getMaxHeight());
+		paletteScroll.setMinWidth(paletteWidth);
+		layout.setLeft(paletteScroll);
+		blocks = new ArrayList<>();
+		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				try {
+					HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
+					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
+					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
+					int lineLoc = baseLineNumber;
+					for(GraphicalBlock b : blocks) {
+						if(b.getNestedIn() == null) {
+							b.setLineNumber(lineLoc);
+							lineLoc = b.putInHashMap(lineLocations);
+							if(b.getAbove() == null)
+								orderedHeadBlocks.add(b);
+						}
+					}
+
+					if(orderedHeadBlocks.inOrder() == null) {
+						OutputView.output("Please create some blocks before exporting", new Stage());
+						return;
+					}
+					for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
+						for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow())
+							orderedBlocks.add(curr.getLogicalBlock());
+					}
+					String ret = mainClass.run(orderedBlocks, lineLocations);
+					OutputView.output(ret, new Stage());
+				} catch (BlockCodeCompilerErrorException e1) {
+				}
+			}
+		});
+		for(int i = 0; i < this.getChildren().size(); i++) { //Blocks reset when language changed
+			Node n = this.getChildren().get(i);
+			if(n instanceof GraphicalBlock) {
+				this.getChildren().remove(n);
+			}
 		}
 	}
 

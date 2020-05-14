@@ -22,7 +22,6 @@ public class LogicalPrintBlock extends LogicalBlock {
 		String indents = "";
 		for(int i = 0; i < getIndentFactor(); i++)
 			indents += "	";
-
 		return indents + "System.out.println(" + getPrint() + ");" + System.lineSeparator();
 	}
 

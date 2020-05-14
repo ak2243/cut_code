@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GraphicalVariableBlock extends GraphicalBlock {
 	private TextField name;
@@ -87,6 +88,13 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 		this.setMinHeight(40);
 		this.setMaxWidth(200);
 		this.setMaxHeight(40);
+	}
+
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		return getLineNumber() + 1;
 	}
 
 	@Override

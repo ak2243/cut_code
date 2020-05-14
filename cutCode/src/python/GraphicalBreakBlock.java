@@ -11,9 +11,11 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 public class GraphicalBreakBlock extends GraphicalBlock {
 	public GraphicalBreakBlock() {
-		super(200, 40, 3);
+		super(200, 40, 0);
 		Label label = new Label("break loop");
 		this.getChildren().add(label);
 		this.setAlignment(Pos.CENTER);
@@ -27,5 +29,15 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		return new GraphicalBreakBlock();
+	}
+
+	/**
+	 * @param lineLocations the hashmap to put the line number and Graphical Block
+	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 */
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		return getLineNumber() + 1;
 	}
 }

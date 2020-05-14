@@ -21,7 +21,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	private HashMap<VBox, double[]> nestDimensions;
 
 	public GraphicalElseBlock() {
-		super(200, 80, 3);
+		super(200, 80, 0);
 
 		nestDimensions = new HashMap<>();
 
@@ -105,6 +105,19 @@ public class GraphicalElseBlock extends GraphicalBlock {
 			this.setMaxWidth(200);
 			this.setMaxHeight(80);
 		}
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		int ret = getLineNumber() + 1;
+		for(Node n : nestBoxes[0].getChildren()) {
+			if(n instanceof GraphicalBlock) {
+				((GraphicalBlock) n).setLineNumber(ret);
+				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
+			}
+		}
+		return ret; //no final brace in python
 	}
 
 

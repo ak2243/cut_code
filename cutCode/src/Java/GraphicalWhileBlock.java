@@ -135,6 +135,23 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 		}
 	}
 
+	/**
+	 * @param lineLocations the hashmap to put the line number and Graphical Block
+	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 */
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		int ret = getLineNumber() + 1;
+		for(Node n : nestBoxes[1].getChildren()) {
+			if(n instanceof GraphicalBlock) {
+				((GraphicalBlock) n).setLineNumber(ret);
+				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
+			}
+		}
+		return ret + 1; //ending brace takes up a line
+	}
+
 
 	@Override
 	public ArrayList<GraphicalBlock> getChildBlocks() {

@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Arjun Khanna
@@ -38,7 +39,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 		op2.setMinWidth(50);
 		op2.setMinHeight(24);
 		op2.setStyle("-fx-background-color: #AA90E7");
-		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="};
+		String[] choiceOp = {"or", "and", ">", ">=", "<", "<=", "="};
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
 		operatorChoice.setMinWidth(75);
 		line.getChildren().addAll(op1, operatorChoice, op2);
@@ -105,6 +106,11 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 			this.setMaxWidth(200);
 			this.setMaxHeight(40);
 		}
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		return 0;
 	}
 
 	@Override

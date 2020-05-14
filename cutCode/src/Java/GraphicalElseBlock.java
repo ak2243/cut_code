@@ -107,6 +107,19 @@ public class GraphicalElseBlock extends GraphicalBlock {
 		}
 	}
 
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		int ret = getLineNumber() + 1;
+		for(Node n : nestBoxes[0].getChildren()) {
+			if(n instanceof GraphicalBlock) {
+				((GraphicalBlock) n).setLineNumber(ret);
+				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
+			}
+		}
+		return ret + 1; //ending brace takes up a line
+	}
+
 
 	@Override
 	public ArrayList<GraphicalBlock> getChildBlocks() {

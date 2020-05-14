@@ -13,13 +13,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GraphicalVariableBlock extends GraphicalBlock {
 	private TextField name;
 	private VBox[] nestBoxes;
 
 	public GraphicalVariableBlock() {
-		super(200, 40, 3);
+		super(200, 40, 0);
 		nestBoxes = new VBox[1];
 		name = new TextField();
 		name.setMaxWidth(100);
@@ -79,6 +80,12 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 		this.setMaxWidth(200);
 		this.setMaxHeight(40);
 
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		return getLineNumber() + 1;
 	}
 
 	@Override

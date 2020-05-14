@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
 	private GraphicalBlock below;
@@ -12,6 +13,8 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private GraphicalBlock nestedIn;
 	protected LogicalFactory logicalFactory;
 	private boolean ignoreNext;
+	private int lineNumber;
+	protected int indentFactor;
 
 	public int getIndentFactor() {
 		return indentFactor;
@@ -21,7 +24,14 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.indentFactor = indentFactor;
 	}
 
-	protected int indentFactor;
+	public int getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(int line) {
+		lineNumber = line;
+	}
+
 
 	public void setLogicalFactory(LogicalFactory logicalFactory) {
 		this.logicalFactory = logicalFactory;
@@ -184,9 +194,16 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		}
 		if (this.getNestedIn() != null)
 			this.getNestedIn().increment((VBox) this.getParent(), heightIncrement, widthIncrement);
-		if(this.getBelow() != null)
+		if (this.getBelow() != null)
 			this.getBelow().setAbove(this);
 
 	}
+
+	/**
+	 *
+	 * @param lineLocations the hashmap to put the line number and Graphical Block
+	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 */
+	public abstract int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations);
 
 }

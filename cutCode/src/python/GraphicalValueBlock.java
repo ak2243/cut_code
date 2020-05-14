@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.util.HashMap;
+
 public class GraphicalValueBlock extends GraphicalBlock {
 	private TextField value;
 	/**
@@ -19,7 +21,7 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	 * @author Arjun Khanna
 	 */
 	public GraphicalValueBlock() {
-		super(200, 40, 3);
+		super(200, 40, 0);
 		value = new TextField();
 		Text label = new Text("value ");
 		value.setMinHeight(32);
@@ -52,7 +54,10 @@ public class GraphicalValueBlock extends GraphicalBlock {
 		return new GraphicalValueBlock();
 	}
 
-
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		return 0;
+	}
 
 
 }

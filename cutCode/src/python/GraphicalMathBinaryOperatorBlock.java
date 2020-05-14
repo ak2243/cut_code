@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Arjun Khanna
@@ -27,7 +28,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	}
 
 	public GraphicalMathBinaryOperatorBlock(int width, int height) {
-		super(width, height, 3);
+		super(width, height, 0);
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
@@ -107,6 +108,11 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 			this.setMaxWidth(200);
 			this.setMaxHeight(40);
 		}
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		return 0;
 	}
 
 	@Override

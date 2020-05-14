@@ -1,13 +1,11 @@
 package factories;
 
-import cutcode.BlockCodeCompilerErrorException;
-import cutcode.Executor;
-import cutcode.FileManager;
-import cutcode.LogicalBlock;
+import cutcode.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 
 public class PythonExecutor extends Executor {
@@ -19,7 +17,7 @@ public class PythonExecutor extends Executor {
 
 
 	@Override
-	public String execute() throws BlockCodeCompilerErrorException {
+	public String execute(HashMap<Integer, GraphicalBlock> lineLocations) throws BlockCodeCompilerErrorException {
 		Process p;
 		try {
 
@@ -30,10 +28,15 @@ public class PythonExecutor extends Executor {
 
 
 			String errorLine = errorStream.readLine(); // takes the error statement. null if no errors
-			if(errorLine != null) {
+			String errorOutput = "";
+			while(errorLine != null) {
+				errorOutput += errorLine + System.lineSeparator();
+				errorLine = errorStream.readLine();
+			}
+			if(!errorOutput.equals("")) {
+				lineLocations.get(extractError(errorOutput)).tagErrorOnBlock();
 				throw new BlockCodeCompilerErrorException();
 			}
-
 			errorStream.close();
 			BufferedReader outputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = outputStream.readLine();
@@ -68,6 +71,13 @@ public class PythonExecutor extends Executor {
 		manager.openWriter();
 		for (LogicalBlock block : logicalBlocks)
 			manager.write(block.toString());
+
 		manager.closeWriter();
+	}
+
+	@Override
+	public int extractError(String error) {
+		int errorLine = Integer.parseInt((error.split("line ")[1]).substring(0, 1));
+		return errorLine;
 	}
 }

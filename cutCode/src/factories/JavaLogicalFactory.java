@@ -10,13 +10,14 @@ public class JavaLogicalFactory implements LogicalFactory {
 	public HashMap<String, String> keywordTranslation; //Used to go from graphical representation of operators to code
 
 	public JavaLogicalFactory() {
-		keywordTranslation = new HashMap<>(); //"+", "-", "÷", "X", "%"
-		keywordTranslation.put("or", "|");
-		keywordTranslation.put("and", "&");
+		keywordTranslation = new HashMap<>();
+		keywordTranslation.put("or", "||");
+		keywordTranslation.put("and", "&&");
 		keywordTranslation.put(">", ">");
 		keywordTranslation.put(">=", ">=");
 		keywordTranslation.put("<", "<");
 		keywordTranslation.put("<=", "<=");
+		keywordTranslation.put("=", "==");
 		keywordTranslation.put("+", "+");
 		keywordTranslation.put("-", "-");
 		keywordTranslation.put("÷", "÷");

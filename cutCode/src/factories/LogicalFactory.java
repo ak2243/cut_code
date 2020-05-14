@@ -14,8 +14,7 @@ public interface LogicalFactory {
 
 	/**
 	 * @param value the value being referred to in this block
-	 * @return
-	 * @apiNote this blocks should be used as part of a large statement, and not independently
+	 * @return the logical block to refer to this value
 	 */
 	public LogicalBlock createValue(String value);
 
@@ -24,7 +23,6 @@ public interface LogicalFactory {
 	 * @param name         the name of the variable
 	 * @param value        the value assigned to the variable
 	 * @return the Logical Block that creates the variable with the above parameters
-	 * @apiNote This method should be used when making a variable in a language where types are not required, or when editing variables in languages like Java
 	 */
 	public LogicalBlock createVariable(int indentFactor, String name, LogicalBlock value);
 
@@ -41,7 +39,7 @@ public interface LogicalFactory {
 	 * @param indentFactor  the number of times the if statement should be indented (this does not influence indentFactor for executeBlocks, which should have separately set indentFactors)
 	 * @param condition     the Logical Block that is the condition for this if statment
 	 * @param executeBlocks the blocks that will be executed if the condition evaluates to true
-	 * @return
+	 * @return the logical block for this if statement
 	 */
 	public LogicalBlock createIf(int indentFactor, LogicalBlock condition, List<LogicalBlock> executeBlocks);
 
@@ -49,7 +47,7 @@ public interface LogicalFactory {
 	 * @param firstOperand  the logical block that is the first operand
 	 * @param operator      the operator that is being used, in it's graphical form ("and", "or", etc.)
 	 * @param secondOperand the logical block that is the second operand
-	 * @return
+	 * @return the logical block for this boolean operator
 	 */
 	public LogicalBlock createBinaryBooleanOperator(LogicalBlock firstOperand, String operator, LogicalBlock secondOperand);
 
@@ -63,7 +61,7 @@ public interface LogicalFactory {
 	 * @param indentFactor  the number of times the while loop should be indented (this does not influence indentFactor for executeBlocks, which should have separately set indentFactors)
 	 * @param condition     the Logical Block that is the condition for this while loop
 	 * @param executeBlocks the blocks that will be executed while the condition evaluates to true
-	 * @return
+	 * @return the logical block for this while loop
 	 */
 	public LogicalBlock createWhileLoop(int indentFactor, LogicalBlock condition, List<LogicalBlock> executeBlocks);
 
@@ -71,7 +69,7 @@ public interface LogicalFactory {
 	 * @param firstOperand  the logical block that is the first operand
 	 * @param operator      the operator that is being used, in it's graphical form ("X", "÷", etc.)
 	 * @param secondOperand the logical block that is the second operand
-	 * @return
+	 * @return the logical block for this math operator
 	 */
 	public LogicalBlock createBinaryMathOperator(LogicalBlock firstOperand, String operator, LogicalBlock secondOperand);
 
@@ -79,7 +77,7 @@ public interface LogicalFactory {
 	 *
 	 * @param indentFactor the number of times that this block should be indented  (this does not influence indentFactor for executeBlocks, which should have separately set indentFactors)
 	 * @param executeBlocks the statements that should be executed if the else statement is activated
-	 * @return
+	 * @return the logical block for this else statement
 	 */
 	public LogicalBlock createElseBlock(int indentFactor, List<LogicalBlock> executeBlocks);
 }

@@ -1,39 +1,49 @@
 package factories;
 
-import cutcode.BlockCodeCompilerErrorException;
-import cutcode.Executor;
-import cutcode.FileManager;
-import cutcode.LogicalBlock;
+import cutcode.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 
 public class JavaExecutor extends Executor {
 	private String filename;
 	public static final String PREFIX = "public class Program {" + System.lineSeparator() + "	public static void main (String[] args) {" + System.lineSeparator();
 	public static final String SUFFIX = "	}" + System.lineSeparator() + "}";
-	public JavaExecutor(String filename) {
+	private String compileCommand;
+	private String runKeyword;
+	public JavaExecutor(String filename, String compileCommand, String runKeyword) {
 		this.filename = filename;
+		this.compileCommand = compileCommand;
+		this.runKeyword = runKeyword;
 	}
 
 
 	@Override
-	public String execute() throws BlockCodeCompilerErrorException {
+	public String execute(HashMap<Integer, GraphicalBlock> lineLocations) throws BlockCodeCompilerErrorException {
 		Process p;
 		Process p2;
 		try {
-			p = Runtime.getRuntime().exec("javac Program.java"); // this will compile the program
+			p = Runtime.getRuntime().exec(compileCommand + "  Program.java"); // this will compile the program
 			p.waitFor();
-			p2 = Runtime.getRuntime().exec("java Program"); // this will run the program
+			p2 = Runtime.getRuntime().exec(runKeyword + " Program"); // this will run the program
 
 			BufferedReader errorStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			// this is where the process outputs error messages
 
-
 			String errorLine = errorStream.readLine(); // takes the error statement. null if no errors
-			if(errorLine != null) {
+			String errorOutput = "";
+			while(errorLine != null) {
+				errorOutput += errorLine + System.lineSeparator();
+				errorLine = errorStream.readLine();
+			}
+			if(!errorOutput.equals("")) {
+				System.err.println(errorOutput);
+				System.err.println(extractError(errorOutput));
+				if(lineLocations.get(extractError(errorOutput)) != null)
+					lineLocations.get(extractError(errorOutput)).tagErrorOnBlock(); //TODO possible null
 				throw new BlockCodeCompilerErrorException();
 			}
 
@@ -76,6 +86,11 @@ public class JavaExecutor extends Executor {
 			manager.write(block.toString());
 		manager.write(SUFFIX);
 		manager.closeWriter();
+	}
+
+	@Override
+	public int extractError(String error) {
+		return Integer.parseInt(error.split(":")[1]);
 	}
 
 

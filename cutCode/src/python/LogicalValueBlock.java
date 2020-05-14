@@ -4,7 +4,6 @@ import cutcode.LogicalBlock;
 
 /**
  * @author Arjun Khanna
- * @apiNote This block is not to be used independently, it should always be nested inside an operator
  */
 public class LogicalValueBlock extends LogicalBlock {
 	public String value;

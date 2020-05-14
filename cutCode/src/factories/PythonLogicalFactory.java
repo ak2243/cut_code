@@ -16,6 +16,7 @@ public class PythonLogicalFactory implements LogicalFactory {
 		operatorTranslation.put(">=", ">=");
 		operatorTranslation.put("<", "<");
 		operatorTranslation.put("<=", "<=");
+		operatorTranslation.put("=", "==");
 		operatorTranslation.put("+", "+");
 		operatorTranslation.put("-", "-");
 		operatorTranslation.put("÷", "÷");

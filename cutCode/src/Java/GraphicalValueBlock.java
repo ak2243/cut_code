@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.util.HashMap;
+
 public class GraphicalValueBlock extends GraphicalBlock {
 	private TextField value;
 	/**
@@ -52,7 +54,14 @@ public class GraphicalValueBlock extends GraphicalBlock {
 		return new GraphicalValueBlock();
 	}
 
-
+	/**
+	 * @param lineLocations the hashmap to put the line number and Graphical Block
+	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 */
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		return 0;
+	}
 
 
 }

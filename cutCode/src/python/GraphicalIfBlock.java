@@ -20,7 +20,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 	private HashMap<VBox, double[]> nestDimensions;
 
 	public GraphicalIfBlock() {
-		super(200, 80, 3);
+		super(200, 80, 0);
 
 		nestDimensions = new HashMap<>();
 
@@ -133,6 +133,19 @@ public class GraphicalIfBlock extends GraphicalBlock {
 			this.setMaxWidth(200);
 			this.setMaxHeight(80);
 		}
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		int ret = getLineNumber() + 1;
+		for(Node n : nestBoxes[1].getChildren()) {
+			if(n instanceof GraphicalBlock) {
+				((GraphicalBlock) n).setLineNumber(ret);
+				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
+			}
+		}
+		return ret; //No ending brace in python
 	}
 
 

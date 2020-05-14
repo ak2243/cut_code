@@ -14,6 +14,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 public class GraphicalPrintBlock extends GraphicalBlock {
 	private TextField value;
 	public GraphicalPrintBlock() {
@@ -41,10 +43,18 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		// TODO Auto-generated method stub
 		return new GraphicalPrintBlock();
 	}
 
+	/**
+	 * @param lineLocations the hashmap to put the line number and Graphical Block
+	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 */
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		return getLineNumber() + 1;
+	}
 
 
 }

@@ -11,6 +11,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 public class GraphicalBreakBlock extends GraphicalBlock {
 	public GraphicalBreakBlock() {
 		super(200, 40, 3);
@@ -27,5 +29,11 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		return new GraphicalBreakBlock();
+	}
+
+	@Override
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+		lineLocations.put(getLineNumber(), this);
+		return getLineNumber() + 1;
 	}
 }
