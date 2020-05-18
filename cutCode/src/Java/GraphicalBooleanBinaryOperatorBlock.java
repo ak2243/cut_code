@@ -41,6 +41,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 		op2.setStyle("-fx-background-color: #AA90E7");
 		String[] choiceOp = {"or", "and", ">", ">=", "<", "<=", "="};
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
+		operatorChoice.setValue("or");
 		operatorChoice.setMinWidth(75);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);

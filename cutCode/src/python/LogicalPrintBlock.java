@@ -3,19 +3,15 @@ package python;
 import cutcode.LogicalBlock;
 
 public class LogicalPrintBlock extends LogicalBlock {
-	private String print;
+	private LogicalBlock print;
+
+
 
 	/**
 	 *
-	 * @return the statement this block will print, with quotes (if applicable)
+	 * @param print the statement this block will print. Quotes should be used for strings but not for variables
 	 */
-	public String getPrint() {return print;}
-
-	/**
-	 *
-	 * @param p the statement this block will print. Quotes should be used for strings but not for variables
-	 */
-	public void setPrint(String p) {print = p;}
+	public void setPrint(LogicalBlock print) {this.print = print;}
 
 	@Override
 	public String toString() {
@@ -23,7 +19,7 @@ public class LogicalPrintBlock extends LogicalBlock {
 		for(int i = 0; i < getIndentFactor(); i++)
 			indents += "	";
 
-		return indents + "print(" + getPrint() + ")" + System.lineSeparator();
+		return indents + "print(" + print.toString() + ")" + System.lineSeparator();
 	}
 
 

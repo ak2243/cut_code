@@ -41,6 +41,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 		op2.setStyle("-fx-background-color: #B895EB");
 		String[] choiceOp = {"+", "-", "÷", "X", "%"};
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
+		operatorChoice.setValue("+");
 		operatorChoice.setMinWidth(75);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);

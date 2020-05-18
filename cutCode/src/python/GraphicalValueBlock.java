@@ -32,8 +32,7 @@ public class GraphicalValueBlock extends GraphicalBlock {
 		line.getChildren().add(value);
 		this.getChildren().add(line);
 		this.setBackground(
-				new Background(new BackgroundFill(Color.web("#E09DFA"), CornerRadii.EMPTY, Insets.EMPTY)));
-
+				new Background(new BackgroundFill(Color.web("#F0A3FF"), CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
 	/**

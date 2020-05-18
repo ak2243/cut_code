@@ -23,13 +23,18 @@ public class JavaLogicalFactory implements LogicalFactory {
 		keywordTranslation.put("÷", "÷");
 		keywordTranslation.put("X", "X");
 		keywordTranslation.put("%", "%");
-		keywordTranslation.put("num", "int");
+		keywordTranslation.put("num", "double");
 		keywordTranslation.put("T/F", "boolean");
 		keywordTranslation.put("str", "String");
 	}
 
 	@Override
-	public LogicalBlock createPrint(int indentFactor, String print) {
+	public int getBaseIndent() {
+		return 3;
+	}
+
+	@Override
+	public LogicalBlock createPrint(int indentFactor, LogicalBlock print) {
 		LogicalPrintBlock ret = new LogicalPrintBlock();
 		ret.setPrint(print);
 		ret.setIndentFactor(indentFactor);

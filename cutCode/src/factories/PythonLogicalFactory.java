@@ -25,7 +25,13 @@ public class PythonLogicalFactory implements LogicalFactory {
 	}
 
 	@Override
-	public LogicalBlock createPrint(int indentFactor, String print) {
+	public int getBaseIndent() {
+		return 0;
+	}
+
+	@Override
+	public LogicalBlock createPrint(int indentFactor, LogicalBlock print) {
+		System.err.println(indentFactor);
 		python.LogicalPrintBlock ret = new python.LogicalPrintBlock();
 		ret.setPrint(print);
 		ret.setIndentFactor(indentFactor);

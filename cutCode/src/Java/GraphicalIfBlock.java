@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GraphicalIfBlock extends GraphicalBlock {
-	private GraphicalBooleanBinaryOperatorBlock condition; // TODO make this OperatorBlock
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 

@@ -5,12 +5,14 @@ import cutcode.LogicalBlock;
 import java.util.List;
 
 public interface LogicalFactory {
+	public int getBaseIndent();
+
 	/**
 	 * @param indentFactor the amount of times this block should be indented
 	 * @param print        the statement that should be printed. Quotes necessary if printing a string instead of referring to a value
 	 * @return the Logical Block that prints the print parameter
 	 */
-	public LogicalBlock createPrint(int indentFactor, String print);
+	public LogicalBlock createPrint(int indentFactor, LogicalBlock print);
 
 	/**
 	 * @param value the value being referred to in this block
