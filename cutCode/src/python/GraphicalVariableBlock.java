@@ -20,7 +20,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	private VBox[] nestBoxes;
 
 	public GraphicalVariableBlock() {
-		super(200, 40, 0);
+		super(200, 40);
 		nestBoxes = new VBox[1];
 		name = new TextField();
 		name.setMaxWidth(100);

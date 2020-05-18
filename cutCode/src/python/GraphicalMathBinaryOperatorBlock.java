@@ -28,7 +28,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	}
 
 	public GraphicalMathBinaryOperatorBlock(int width, int height) {
-		super(width, height, 0);
+		super(width, height);
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();

@@ -21,7 +21,7 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	 * @author Arjun Khanna
 	 */
 	public GraphicalValueBlock() {
-		super(200, 40, 0);
+		super(200, 40);
 		value = new TextField();
 		Text label = new Text("value ");
 		value.setMinHeight(32);

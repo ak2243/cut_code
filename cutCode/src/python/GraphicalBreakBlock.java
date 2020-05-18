@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class GraphicalBreakBlock extends GraphicalBlock {
 	public GraphicalBreakBlock() {
-		super(200, 40, 0);
+		super(200, 40);
 		Label label = new Label("break loop");
 		this.getChildren().add(label);
 		this.setAlignment(Pos.CENTER);
@@ -23,7 +23,7 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 	}
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		return logicalFactory.createBreak(indentFactor);
+		return logicalFactory.createBreak(getIndentFactor());
 	}
 
 	@Override

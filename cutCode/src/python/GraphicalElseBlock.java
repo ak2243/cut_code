@@ -21,7 +21,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	private HashMap<VBox, double[]> nestDimensions;
 
 	public GraphicalElseBlock() {
-		super(200, 80, 0);
+		super(200, 80);
 
 		nestDimensions = new HashMap<>();
 
@@ -44,17 +44,17 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	}
 
 	public GraphicalElseBlock(double width, double height) {
-		super(width, height, 3);
+		super(width, height);
 	}
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
 		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
 		for(Node n : nestBoxes[0].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
-			((GraphicalBlock) n).setIndentFactor(indentFactor + 1);
+			((GraphicalBlock) n).setIndentFactor(getIndentFactor() + 1);
 			executeBlocks.add(((GraphicalBlock) n).getLogicalBlock());
 		}
-		return logicalFactory.createElseBlock(indentFactor, executeBlocks);
+		return logicalFactory.createElseBlock(getIndentFactor(), executeBlocks);
 	}
 
 	@Override

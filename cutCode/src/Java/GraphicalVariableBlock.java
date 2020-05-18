@@ -1,3 +1,4 @@
+
 package Java;
 
 import cutcode.BlockCodeCompilerErrorException;
@@ -23,7 +24,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	private ComboBox<String> types;
 
 	public GraphicalVariableBlock() {
-		super(200, 40, 3);
+		super(200, 40);
 		nestBoxes = new VBox[1];
 		String[] typeChoices = {"num", "T/F", "str"};
 		types = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(typeChoices)));

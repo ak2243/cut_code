@@ -14,10 +14,10 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	protected LogicalFactory logicalFactory;
 	private boolean ignoreNext;
 	private int lineNumber;
-	protected int indentFactor;
+	private int indentFactor;
 
 	public int getIndentFactor() {
-		return indentFactor;
+		return indentFactor + logicalFactory.getBaseIndent();
 	}
 
 	public void setIndentFactor(int indentFactor) {
@@ -64,12 +64,8 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 
-	public GraphicalBlock(int indentFactor) {
-		this(200, 40, indentFactor);
-	}
 
-	public GraphicalBlock(double width, double height, int indentFactor) {
-		this.indentFactor = indentFactor;
+	public GraphicalBlock(double width, double height) {
 		setMinWidth(width);
 		setMinHeight(height);
 		setMaxWidth(width);

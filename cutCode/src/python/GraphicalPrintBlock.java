@@ -20,7 +20,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 		this(200, 40);
 	}
 	public GraphicalPrintBlock(double width, double height) {
-		super(width, height, 0);
+		super(width, height);
 		nestBoxes = new VBox[1];
 		HBox firstLine = new HBox();
 		firstLine.setSpacing(5);
@@ -40,7 +40,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		return logicalFactory.createPrint(indentFactor, ((GraphicalBlock)nestBoxes[0].getChildren().get(0)).getLogicalBlock());
+		return logicalFactory.createPrint(getIndentFactor(), ((GraphicalBlock)nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 
 	@Override
