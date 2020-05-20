@@ -151,28 +151,16 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	 * @param nest  the block to be nested in the index
 	 * @throws InvalidNestException - thrown if the index does not correspond to a valid nest location
 	 */
-	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		throw new InvalidNestException();
-	}
+	public abstract void nest(int index, GraphicalBlock nest) throws InvalidNestException;
 
-	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
-		throw new InvalidNestException();
-	}
+	/**
+	 *
+	 * @param box the box from which rem is being removed
+	 * @param rem the block that is being unnested
+	 * @throws InvalidNestException if this block does not contain a nested block rem
+	 */
+	public abstract void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException;
 
-	public double getX() {
-		double x = this.getLayoutX();
-		if (this.getNestedIn() != null) {
-			x += this.getNestedIn().getX() + this.getParent().getLayoutX() + this.getNestedIn().getPadding().getLeft();
-		}
-		return x;
-	}
-
-	public double getY() {
-		double y = this.getLayoutY();
-		if (this.getNestedIn() != null)
-			y += this.getNestedIn().getY() + this.getParent().getLayoutY() + this.getNestedIn().getPadding().getLeft();
-		return y;
-	}
 
 	/**
 	 * @param incrementBox    - the box to be incremented
@@ -182,10 +170,12 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	public void increment(VBox incrementBox, double heightIncrement, double widthIncrement) {
 		if (widthIncrement > 0) {
 			incrementBox.setMaxWidth(incrementBox.getWidth() + widthIncrement);
+			incrementBox.setPrefWidth(incrementBox.getWidth() + widthIncrement);
 			this.setMaxWidth(this.getWidth() + widthIncrement);
 		}
 		if (heightIncrement > 0) {
-			incrementBox.setMinHeight(incrementBox.getHeight() + heightIncrement);
+			incrementBox.setMaxHeight(incrementBox.getHeight() + heightIncrement);
+			incrementBox.setPrefHeight(incrementBox.getHeight() + heightIncrement);
 			this.setMaxHeight(this.getHeight() + heightIncrement);
 		}
 		if (this.getNestedIn() != null)

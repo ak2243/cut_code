@@ -1,14 +1,12 @@
 package python;
 
 import cutcode.BlockCodeCompilerErrorException;
+import cutcode.InvalidNestException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -51,6 +49,16 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		return new GraphicalValueBlock();
+	}
+
+	@Override
+	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
+		throw new InvalidNestException(); //No nesting in value blocks
+	}
+
+	@Override
+	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+		throw new InvalidNestException(); //No nesting in value blocks
 	}
 
 	@Override

@@ -15,12 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GraphicalElseBlock extends GraphicalBlock {
-
-	private GraphicalBooleanBinaryOperatorBlock condition; // TODO make this OperatorBlock
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 
-	public GraphicalElseBlock() {
+	public GraphicalElseBlock() { //sets up visuals of the block
 		super(200, 80);
 
 		nestDimensions = new HashMap<>();
@@ -69,7 +67,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	@Override
 	public Point2D[] getNestables() {
 		Point2D[] ret = new Point2D[nestBoxes.length];
-		double secondaryIncrementY = 0;
+		double secondaryIncrementY = 0; //need to account for blocks already nested (makes it bottom right)
 		for (Node n : nestBoxes[0].getChildren())
 			secondaryIncrementY += ((GraphicalBlock) n).getHeight();
 		ret[0] = nestBoxes[0].localToScene(nestBoxes[0].getLayoutBounds().getMinX(), nestBoxes[0].getLayoutBounds().getMinY() + secondaryIncrementY);
@@ -92,7 +90,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 
 
 	@Override
-	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException { //removes block from nest field and resets sizes of block and fields
 		box.getChildren().remove(rem);
 		double[] dimensions = nestDimensions.get(box);
 		if (dimensions != null && dimensions.length == 2) {
@@ -117,7 +115,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
 			}
 		}
-		return ret; //no final brace in python
+		return ret + logicalFactory.getEndingBrace(); ////Block class reused for java so might have ending brace
 	}
 
 

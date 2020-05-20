@@ -82,7 +82,6 @@ public class Main extends Application {
 			workspaceScene = new Scene(workspace, 1400, 865.248);
 		} else
 			workspace.reset(guiFactory, logicalFactory,  this, baseLineNumber);
-		//public void reset( GUIFactory guiFactory, LogicalFactory logicalFactory, Stage stage, Main mainClass, int baseLineNumber) {
 		workspaceStage.setScene(workspaceScene);
 		workspaceStage.show();
 
@@ -92,7 +91,6 @@ public class Main extends Application {
 		workspaceStage.close();
 		langPicker.reset();
 		langStage.show();
-		System.err.println(langStage.getScene().toString());
 	}
 
 	public String export(List<LogicalBlock> blocks, String file) throws IOException {

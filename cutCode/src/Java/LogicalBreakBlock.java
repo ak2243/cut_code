@@ -2,6 +2,9 @@ package Java;
 
 import cutcode.LogicalBlock;
 
+/**
+ * @deprecated
+ */
 public class LogicalBreakBlock extends LogicalBlock {
 
 	@Override

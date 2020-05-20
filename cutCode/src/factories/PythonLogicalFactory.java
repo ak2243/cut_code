@@ -9,7 +9,7 @@ public class PythonLogicalFactory implements LogicalFactory {
 	public HashMap<String, String> operatorTranslation; //Used to go from graphical representation of operators to code
 
 	public PythonLogicalFactory() {
-		operatorTranslation = new HashMap<>(); //"+", "-", "÷", "X", "%"
+		operatorTranslation = new HashMap<>();
 		operatorTranslation.put("or", "|");
 		operatorTranslation.put("and", "&");
 		operatorTranslation.put(">", ">");
@@ -22,6 +22,12 @@ public class PythonLogicalFactory implements LogicalFactory {
 		operatorTranslation.put("÷", "÷");
 		operatorTranslation.put("X", "X");
 		operatorTranslation.put("%", "%");
+		//Allows translating keywords to code keywords
+	}
+
+	@Override
+	public int getEndingBrace() {
+		return 0;
 	}
 
 	@Override
@@ -31,7 +37,6 @@ public class PythonLogicalFactory implements LogicalFactory {
 
 	@Override
 	public LogicalBlock createPrint(int indentFactor, LogicalBlock print) {
-		System.err.println(indentFactor);
 		python.LogicalPrintBlock ret = new python.LogicalPrintBlock();
 		ret.setPrint(print);
 		ret.setIndentFactor(indentFactor);
@@ -94,7 +99,7 @@ public class PythonLogicalFactory implements LogicalFactory {
 
 	@Override
 	public LogicalBlock createBreak(int indentFactor) {
-		python.LogicalBreakBlock ret = new python.LogicalBreakBlock();
+		python.LogicalBreakBlock ret = new python.LogicalBreakBlock(); //deprecated but wanted to keep it here
 		ret.setIndentFactor(indentFactor);
 		return ret;
 	}

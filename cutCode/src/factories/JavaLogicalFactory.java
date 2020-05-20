@@ -23,15 +23,22 @@ public class JavaLogicalFactory implements LogicalFactory {
 		keywordTranslation.put("÷", "÷");
 		keywordTranslation.put("X", "X");
 		keywordTranslation.put("%", "%");
-		keywordTranslation.put("num", "double");
-		keywordTranslation.put("T/F", "boolean");
-		keywordTranslation.put("str", "String");
+		keywordTranslation.put("num", "double ");
+		keywordTranslation.put("T/F", "boolean" );
+		keywordTranslation.put("str", "String ");
+		keywordTranslation.put("edit", "");
+		//Allows changing keywords to code keywords
+	}
+
+	@Override
+	public int getEndingBrace() {
+		return 1; //there *are* ending braces in java
 	}
 
 	@Override
 	public int getBaseIndent() {
 		return 3;
-	}
+	} //base indent is 3 because class and method
 
 	@Override
 	public LogicalBlock createPrint(int indentFactor, LogicalBlock print) {
@@ -59,15 +66,11 @@ public class JavaLogicalFactory implements LogicalFactory {
 
 	@Override
 	public LogicalBlock createVariable(int indentFactor, String type, String name, LogicalBlock value) {
-
 		LogicalVariableBlock ret = new LogicalVariableBlock();
 		ret.setName(name);
 		ret.setIndentFactor(indentFactor);
 		ret.setValue(value);
-		if(type.equals("edit"))
-			ret.setType(null);
-		else
-			ret.setType(keywordTranslation.get(type));
+		ret.setType(keywordTranslation.get(type));
 		return ret;
 
 	}
@@ -107,7 +110,7 @@ public class JavaLogicalFactory implements LogicalFactory {
 
 	@Override
 	public LogicalBlock createBreak(int indentFactor) {
-		LogicalBreakBlock ret = new LogicalBreakBlock();
+		LogicalBreakBlock ret = new LogicalBreakBlock(); //deprecated but wanted to keep it here
 		ret.setIndentFactor(indentFactor);
 		return ret;
 	}

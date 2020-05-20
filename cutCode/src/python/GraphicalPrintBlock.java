@@ -19,7 +19,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 	public GraphicalPrintBlock() {
 		this(200, 40);
 	}
-	public GraphicalPrintBlock(double width, double height) {
+	public GraphicalPrintBlock(double width, double height) { //sets up visuals of the block
 		super(width, height);
 		nestBoxes = new VBox[1];
 		HBox firstLine = new HBox();
@@ -29,7 +29,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 		VBox value = new VBox();
 		value.setMinWidth(140);
 		value.setMinHeight(24);
-		value.setStyle("-fx-background-color: #E6ACFB");
+		value.setStyle("-fx-background-color: #E6E6E6");
 		nestBoxes[0] = value;
 		firstLine.getChildren().addAll(label, value);
 		this.getChildren().add(firstLine);
@@ -40,6 +40,10 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() == 0) {
+			tagErrorOnBlock();
+			throw new BlockCodeCompilerErrorException();
+		}
 		return logicalFactory.createPrint(getIndentFactor(), ((GraphicalBlock)nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 
@@ -68,7 +72,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 
 	@Override
-	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
+	public void nest(int index, GraphicalBlock nest) throws InvalidNestException { //Nest the value to be printed
 		if (nestBoxes[index].getChildren().size() != 0)
 			throw new InvalidNestException();
 		try {

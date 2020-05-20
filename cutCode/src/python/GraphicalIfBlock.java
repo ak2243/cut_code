@@ -19,7 +19,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 
-	public GraphicalIfBlock() {
+	public GraphicalIfBlock() { //sets up visuals of the block
 		super(200, 80);
 
 		nestDimensions = new HashMap<>();
@@ -28,6 +28,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		this.setBackground(new Background(new BackgroundFill(Color.web("#907FDE"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 		HBox topLine = new HBox();
+		topLine.setSpacing(8);
 		topLine.getChildren().addAll(new Label("if"));
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -41,7 +42,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		double[] conditionSpaceDimensions = {140.0, 30.0};
 		nestDimensions.put(conditionSpace, conditionSpaceDimensions);
 		conditionSpace.setBackground(
-				new Background(new BackgroundFill(Color.web("#9B8AE1"), CornerRadii.EMPTY, Insets.EMPTY)));
+				new Background(new BackgroundFill(Color.web("#E6E6E6"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 		topLine.getChildren().add(conditionSpace);
 
@@ -58,8 +59,10 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1)
+		if(nestBoxes[0].getChildren().size() != 1) {
+			tagErrorOnBlock();
 			throw new BlockCodeCompilerErrorException();
+		}
 		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
 		for(Node n : nestBoxes[1].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
 			((GraphicalBlock) n).setIndentFactor(getIndentFactor() + 1);
@@ -121,13 +124,16 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 	@Override
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+		//resets sizes if necessary and removes rem
 		box.getChildren().remove(rem);
 		double[] dimensions = nestDimensions.get(box);
 		if (dimensions != null && dimensions.length == 2) {
 			box.setMinWidth(dimensions[0]);
 			box.setMinHeight(dimensions[1]);
+			box.setMaxWidth(dimensions[0]);
+			box.setMaxHeight(dimensions[1]);
 		}
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
+		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) { //full size reset for block
 			this.setMinWidth(200);
 			this.setMinHeight(80);
 			this.setMaxWidth(200);
@@ -145,7 +151,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
 			}
 		}
-		return ret; //No ending brace in python
+		return ret + logicalFactory.getEndingBrace(); //Block class reused for java so might have ending brace
 	}
 
 

@@ -1,6 +1,7 @@
 package python;
 
 import cutcode.BlockCodeCompilerErrorException;
+import cutcode.InvalidNestException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
@@ -9,11 +10,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 
-public class GraphicalBreakBlock extends GraphicalBlock {
+/**
+ * @Deprecated
+ */
+//Deemed too complicated for the current version of cut code
+public class GraphicalBreakBlock extends GraphicalBlock { //Class not in use
 	public GraphicalBreakBlock() {
 		super(200, 40);
 		Label label = new Label("break loop");
@@ -29,6 +35,16 @@ public class GraphicalBreakBlock extends GraphicalBlock {
 	@Override
 	public GraphicalBlock cloneBlock() {
 		return new GraphicalBreakBlock();
+	}
+
+	@Override
+	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
+		throw new InvalidNestException();
+	}
+
+	@Override
+	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+		throw new InvalidNestException();
 	}
 
 	/**

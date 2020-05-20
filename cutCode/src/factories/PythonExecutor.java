@@ -33,15 +33,17 @@ public class PythonExecutor extends Executor {
 				errorOutput += errorLine + System.lineSeparator();
 				errorLine = errorStream.readLine();
 			}
-			if(!errorOutput.equals("")) {
-				lineLocations.get(extractError(errorOutput)).tagErrorOnBlock();
-				throw new BlockCodeCompilerErrorException();
+			if(!errorOutput.equals("")) { //there is an error
+				GraphicalBlock errorBlock = lineLocations.get(extractError(errorOutput));
+				if(errorBlock != null)
+					errorBlock.tagErrorOnBlock(); //specific error reporting
+				throw new BlockCodeCompilerErrorException(); //how workspace knows there's an error
 			}
 			errorStream.close();
 			BufferedReader outputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = outputStream.readLine();
 			String output = "";
-			while(line != null) {
+			while(line != null) { //no errors, get print output from program
 				output += line + System.lineSeparator();
 				line = outputStream.readLine();
 			}
@@ -55,7 +57,7 @@ public class PythonExecutor extends Executor {
 	}
 
 	@Override
-	public void export(String code, String filename) throws IOException {
+	public void export(String code, String filename) throws IOException { //export code to file
 		FileManager manager = new FileManager();
 		manager.delete(filename);
 		manager.setOutput(filename);
@@ -69,7 +71,7 @@ public class PythonExecutor extends Executor {
 		FileManager manager = new FileManager();
 		manager.setOutput(filename);
 		manager.openWriter();
-		for (LogicalBlock block : logicalBlocks)
+		for (LogicalBlock block : logicalBlocks) //translates blocks to syntax code
 			manager.write(block.toString());
 
 		manager.closeWriter();

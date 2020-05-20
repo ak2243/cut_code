@@ -52,6 +52,6 @@ public class LogicalVariableBlock extends LogicalBlock {
 		String indents = "";
 		for(int i = 0; i < getIndentFactor(); i++)
 			indents += "	";
-		return indents + type + " " + name + " = " + getValue().toString() + ";" + System.lineSeparator();
+		return indents + type + name + " = " + getValue().toString() + ";" + System.lineSeparator();
 	}
 }

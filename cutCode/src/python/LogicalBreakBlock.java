@@ -2,7 +2,10 @@ package python;
 
 import cutcode.LogicalBlock;
 
-public class LogicalBreakBlock extends LogicalBlock {
+/**
+ * @deprecated
+ */
+public class LogicalBreakBlock extends LogicalBlock { //The block was deemed too complex (for the user) for the current version of cut code
 
 	@Override
 	public String toString() {

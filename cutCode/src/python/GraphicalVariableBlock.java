@@ -17,9 +17,9 @@ import java.util.HashMap;
 
 public class GraphicalVariableBlock extends GraphicalBlock {
 	private TextField name;
-	private VBox[] nestBoxes;
+	private VBox[] nestBoxes; //array for consistent and easily expandable design
 
-	public GraphicalVariableBlock() {
+	public GraphicalVariableBlock() { //sets up visuals of the block
 		super(200, 40);
 		nestBoxes = new VBox[1];
 		name = new TextField();
@@ -27,7 +27,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 		VBox value = new VBox();
 		value.setMinWidth(50);
 		value.setMinHeight(24);
-		value.setStyle("-fx-background-color: #D59FF5");
+		value.setStyle("-fx-background-color: #E6E6E6");
 		nestBoxes[0] = value;
 		HBox line = new HBox();
 		line.setSpacing(5);
@@ -43,7 +43,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public Point2D[] getNestables() {
+	public Point2D[] getNestables() { //returns top left of the nesting
 		Point2D[] ret = new Point2D[nestBoxes.length];
 		for (int i = 0; i < nestBoxes.length; i++)
 			ret[i] = nestBoxes[i].localToScene(nestBoxes[i].getLayoutBounds().getMinX(), nestBoxes[i].getLayoutBounds().getMinY());
@@ -53,7 +53,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		if (nestBoxes[index].getChildren().size() != 0)
+		if (nestBoxes[index].getChildren().size() != 0) //only nest one block
 			throw new InvalidNestException();
 		try {
 			VBox box = nestBoxes[index];
@@ -70,6 +70,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 
 	@Override
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+		//Need to reset block and box dimensions (no more blocks because only 1 nested)
 		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
@@ -85,7 +86,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	@Override
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
-		return getLineNumber() + 1;
+		return getLineNumber() + 1; //Independent block so new line at the end
 	}
 
 	@Override
@@ -108,8 +109,10 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	 */
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1)
+		if(nestBoxes[0].getChildren().size() != 1) {
+			tagErrorOnBlock();
 			throw new BlockCodeCompilerErrorException();
+		}
 		return logicalFactory.createVariable(getIndentFactor(), name.getText(), ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 

@@ -24,9 +24,10 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	private ComboBox<String> types;
 
 	public GraphicalVariableBlock() {
+		//setting up the visuals of the block
 		super(200, 40);
 		nestBoxes = new VBox[1];
-		String[] typeChoices = {"num", "T/F", "str"};
+		String[] typeChoices = {"num", "T/F", "str", "edit"}; //type options
 		types = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(typeChoices)));
 		types.setMinWidth(80);
 		name = new TextField();
@@ -35,7 +36,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 		VBox value = new VBox();
 		value.setMinWidth(30);
 		value.setMinHeight(24);
-		value.setStyle("-fx-background-color: #D59FF5");
+		value.setStyle("-fx-background-color: #E6E6E6"); //color of nest field
 		nestBoxes[0] = value;
 		HBox line = new HBox();
 		line.setSpacing(5);
@@ -52,7 +53,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	}
 
 	@Override
-	public Point2D[] getNestables() {
+	public Point2D[] getNestables() { //returns the top left of the nest point
 		Point2D[] ret = new Point2D[nestBoxes.length];
 		for (int i = 0; i < nestBoxes.length; i++)
 			ret[i] = nestBoxes[i].localToScene(nestBoxes[i].getLayoutBounds().getMinX(), nestBoxes[i].getLayoutBounds().getMinY());
@@ -62,7 +63,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		if (nestBoxes[index].getChildren().size() != 0)
+		if (nestBoxes[index].getChildren().size() != 0) //can only nest one block inside it (this block can have blocks nested inside it though)
 			throw new InvalidNestException();
 		try {
 			VBox box = nestBoxes[index];
@@ -74,12 +75,11 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 			throw new InvalidNestException();
 		}
 		nest.setNestedIn(this);
-		System.err.println(name.getMaxWidth());
 	}
 
 
 	@Override
-	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
+	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException { //takes out the block and resets field and block sizes
 		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
@@ -93,22 +93,18 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 
 
 	@Override
-	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
+	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) { //used to match block to line locations
 		lineLocations.put(getLineNumber(), this);
-		return getLineNumber() + 1;
+		return getLineNumber() + 1; //has a new line at the end of it
 	}
 
 	@Override
 	public ArrayList<GraphicalBlock> getChildBlocks() {
 		ArrayList<GraphicalBlock> ret = new ArrayList<>();
-		for (VBox box : nestBoxes) {
-			for (Node b : box.getChildren()) {
-				if (b instanceof GraphicalBlock) {
-					ret.add((GraphicalBlock) b);
-				}
-			}
+		if(nestBoxes[0].getChildren().size() == 1) {
+			ret.add((GraphicalBlock) nestBoxes[0].getChildren().get(0)); //only one block nested inside
 		}
-		return ret;
+		return ret; //empty array list if nothing nested
 	}
 
 	/**
@@ -118,8 +114,10 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	 */
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1)
-			throw new BlockCodeCompilerErrorException();
+		if(nestBoxes[0].getChildren().size() != 1) {
+			tagErrorOnBlock();
+			throw new BlockCodeCompilerErrorException(); //needs something nested inside it
+		}
 		return logicalFactory.createVariable(getIndentFactor(), types.getValue(), name.getText(), ((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock());
 	}
 

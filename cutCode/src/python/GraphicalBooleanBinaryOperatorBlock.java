@@ -32,13 +32,17 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
-		op1.setMinWidth(50);
-		op1.setMinHeight(24);
-		op1.setStyle("-fx-background-color: #AA90E7");
+		op1.setMaxWidth(50);
+		op1.setMaxHeight(24);
+		op1.setPrefWidth(50);
+		op1.setPrefHeight(24);
+		op1.setStyle("-fx-background-color: #E6E6E6");
 		VBox op2 = new VBox();
-		op2.setMinWidth(50);
-		op2.setMinHeight(24);
-		op2.setStyle("-fx-background-color: #AA90E7");
+		op2.setMaxWidth(50);
+		op2.setMaxHeight(24);
+		op2.setPrefWidth(50);
+		op2.setPrefHeight(24);
+		op2.setStyle("-fx-background-color: #E6E6E6");
 		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="};
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
 		operatorChoice.setValue("or");
@@ -56,6 +60,10 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		if(nestBoxes[0].getChildren().size() != 1 || nestBoxes[1].getChildren().size() != 1) {
+			tagErrorOnBlock();
+			throw new BlockCodeCompilerErrorException();
+		}
 		return logicalFactory.createBinaryBooleanOperator(((GraphicalBlock) (nestBoxes[0].getChildren().get(0))).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) (nestBoxes[1].getChildren().get(0))).getLogicalBlock());
 	}
 
@@ -96,11 +104,13 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
-		if (box == null || rem == null)
+		if(box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
-		box.setMinWidth(50);
-		box.setMinHeight(30);
+		box.setMaxWidth(50);
+		box.setMaxHeight(30);
+		box.setPrefWidth(50);
+		box.setPrefHeight(30);
 		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
 			this.setMinWidth(200);
 			this.setMinHeight(40);

@@ -29,7 +29,6 @@ public class FileManager {
 	 */
 	public void write(String write) {
 		try {
-			System.err.println(write);
 			writer.write(write);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -86,6 +85,5 @@ public class FileManager {
 	
 	public void delete(String filename) {
 		File f = new File(filename);
-		System.err.println(f.delete() + "whhhhhhhhhhh");
 	}
 }

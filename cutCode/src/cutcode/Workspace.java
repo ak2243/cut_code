@@ -28,18 +28,19 @@ import factories.GUIFactory;
  * @author Arjun Khanna and Peter Timpane
  */
 public class Workspace extends Pane {
+	//For those that are interested. This was one of the most challenging parts of the project. It took me almost two weeks of working on this class to make sure the graphics work.
 	private static final int bindDistance = 15;
 	private static final int nestDistance = 15;
 	private ArrayList<GraphicalBlock> blocks;
 	private BorderPane layout;
 	private VBox palette;
-	private ScrollPane paletteScroll;
-	private GUIFactory guiFactory;
+	private ScrollPane paletteScroll; //Palette may need to scroll in the feature
+	private GUIFactory guiFactory;//used for factory design pattern
 	private static final double paletteWidth = 200;
-	private static final double runButtonHeight = 20;
-	private LogicalFactory logicalFactory;
-	private Button run;
-	private Button changeLanguage;
+	private static final double runButtonHeight = 20; //made it a constant so that it can be changed easier
+	private LogicalFactory logicalFactory; //used for factory design pattern
+	private Button run; //run button
+	private Button changeLanguage; //change language button
 	private double height; //necessary for reset
 
 	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass, int baseLineNumber) {
@@ -77,12 +78,14 @@ public class Workspace extends Pane {
 					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
 					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
 					int lineLoc = baseLineNumber;
-					for(GraphicalBlock b : blocks) {
+
+					for(GraphicalBlock b : blocks) { //Goes through all the block
+						b.untag(); //Ensures that error tags from previous methods don't stay
 						if(b.getNestedIn() == null) {
 							b.setLineNumber(lineLoc);
-							lineLoc = b.putInHashMap(lineLocations);
+							lineLoc = b.putInHashMap(lineLocations); //Allows for specific error reporting by matching blocks to line numbers
 							if(b.getAbove() == null)
-								orderedHeadBlocks.add(b);
+								orderedHeadBlocks.add(b); //Ordering by height of head blocks (aren't nested in or attached to something)
 						}
 					}
 
@@ -91,12 +94,13 @@ public class Workspace extends Pane {
 						return;
 					}
 					for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
-						for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow())
+						for (GraphicalBlock curr = head; curr != null; curr = curr.getBelow())
 							orderedBlocks.add(curr.getLogicalBlock());
 					}
-					String ret = mainClass.run(orderedBlocks, lineLocations);
+					String ret = mainClass.run(orderedBlocks, lineLocations); //Runs the code
 					OutputView.output(ret, new Stage());
 				} catch (BlockCodeCompilerErrorException e1) {
+					OutputView.output("There was an error in your code", new Stage());
 				}
 			}
 		});
@@ -105,11 +109,12 @@ public class Workspace extends Pane {
 		changeLanguage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				mainClass.reset();
+				mainClass.reset(); //Changing languages requires a reset
 			}
 		});
 		Button export = new Button("export");
 		export.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			//Didn't comment the second time because it's the same as running but you call mainClass.export() instead of mainClass.run()
 			@Override
 			public void handle(MouseEvent e) {
 				BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
@@ -166,19 +171,18 @@ public class Workspace extends Pane {
 
 
 		for (GraphicalBlock b : guiFactory.getAllBlocks()) {
-
 			CreateHandler handler = new CreateHandler(b);
 			b.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
 			b.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 			b.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-
+			//These handlers are used to create blocks
 			palette.getChildren().add(b);
 		}
 
 		return palette;
 	}
 
-	private class CreateHandler implements EventHandler<MouseEvent> {
+	private class CreateHandler implements EventHandler<MouseEvent> { //Handler for the blocks in palette
 
 		GraphicalBlock block;
 
@@ -191,7 +195,7 @@ public class Workspace extends Pane {
 		@Override
 		public void handle(MouseEvent e) {
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-				current = block.cloneBlock();
+				current = block.cloneBlock(); //Creates block. Dragging now affects the new block
 				Workspace.this.getChildren().add(current);
 
 				current.setLayoutX(e.getSceneX());
@@ -202,7 +206,7 @@ public class Workspace extends Pane {
 				current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
 				current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
 				current.setLogicalFactory(logicalFactory);
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) { //Drag listener
 				current.setLayoutX(e.getSceneX());
 				current.setLayoutY(e.getSceneY());
 
@@ -210,29 +214,29 @@ public class Workspace extends Pane {
 				if (palette.contains(e.getSceneX(), e.getSceneY()) || e.getSceneX() < palette.getWidth()) {
 					Workspace.this.getChildren().remove(current);
 					return;
-				}
+				} //Remove block if the mouse is to the left of the pallette | play area border
 
-				blocks.add(current); //Need to add the new block to
-				for (GraphicalBlock b : blocks) {
+				blocks.add(current); //Need to add the new block to the list of blocks
+				for (GraphicalBlock b : blocks) { //Need to check for nesting and attaching
 					if (b == current)
 						continue;
 					Point2D checkPoint = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
 					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
 					double distance = checkPoint.distance(clickPoint);
-					if (distance < bindDistance && (b.getBelow() == null)) {
+					if (distance < bindDistance && (b.getBelow() == null)) { //Check for attaching
 						current.setAbove(b);
 						b.setBelow(current);
 						break;
 					}
 
 					Point2D[] nestables = b.getNestables();
-					for (int i = 0; i < nestables.length; i++) {
+					for (int i = 0; i < nestables.length; i++) { //Check for nesting
 						distance = clickPoint.distance(nestables[i]);
 						if (distance < nestDistance) {
 							try {
 								b.nest(i, current);
 							} catch (InvalidNestException invalidNestException) {
-								continue; //TODO action here?
+								continue;
 							}
 
 						}
@@ -245,7 +249,7 @@ public class Workspace extends Pane {
 
 	}
 
-	private class BlockHandler implements EventHandler<MouseEvent> {
+	private class BlockHandler implements EventHandler<MouseEvent> { //Handlers for clicking and dragging blocks when it's already created
 
 		private GraphicalBlock block;
 		private double offsetX, offsetY;
@@ -258,14 +262,14 @@ public class Workspace extends Pane {
 
 		@Override
 		public void handle(MouseEvent e) {
-			if (block.ignoreStatus() && !e.getEventType().equals(MouseEvent.MOUSE_RELEASED))
+			if (block.ignoreStatus() && !e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) //Avoids ripple effect of nested blocks
 				return;
 			else
 				block.actionIgnored();
 			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
 				GraphicalBlock add = block;
 
-				clickSequence = new ArrayList<>();
+				clickSequence = new ArrayList<>(); //so that all blocks attached to this block are kept track of
 				while (add != null) {
 					add.toFront();
 					clickSequence.add(add);
@@ -283,17 +287,17 @@ public class Workspace extends Pane {
 				if (above != null)
 					above.setBelow(null); // Allows for things to be bound to "above"
 
-				block.setAbove(null);
+				block.setAbove(null);//detaches block
 
 
-				//TODO: need to check if the click is on a nested block as opposed to it's parent block
-				GraphicalBlock nestedIn = block.getNestedIn();
+
+				GraphicalBlock nestedIn = block.getNestedIn(); //If the block is nested in something
 				if (nestedIn != null) {
 					try {
 						offsetX = 0;
 						offsetY = 0;
 						VBox nestBox = (VBox) block.getParent();
-						for (GraphicalBlock block : clickSequence) {
+						for (GraphicalBlock block : clickSequence) { //unnests all blocks in clickSequence from the parent block
 							nestedIn.unnest(nestBox, block);
 							Workspace.this.getChildren().add(block);
 							block.setNestedIn(null);
@@ -302,7 +306,7 @@ public class Workspace extends Pane {
 						block.setLayoutY(e.getSceneY() - offsetY);
 						GraphicalBlock ignore = nestedIn;
 						ignoring = new ArrayList<>();
-						do {
+						do { //Need to iterate at least once so do while
 							ignoring.add(ignore);
 							ignore.ignoreNextAction();
 							ignore = ignore.getNestedIn();
@@ -314,13 +318,12 @@ public class Workspace extends Pane {
 
 				}
 
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) { //drag listener
 				block.setLayoutX(e.getSceneX() - offsetX);
 				block.setLayoutY(e.getSceneY() - offsetY);
 
 
 			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-
 
 				if (ignoring != null) { //Need to unignore all listeners being ignored, otherwise problems occur
 					for (GraphicalBlock b : ignoring) {
@@ -329,58 +332,55 @@ public class Workspace extends Pane {
 					ignoring = null;
 				}
 
-				if (palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY)) {
+				//remove block if block dragged to the remove area (palette) or the left of it
+				if (e.getSceneX() < palette.getWidth() || palette.contains(e.getSceneX() - offsetX, e.getSceneY() - offsetY) || palette.contains(e.getSceneX(), e.getSceneY())) {
 					for (GraphicalBlock rem : clickSequence) {
 						remove(rem);
 					}
 					return;
 				} else {
-					for (GraphicalBlock b : blocks) {
+					for (GraphicalBlock b : blocks) { //Need to check for attaching and listening
 						if (b == block)
 							continue;
 						Point2D clickPoint = new Point2D(block.getLayoutX(), block.getLayoutY());
 						Point2D point = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
 						double distance = point.distance(new Point2D(block.getLayoutX(), block.getLayoutY()));
+						//need to make sure you're not looking at the block itself or the block below it. Otherwise, you get a cycle
 						if (b == block || b.getAbove() == block)
 							continue;
 						if (distance < bindDistance && (b.getBelow() == null)) {
-							b.setBelow(block);
+							b.setBelow(block); //attaches block if close enough
 							block.setAbove(b);
-							block.layoutXProperty().bind(b.layoutXProperty());
-							block.layoutYProperty().bind(b.layoutYProperty().add(b.getHeight()));
 							break;
 						}
 
 						Point2D[] nestables = b.getNestables();
-						boolean cycle = false;
+						boolean cycle = false; //need to make sure you're not cycling in nesting
 						GraphicalBlock cycleCheck = b;
 						while (cycleCheck.getNestedIn() != null && !cycle) {
 							cycle = b == block;
 							cycleCheck = cycleCheck.getNestedIn();
 						}
 						if (!cycle) {
-							for (int i = 0; i < nestables.length; i++) {
+							for (int i = 0; i < nestables.length; i++) { //checks for nesting
 								distance = clickPoint.distance(nestables[i]);
 
-								if (distance < nestDistance) {
+								if (distance < nestDistance) { //This means it's close enough to nest
 									//This needs to be done before returning
 									try {
-										b.nest(i, block);
-
+										b.nest(i, block); //Done before for loop in case there's an error on the first one
 										for (GraphicalBlock add : clickSequence) {
 											if (add == block)
 												continue;
 											try {
-												if(add.getAbove() != null) {
+												if(add.getAbove() != null) { //destroys sequence
 													add.getAbove().setBelow(null);
 												}
 												add.setAbove(null);
 												b.nest(i, add);
-											} catch (InvalidNestException innerNestException) {
-												add.getAbove().setBelow(null);
-												add.setAbove(null);
+											} catch (InvalidNestException innerNestException) { //error here means the nest field can only take one
 												add.setLayoutX(add.getLayoutX() + 10);
-												add.setLayoutY(add.getLayoutY() + 10);
+												add.setLayoutY(add.getLayoutY() + 10); //Keeps the rest of the sequence intact and offsets the block to indicate nest failure
 												break;
 											}
 										}
@@ -401,17 +401,19 @@ public class Workspace extends Pane {
 
 
 
-	private void remove(GraphicalBlock rem) {
+	private void remove(GraphicalBlock rem) { //uses recursion for nested block
 		blocks.remove(rem);
 		this.getChildren().remove(rem);
-		ArrayList<GraphicalBlock> rems = rem.getChildBlocks();
+		ArrayList<GraphicalBlock> rems = rem.getChildBlocks(); //gets all blocks that are children of rem
 		if (rems != null) {
 			for (GraphicalBlock recurseRem : rems)
-				remove(recurseRem);
+				remove(recurseRem); //recursion
 		}
 	}
 
 	public void reset( GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass, int baseLineNumber) {
+		//redoes the necessary parts of constructor in order to reset
+		//didn't duplicate comments from constructor
 		this.guiFactory = guiFactory;
 		this.logicalFactory = logicalFactory;
 		palette = setupPalette(paletteWidth, height - runButtonHeight);
@@ -433,6 +435,7 @@ public class Workspace extends Pane {
 					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
 					int lineLoc = baseLineNumber;
 					for(GraphicalBlock b : blocks) {
+						b.untag();
 						if(b.getNestedIn() == null) {
 							b.setLineNumber(lineLoc);
 							lineLoc = b.putInHashMap(lineLocations);
@@ -458,8 +461,10 @@ public class Workspace extends Pane {
 		for(int i = 0; i < this.getChildren().size(); i++) { //Blocks reset when language changed
 			Node n = this.getChildren().get(i);
 			if(n instanceof GraphicalBlock) {
-				this.getChildren().remove(n);
+				this.getChildren().remove(i);
+				i--;
 			}
+
 		}
 	}
 

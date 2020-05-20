@@ -39,11 +39,10 @@ public class JavaExecutor extends Executor {
 				errorOutput += errorLine + System.lineSeparator();
 				errorLine = errorStream.readLine();
 			}
-			if(!errorOutput.equals("")) {
-				System.err.println(errorOutput);
-				System.err.println(extractError(errorOutput));
-				if(lineLocations.get(extractError(errorOutput)) != null)
-					lineLocations.get(extractError(errorOutput)).tagErrorOnBlock(); //TODO possible null
+			if(!errorOutput.equals("")) { //Error in code
+				GraphicalBlock errorBlock = lineLocations.get(extractError(errorOutput));
+				if(errorBlock != null)
+					errorBlock.tagErrorOnBlock();
 				throw new BlockCodeCompilerErrorException();
 			}
 
@@ -51,7 +50,7 @@ public class JavaExecutor extends Executor {
 			BufferedReader outputStream = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 			String line = outputStream.readLine();
 			String output = "";
-			while(line != null) {
+			while(line != null) { //No errors, get program output
 				output += line + System.lineSeparator();
 				line = outputStream.readLine();
 			}
@@ -64,7 +63,7 @@ public class JavaExecutor extends Executor {
 	}
 
 	@Override
-	public void export(String code, String filename) throws IOException {
+	public void export(String code, String filename) throws IOException { //writes code to given file name
 		FileManager manager = new FileManager();
 		manager.delete(filename);
 		manager.setOutput(filename);
@@ -82,7 +81,7 @@ public class JavaExecutor extends Executor {
 		manager.setOutput(filename);
 		manager.openWriter();
 		manager.write(PREFIX);
-		for (LogicalBlock block : logicalBlocks)
+		for (LogicalBlock block : logicalBlocks) //translates block to string
 			manager.write(block.toString());
 		manager.write(SUFFIX);
 		manager.closeWriter();
@@ -91,7 +90,7 @@ public class JavaExecutor extends Executor {
 	@Override
 	public int extractError(String error) {
 		return Integer.parseInt(error.split(":")[1]);
+		//converts error message to line number and checks hashmap to check which graphical block that is
 	}
-
 
 }

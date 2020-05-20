@@ -5,6 +5,17 @@ import cutcode.LogicalBlock;
 import java.util.List;
 
 public interface LogicalFactory {
+
+	/**
+	 *
+	 * @return 1 if the language has an ending brace and 0 if not
+	 */
+	public int getEndingBrace();
+
+	/**
+	 *
+	 * @return the base number of indents
+	 */
 	public int getBaseIndent();
 
 	/**

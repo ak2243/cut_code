@@ -25,6 +25,7 @@ public class LanguagePicker extends BorderPane {
 	private String javaDefault, pythonDefault;
 
 	public LanguagePicker(double height, double width, Main mainClass, Stage stage) {
+		//Need to check if the default values work
 		if(checkValidity("java --help"))
 			javaDefault = "java";
 		if(checkValidity("python3 --help"))
@@ -32,6 +33,7 @@ public class LanguagePicker extends BorderPane {
 		else if(checkValidity("python --help"))
 			pythonDefault = "python";
 
+		//Setting up the scene
 		Label label = new Label("Welcome to Cut Code");
 		label.setFont(new Font("Helvetica", 24));
 		Label label2 = new Label("Please pick a programming language below");
@@ -39,6 +41,7 @@ public class LanguagePicker extends BorderPane {
 		VBox top = new VBox(label, label2);
 		top.setAlignment(Pos.TOP_CENTER);
 
+		//Setting up drop down
 		String[] langChoice = {"java", "python"};
 		languageChoice = new ComboBox<>(FXCollections.observableArrayList(FXCollections.observableArrayList(langChoice)));
 		VBox options = new VBox(languageChoice);
@@ -49,7 +52,7 @@ public class LanguagePicker extends BorderPane {
 			public void changed(ObservableValue ov, String t, String t1) { //t1 is language choice
 
 				VBox right = new VBox();
-				switch (t1) {
+				switch (t1) { //Gets keywords from user when they pick a drop down option
 					case "java":
 						Label javaCompileKeyword = new Label("Compile keyword:");
 						compileInput = new TextField(javaDefault + "c");
@@ -79,20 +82,19 @@ public class LanguagePicker extends BorderPane {
 			public void handle(MouseEvent event) {
 
 				if (languageChoice.getValue() != null) {
-
+					//checks validity of given commands
 					if (compileInput == null && checkValidity(runInput.getText() + " --help"))
 						mainClass.setLanguage(languageChoice.getValue(), null, runInput.getText());
 					else if (checkValidity(runInput.getText() + " --help"))
 						mainClass.setLanguage(languageChoice.getValue(), compileInput.getText(), runInput.getText());
 					else {
-						//TODO consider giving the user a message here
+						OutputView.output("Please pick valid commands", new Stage());
 						return;
 					}
 					mainClass.setUpWorkspace();
 				}
 			}
 		});
-
 
 		setLeft(options);
 		setBottom(bottom);
@@ -106,7 +108,7 @@ public class LanguagePicker extends BorderPane {
 		try {
 			proc = rt.exec(command);
 			proc.waitFor();
-			int exitVal = proc.exitValue();
+			int exitVal = proc.exitValue(); //If installed, exit code is 0
 			valid = exitVal == 0;
 		} catch (IOException | InterruptedException e) {
 			valid = false;
@@ -114,7 +116,7 @@ public class LanguagePicker extends BorderPane {
 		return valid;
 	}
 
-	public void reset() {
+	public void reset() { //Resets the language picker
 		setRight(null);
 		languageChoice.setValue("Pick Language");
 	}

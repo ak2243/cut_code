@@ -9,8 +9,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,21 +27,25 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 		this(200, 40);
 	}
 
-	public GraphicalMathBinaryOperatorBlock(int width, int height) {
+	public GraphicalMathBinaryOperatorBlock(int width, int height) { //sets up visuals of block
 		super(width, height);
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
-		op1.setMinWidth(50);
-		op1.setMinHeight(24);
-		op1.setStyle("-fx-background-color: #B895EB");
+		op1.setMaxWidth(50);
+		op1.setMaxHeight(24);
+		op1.setPrefWidth(50);
+		op1.setPrefHeight(24);
+		op1.setStyle("-fx-background-color: #E6E6E6");
 		VBox op2 = new VBox();
-		op2.setMinWidth(50);
-		op2.setMinHeight(24);
-		op2.setStyle("-fx-background-color: #B895EB");
-		String[] choiceOp = {"+", "-", "÷", "X", "%"};
+		op2.setMaxWidth(50);
+		op2.setMaxHeight(24);
+		op2.setPrefWidth(50);
+		op2.setPrefHeight(24);
+		op2.setStyle("-fx-background-color: #E6E6E6");
+		String[] choiceOp = {"+", "-", "÷", "X", "%"}; //drop down options
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
-		operatorChoice.setValue("+");
+		operatorChoice.setValue("+"); //default value is addition
 		operatorChoice.setMinWidth(75);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);
@@ -56,8 +60,10 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1 || nestBoxes[1].getChildren().size() != 1)
+		if(nestBoxes[0].getChildren().size() != 1 || nestBoxes[1].getChildren().size() != 1) {
+			tagErrorOnBlock();
 			throw new BlockCodeCompilerErrorException();
+		}
 		return logicalFactory.createBinaryMathOperator(((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) nestBoxes[1].getChildren().get(0)).getLogicalBlock());
 	}
 
@@ -101,9 +107,12 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 		if(box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
-		box.setMinWidth(50);
-		box.setMinHeight(30);
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
+		//reset box size (only 1 nest in these boxes)
+		box.setMaxWidth(50);
+		box.setMaxHeight(30);
+		box.setPrefWidth(50);
+		box.setPrefHeight(30);
+		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) { //Full size reset
 			this.setMinWidth(200);
 			this.setMinHeight(40);
 			this.setMaxWidth(200);
@@ -126,6 +135,6 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 				}
 			}
 		}
-		return ret;
+		return ret; //No new line because not used independently
 	}
 }

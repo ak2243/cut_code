@@ -20,7 +20,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 
-	public GraphicalWhileBlock() {
+	public GraphicalWhileBlock() { //sets up visual of the block
 		super(200, 80);
 
 		nestDimensions = new HashMap<>();
@@ -30,6 +30,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 
 		HBox topLine = new HBox();
+		topLine.setSpacing(2);
 		topLine.getChildren().addAll(new Label("while"));
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -43,7 +44,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 		double[] conditionSpaceDimensions = {140.0, 30.0};
 		nestDimensions.put(conditionSpace, conditionSpaceDimensions);
 		conditionSpace.setBackground(
-				new Background(new BackgroundFill(Color.web("#7D80D7"), CornerRadii.EMPTY, Insets.EMPTY)));
+				new Background(new BackgroundFill(Color.web("#E6E6E6"), CornerRadii.EMPTY, Insets.EMPTY)));
 		topLine.getChildren().add(conditionSpace);
 
 		this.getChildren().addAll(topLine, bottomLine);
@@ -59,8 +60,10 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		if(nestBoxes[0].getChildren().size() != 1)
+		if(nestBoxes[0].getChildren().size() != 1) {
+			tagErrorOnBlock();
 			throw new BlockCodeCompilerErrorException();
+		}
 		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
 		for(Node n : nestBoxes[1].getChildren()) { //gets all the blocks to be executed if the if statement evaluates to true
 			((GraphicalBlock) n).setIndentFactor(getIndentFactor() + 1);
@@ -92,16 +95,16 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		if (index == 0) {
+		if (index == 0) { //Condition nesting
 			VBox box = nestBoxes[0];
-			if (nestBoxes[index].getChildren().size() != 0)
+			if (nestBoxes[index].getChildren().size() != 0) //only one block nested in condition
 				throw new InvalidNestException();
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
 			increment(box, incrementHeight, incrementWidth);
 			box.getChildren().add(nest);
 
-		} else if (index == 1) {
+		} else if (index == 1) { //nesting in execute field
 			VBox box = nestBoxes[1];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
@@ -113,7 +116,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 			}
 			increment(box, incrementHeight, incrementWidth);
 			box.getChildren().add(nest);
-		} else
+		} else //invalid indes
 			throw new InvalidNestException();
 		nest.setNestedIn(this);
 	}
@@ -122,12 +125,14 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 	@Override
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
 		box.getChildren().remove(rem);
-		double[] dimensions = nestDimensions.get(box);
+		double[] dimensions = nestDimensions.get(box); //hashmap contains dimensions of each nest vbox
 		if (dimensions != null && dimensions.length == 2) {
 			box.setMinWidth(dimensions[0]);
 			box.setMinHeight(dimensions[1]);
+			box.setMaxWidth(dimensions[0]);
+			box.setMaxHeight(dimensions[1]);
 		}
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
+		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) { //full block size reset
 			this.setMinWidth(200);
 			this.setMinHeight(80);
 			this.setMaxWidth(200);
@@ -150,7 +155,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 
 	@Override
-	public ArrayList<GraphicalBlock> getChildBlocks() {
+	public ArrayList<GraphicalBlock> getChildBlocks() { //returns all condition adn execution blocks
 		ArrayList<GraphicalBlock> ret = new ArrayList<>();
 		for (VBox box : nestBoxes) {
 			for (Node b : box.getChildren()) {
