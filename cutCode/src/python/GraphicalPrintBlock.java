@@ -93,8 +93,8 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
-		box.setMinWidth(140);
-		box.setMinHeight(24);
+		box.setMaxWidth(140);
+		box.setMaxHeight(24);
 		this.setMinWidth(200);
 		this.setMinHeight(40);
 		this.setMaxWidth(200);
