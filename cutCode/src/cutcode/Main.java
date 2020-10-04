@@ -72,6 +72,7 @@ public class Main extends Application {
 		Scene scene = new Scene(langPicker, 600, 400);
 		langStage = primaryStage;
 		langStage.setScene(scene);
+		primaryStage.setMaximized(true);
 		primaryStage.show();
 	}
 	
@@ -83,6 +84,7 @@ public class Main extends Application {
 		} else
 			workspace.reset(guiFactory, logicalFactory,  this, baseLineNumber);
 		workspaceStage.setScene(workspaceScene);
+		workspaceStage.setMaximized(true);
 		workspaceStage.show();
 
 	}
