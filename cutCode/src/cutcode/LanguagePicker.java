@@ -45,38 +45,50 @@ public class LanguagePicker extends BorderPane {
 		String[] langChoice = {"java", "python"};
 		languageChoice = new ComboBox<>(FXCollections.observableArrayList(FXCollections.observableArrayList(langChoice)));
 		VBox options = new VBox(languageChoice);
-		options.setAlignment(Pos.CENTER_LEFT);
+		options.setAlignment(Pos.CENTER);
 		languageChoice.setValue("Pick Language");
+		VBox content = new VBox();
+		content.setAlignment(Pos.CENTER);
+		content.getChildren().add(options);
 		languageChoice.valueProperty().addListener(new ChangeListener<String>() {
+			private VBox keywordInput;
 			@Override
 			public void changed(ObservableValue ov, String t, String t1) { //t1 is language choice
 
-				VBox right = new VBox();
+				keywordInput = new VBox();
+				keywordInput.setAlignment(Pos.CENTER);
+				if (content.getChildren().size() > 1)
+					content.getChildren().remove(1);
 				switch (t1) { //Gets keywords from user when they pick a drop down option
 					case "java":
 						Label javaCompileKeyword = new Label("Compile keyword:");
 						compileInput = new TextField(javaDefault + "c");
 						HBox javaFirstLine = new HBox(javaCompileKeyword, compileInput);
+						javaFirstLine.setAlignment(Pos.CENTER);
 						Label javaRunKeyword = new Label("Run keyword:");
 						runInput = new TextField(javaDefault);
 						HBox javaSecondLine = new HBox(javaRunKeyword, runInput);
-						right.getChildren().addAll(javaFirstLine, javaSecondLine);
+						keywordInput.getChildren().clear();
+						keywordInput.getChildren().addAll(javaFirstLine, javaSecondLine);
+						javaSecondLine.setAlignment(Pos.CENTER);
 						break;
 					case "python":
 						Label pythonCompileKeyword = new Label("Compile keyword:");
 						runInput = new TextField(pythonDefault);
 						HBox pythonFirstLine = new HBox(pythonCompileKeyword, runInput);
-						right.getChildren().add(pythonFirstLine);
+						pythonFirstLine.setAlignment(Pos.CENTER);
+						keywordInput.getChildren().clear();
+						keywordInput.getChildren().add(pythonFirstLine);
 						break;
 				}
-				right.setAlignment(Pos.CENTER_RIGHT);
-				setRight(right);
+				
+				content.getChildren().add(keywordInput);
 			}
 		});
 
 		Button run = new Button("Run Cutcode");
 		VBox bottom = new VBox(run);
-		bottom.setAlignment(Pos.BOTTOM_RIGHT);
+		bottom.setAlignment(Pos.BOTTOM_CENTER);
 		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -96,7 +108,8 @@ public class LanguagePicker extends BorderPane {
 			}
 		});
 
-		setLeft(options);
+		
+		top.getChildren().add(content);
 		setBottom(bottom);
 		setTop(top);
 	}
