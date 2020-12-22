@@ -20,4 +20,12 @@ public class FilePicker {
 		else
 			return file.getPath();
 	}
+	public static String pickFile(Stage stage) {
+		FileChooser fil_chooser = new FileChooser();
+		File file = fil_chooser.showOpenDialog(stage);
+		if(file == null)
+			return "";
+		else
+			return file.getPath();
+	}
 }

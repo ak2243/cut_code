@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class Executor {
+	/**
+	 * 
+	 * @param lineLocations a hashmap where the key is the line number for the corresponding graphical block (value in hashmap)
+	 * @return the output of the program
+	 * @throws BlockCodeCompilerErrorException thrown when the user's code doesn't compile
+	 */
 	public abstract String execute(HashMap<Integer, GraphicalBlock> lineLocations) throws BlockCodeCompilerErrorException;
 	public abstract void export(String code, String filename) throws IOException;
 	public abstract void export(List<LogicalBlock> logicalBlocks, String filename) throws IOException;

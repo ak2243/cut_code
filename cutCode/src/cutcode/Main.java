@@ -79,7 +79,7 @@ public class Main extends Application {
 	public void setUpWorkspace() {
 		workspaceStage = new Stage();
 		if(workspace == null) {
-			workspace = new Workspace(1400, 865.248, guiFactory, logicalFactory, this,  baseLineNumber);
+			workspace = new Workspace(1400, 865.248, guiFactory, logicalFactory, this, baseLineNumber);
 			workspaceScene = new Scene(workspace, 1400, 865.248);
 		} else
 			workspace.reset(guiFactory, logicalFactory,  this, baseLineNumber);
