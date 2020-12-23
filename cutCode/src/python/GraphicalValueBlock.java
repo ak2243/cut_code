@@ -5,6 +5,7 @@ import cutcode.InvalidNestException;
 import cutcode.LogicalBlock;
 import cutcode.GraphicalBlock;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -14,18 +15,22 @@ import java.util.HashMap;
 
 public class GraphicalValueBlock extends GraphicalBlock {
 	private TextField value;
+	private double initWidth, initHeight;
 	/**
 	 * O(1)
 	 * @author Arjun Khanna
 	 */
-	public GraphicalValueBlock() {
-		super(200, 40);
+	public GraphicalValueBlock(double width, double height) {
+		super(width, height);
+		this.setAlignment(Pos.CENTER);
+		initWidth = width;
+		initHeight = height;
 		value = new TextField();
 		Text label = new Text("value ");
-		value.setMinHeight(32);
+		value.setMinHeight(height - height/5);
 		HBox line = new HBox();
-		line.setSpacing(5);
-		line.setPadding(new Insets(8));
+		line.setSpacing(height/8);
+		line.setPadding(new Insets(height/5));
 		line.getChildren().add(label);
 		line.getChildren().add(value);
 		this.getChildren().add(line);
@@ -48,7 +53,7 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	 */
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalValueBlock();
+		return new GraphicalValueBlock(initWidth, initHeight);
 	}
 
 	@Override

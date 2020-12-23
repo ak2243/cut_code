@@ -3,10 +3,10 @@ package factories;
 import python.*;
 import cutcode.GraphicalBlock;
 
-public class JavaGUIFactory implements GUIFactory{
+public class JavaGUIFactory extends GUIFactory {
 	@Override
 	public cutcode.GraphicalBlock[] getAllBlocks() {
-		GraphicalBlock[] ret = {new GraphicalValueBlock(), new GraphicalPrintBlock(), new Java.GraphicalVariableBlock(), new GraphicalMathBinaryOperatorBlock(), new GraphicalBooleanBinaryOperatorBlock(), new GraphicalIfBlock(), new GraphicalElseBlock(), new GraphicalWhileBlock()};
+		GraphicalBlock[] ret = {new GraphicalValueBlock(blockWidth, blockHeight), new GraphicalPrintBlock(), new Java.GraphicalVariableBlock(), new GraphicalMathBinaryOperatorBlock(), new GraphicalBooleanBinaryOperatorBlock(), new GraphicalIfBlock(), new GraphicalElseBlock(), new GraphicalWhileBlock()};
 		return ret;
 	}
 }

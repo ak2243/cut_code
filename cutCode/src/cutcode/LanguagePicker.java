@@ -26,6 +26,7 @@ public class LanguagePicker extends BorderPane {
 	private ComboBox<String> languageChoice;
 	private String javaDefault, pythonDefault;
 	private String language;
+	private double height, width;
 
 	/**
 	 * 
@@ -38,6 +39,8 @@ public class LanguagePicker extends BorderPane {
 		//Need to check if the default values work
 		javaDefault = "java";
 		pythonDefault = "python3";
+		this.height = height;
+		this.width = width;
 
 		//Setting up the scene
 		Label label = new Label("Welcome to Cut Code");
@@ -206,7 +209,7 @@ public class LanguagePicker extends BorderPane {
 	}
 	
 	public void err() {
-		OutputView.output("Please pick valid commands", new Stage());
+		OutputView.output("Please pick valid commands", new Stage(), width, height/2);
 	}
 	private class FilePickHandler implements EventHandler<MouseEvent> {
 		private TextField field;

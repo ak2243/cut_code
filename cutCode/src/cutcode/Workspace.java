@@ -28,35 +28,39 @@ import factories.GUIFactory;
  * @author Arjun Khanna and Peter Timpane
  */
 public class Workspace extends Pane {
-	//For those that are interested. This was one of the most challenging parts of the project. It took me almost two weeks of working on this class to make sure the graphics work.
-	private static final int bindDistance = 15;
-	private static final int nestDistance = 15;
+	private double bindDistance, nestDistance;
 	private ArrayList<GraphicalBlock> blocks;
 	private BorderPane layout;
 	private VBox palette;
 	private ScrollPane paletteScroll; //Palette may need to scroll in the feature
 	private GUIFactory guiFactory;//used for factory design pattern
-	private static final double paletteWidth = 200;
-	private static final double runButtonHeight = 20; //made it a constant so that it can be changed easier
+	private double paletteWidth, runButtonHeight;
 	private LogicalFactory logicalFactory; //used for factory design pattern
+
 	private Button run; //run button
 	private Button changeLanguage; //change language button
-	private double height; //necessary for reset
+	private double height, width; //necessary for reset
 
 	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass, int baseLineNumber) {
 		this.height = height;
+		this.width = width;
 		this.logicalFactory = logicalFactory;
 		this.guiFactory = guiFactory;
 		blocks = new ArrayList<>();
+		
+		bindDistance = nestDistance = this.width*0.025;
+		runButtonHeight = this.height/30;
+		paletteWidth = this.width/6;
 
+		
 		this.setMinHeight(height);
 		this.setMaxHeight(height);
 		this.setMinWidth(width);
 		this.setMaxWidth(width);
 		layout = new BorderPane();
 		this.getChildren().add(layout);
-		palette = setupPalette(paletteWidth, height - runButtonHeight);
-		palette.setPrefHeight(palette.getHeight() + 100);
+		palette = setUpPalette(paletteWidth, height - runButtonHeight);
+		
 
 		paletteScroll = new ScrollPane();
 		paletteScroll.setContent(palette);
@@ -160,10 +164,10 @@ public class Workspace extends Pane {
 
 	}
 
-	public VBox setupPalette(double width, double height) {
+	public VBox setUpPalette(double width, double height) {
 		VBox palette = new VBox();
-		palette.setSpacing(40);
-		palette.setPadding(new Insets(30));
+		palette.setSpacing(width/5);
+		palette.setPadding(new Insets(3 * width/20));
 		palette.setMinWidth(width);
 		palette.setMinHeight(height);
 		palette.setBackground(
@@ -416,7 +420,7 @@ public class Workspace extends Pane {
 		//didn't duplicate comments from constructor
 		this.guiFactory = guiFactory;
 		this.logicalFactory = logicalFactory;
-		palette = setupPalette(paletteWidth, height - runButtonHeight);
+		palette = setUpPalette(paletteWidth, height - runButtonHeight);
 		palette.setPrefHeight(palette.getHeight() + 100);
 		paletteScroll = new ScrollPane();
 		paletteScroll.setContent(palette);

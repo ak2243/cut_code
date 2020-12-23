@@ -11,6 +11,7 @@ import factories.LogicalFactory;
 import factories.PythonExecutor;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -27,6 +28,7 @@ public class Main extends Application {
 	private Workspace workspace;
 	private Stage langStage;
 	private LanguagePicker langPicker;
+	private double maxX, maxY; // max bounds of the screen
 	// This method is the one Java always runs first
 	public static void main(String[] args) {
 		launch(args);
@@ -37,12 +39,14 @@ public class Main extends Application {
 		if (language.equals("python")) {
 			baseLineNumber = 1; //no class or method declarations in python
 			guiFactory = new factories.PythonGUIFactory();
+			guiFactory.setBlockSize(maxX * 0.1, maxY/25);
 			logicalFactory = new factories.PythonLogicalFactory();
 			filename = "program.py";
 			executor = new PythonExecutor(filename, runKeyword); //Only a run command in python
 		} else if (language.equals("java")) {
 			baseLineNumber = 3; //class and method declaration takes two lines, so code starts on line 3
 			guiFactory = new factories.JavaGUIFactory();
+			guiFactory.setBlockSize(maxX * 0.1, maxY/25);
 			logicalFactory = new factories.JavaLogicalFactory();
 			filename = "Program.java";
 			executor = new JavaExecutor(filename, compileKeyword, runKeyword); //Run and compile commands in java
@@ -68,23 +72,27 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		langPicker = new LanguagePicker(400, 400, this, primaryStage);
-		Scene scene = new Scene(langPicker, 600, 400);
+		maxX = Screen.getScreens().get(0).getBounds().getWidth();
+		maxY = Screen.getScreens().get(0).getBounds().getHeight();
+		langPicker = new LanguagePicker(maxX/5, maxY/4, this, primaryStage);
+		Scene scene = new Scene(langPicker, maxX/5, maxY/4);
 		langStage = primaryStage;
 		langStage.setScene(scene);
-		primaryStage.setMaximized(true);
+		//primaryStage.setMaximized(true);
 		primaryStage.show();
 	}
 	
 	public void setUpWorkspace() {
 		workspaceStage = new Stage();
 		if(workspace == null) {
-			workspace = new Workspace(1400, 865.248, guiFactory, logicalFactory, this, baseLineNumber);
-			workspaceScene = new Scene(workspace, 1400, 865.248);
+			System.err.println(maxX + ", " + maxY);
+			workspace = new Workspace(maxX - maxX/3, maxY - maxY/3, guiFactory, logicalFactory, this, baseLineNumber);
+			workspaceStage.setMaximized(false);
+			workspaceStage.setResizable(false); 
+			workspaceScene = new Scene(workspace, maxX - maxX/3, maxY - maxY/3);
 		} else
 			workspace.reset(guiFactory, logicalFactory,  this, baseLineNumber);
 		workspaceStage.setScene(workspaceScene);
-		workspaceStage.setMaximized(true);
 		workspaceStage.show();
 
 	}

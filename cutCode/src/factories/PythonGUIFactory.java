@@ -3,10 +3,13 @@ package factories;
 import cutcode.GraphicalBlock;
 import python.*;
 
-public class PythonGUIFactory implements GUIFactory {
-    @Override
-    public cutcode.GraphicalBlock[] getAllBlocks() {
-        GraphicalBlock[] ret = {new GraphicalValueBlock(), new GraphicalPrintBlock(), new GraphicalVariableBlock(), new GraphicalMathBinaryOperatorBlock(), new GraphicalBooleanBinaryOperatorBlock(), new GraphicalIfBlock(), new GraphicalElseBlock(), new GraphicalWhileBlock()};
-        return ret;
-    }
+public class PythonGUIFactory extends GUIFactory {
+	@Override
+	public cutcode.GraphicalBlock[] getAllBlocks() {
+		GraphicalBlock[] ret = { new GraphicalValueBlock(blockWidth, blockHeight), new GraphicalPrintBlock(),
+				new GraphicalVariableBlock(), new GraphicalMathBinaryOperatorBlock(),
+				new GraphicalBooleanBinaryOperatorBlock(), new GraphicalIfBlock(), new GraphicalElseBlock(),
+				new GraphicalWhileBlock() };
+		return ret;
+	}
 }

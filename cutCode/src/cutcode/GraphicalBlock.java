@@ -15,7 +15,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private boolean ignoreNext;
 	private int lineNumber;
 	private int indentFactor;
-
+	
 	public int getIndentFactor() {
 		return indentFactor + logicalFactory.getBaseIndent();
 	}
@@ -32,11 +32,9 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		lineNumber = line;
 	}
 
-
 	public void setLogicalFactory(LogicalFactory logicalFactory) {
 		this.logicalFactory = logicalFactory;
 	}
-
 
 	public ArrayList<GraphicalBlock> getChildBlocks() {
 		return null;
@@ -63,13 +61,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			return compare;
 	}
 
-
-
 	public GraphicalBlock(double width, double height) {
-		setMinWidth(width);
-		setMinHeight(height);
-		setMaxWidth(width);
-		setMaxHeight(height);
+		this.maxHeightProperty().set(height);
+		this.maxWidthProperty().set(width);
+		this.minHeightProperty().set(height);
+		this.minWidthProperty().set(width);
 	}
 
 	/**
@@ -100,7 +96,6 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		return below;
 	}
 
-
 	/**
 	 * @param b the block this block is bound to (b is above)
 	 */
@@ -121,14 +116,12 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		return above;
 	}
 
-
 	/**
 	 * @return the logical block object for the graphical block
 	 */
 	public abstract LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException;
 
 	public abstract GraphicalBlock cloneBlock();
-
 
 	public void tagErrorOnBlock() {
 		String cssLayout = "-fx-border-color: white;\n" + "-fx-border-width: 5;\n" + "-fx-border-style: dashed;\n";
@@ -147,9 +140,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 	/**
-	 * @param index the index from getNestables() to which the given block must be nested
+	 * @param index the index from getNestables() to which the given block must be
+	 *              nested
 	 * @param nest  the block to be nested in the index
-	 * @throws InvalidNestException - thrown if the index does not correspond to a valid nest location
+	 * @throws InvalidNestException - thrown if the index does not correspond to a
+	 *                              valid nest location
 	 */
 	public abstract void nest(int index, GraphicalBlock nest) throws InvalidNestException;
 
@@ -157,10 +152,10 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	 *
 	 * @param box the box from which rem is being removed
 	 * @param rem the block that is being unnested
-	 * @throws InvalidNestException if this block does not contain a nested block rem
+	 * @throws InvalidNestException if this block does not contain a nested block
+	 *                              rem
 	 */
 	public abstract void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException;
-
 
 	/**
 	 * @param incrementBox    - the box to be incremented
@@ -188,7 +183,8 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	/**
 	 *
 	 * @param lineLocations the hashmap to put the line number and Graphical Block
-	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
+	 * @return the integer for the line number of the next block. -1 if the block
+	 *         isn't an independent line
 	 */
 	public abstract int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations);
 

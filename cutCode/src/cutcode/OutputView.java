@@ -6,6 +6,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class OutputView {
+	public static void output(String output, Stage stage, double width, double height) {
+		BorderPane root = new BorderPane();
+		root.setCenter(new Label(output));
+		Scene scene = new Scene(root, width, height);
+		stage.setScene(scene);
+		stage.show();
+	}
 	public static void output(String output, Stage stage) {
 		BorderPane root = new BorderPane();
 		root.setCenter(new Label(output));
