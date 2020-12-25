@@ -99,9 +99,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 			VBox box = nestBoxes[0];
 			if (nestBoxes[index].getChildren().size() != 0)
 				throw new InvalidNestException();
-			double incrementWidth = nest.getWidth() - box.getWidth();
-			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 
 		} else if (index == 1) {
@@ -114,7 +112,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 					incrementHeight += ((GraphicalBlock) n).getHeight();
 				}
 			}
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 		} else
 			throw new InvalidNestException();

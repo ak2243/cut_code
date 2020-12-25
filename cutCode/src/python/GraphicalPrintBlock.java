@@ -13,22 +13,26 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class GraphicalPrintBlock extends GraphicalBlock {
 	private VBox[] nestBoxes;
-	public GraphicalPrintBlock() {
-		this(200, 40);
-	}
+	private double initWidth, initHeight;
 	public GraphicalPrintBlock(double width, double height) { //sets up visuals of the block
 		super(width, height);
+		this.initWidth = width;
+		this.initHeight = height;
 		nestBoxes = new VBox[1];
 		HBox firstLine = new HBox();
 		firstLine.setSpacing(5);
 		firstLine.setPadding(new Insets(8));
 		Label label = new Label("print");
 		VBox value = new VBox();
-		value.setMinWidth(140);
-		value.setMinHeight(24);
+		value.minWidthProperty().set(initWidth - initWidth/3);
+		value.minHeightProperty().set(initHeight - initHeight/3);
+		value.maxWidthProperty().set(initWidth - initWidth/3);
+		value.maxHeightProperty().set(initHeight - initHeight/3);
+
 		value.setStyle("-fx-background-color: #E6E6E6");
 		nestBoxes[0] = value;
 		firstLine.getChildren().addAll(label, value);
@@ -49,7 +53,7 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalPrintBlock();
+		return new GraphicalPrintBlock(initWidth, initHeight);
 	}
 
 	/**
@@ -79,7 +83,8 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 			VBox box = nestBoxes[index];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
+			System.err.println(" " + box.maxWidthProperty().get() + ", " + box.maxHeightProperty().get());
+			increment(box, nest);
 			box.getChildren().add(nest);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new InvalidNestException();
@@ -93,12 +98,29 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 		if (box == null || rem == null)
 			throw new InvalidNestException();
 		box.getChildren().remove(rem);
-		box.setMaxWidth(140);
-		box.setMaxHeight(24);
-		this.setMinWidth(200);
-		this.setMinHeight(40);
-		this.setMaxWidth(200);
-		this.setMaxHeight(40);
+		
+		
+		this.maxHeightProperty().unbind();
+		this.maxWidthProperty().unbind();
+		this.minHeightProperty().unbind();
+		this.minWidthProperty().unbind();
+		
+		
+		this.setSize(initWidth, initHeight);
+
+
+		
+		box.maxHeightProperty().unbind();
+		box.minHeightProperty().unbind();
+		box.maxWidthProperty().unbind();
+		box.minWidthProperty().unbind();
+		
+		box.minWidthProperty().set(initWidth - initWidth/3);
+		box.minHeightProperty().set(initHeight - initHeight/3);
+		box.maxWidthProperty().set(initWidth - initWidth/3);
+		box.maxHeightProperty().set(initHeight - initHeight/3);
+
+
 	}
 
 

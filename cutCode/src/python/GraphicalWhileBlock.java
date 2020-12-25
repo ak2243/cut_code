@@ -101,7 +101,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 				throw new InvalidNestException();
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 
 		} else if (index == 1) { //nesting in execute field
@@ -114,7 +114,7 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 					incrementHeight += ((GraphicalBlock) n).getHeight();
 				}
 			}
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 		} else //invalid indes
 			throw new InvalidNestException();

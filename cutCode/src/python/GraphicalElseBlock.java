@@ -79,9 +79,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
 		if (index == 0) {
 			VBox box = nestBoxes[0];
-			double incrementWidth = nest.getWidth() - box.getWidth();
-			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 		} else
 			throw new InvalidNestException();

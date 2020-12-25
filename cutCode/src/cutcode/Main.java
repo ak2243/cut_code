@@ -85,7 +85,6 @@ public class Main extends Application {
 	public void setUpWorkspace() {
 		workspaceStage = new Stage();
 		if(workspace == null) {
-			System.err.println(maxX + ", " + maxY);
 			workspace = new Workspace(maxX - maxX/3, maxY - maxY/3, guiFactory, logicalFactory, this, baseLineNumber);
 			workspaceStage.setMaximized(false);
 			workspaceStage.setResizable(false); 

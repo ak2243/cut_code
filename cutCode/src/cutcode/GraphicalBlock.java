@@ -15,7 +15,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private boolean ignoreNext;
 	private int lineNumber;
 	private int indentFactor;
-	
+
 	public int getIndentFactor() {
 		return indentFactor + logicalFactory.getBaseIndent();
 	}
@@ -62,6 +62,10 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 	public GraphicalBlock(double width, double height) {
+		this.setSize(width, height);
+	}
+	
+	protected void setSize(double width, double height) {
 		this.maxHeightProperty().set(height);
 		this.maxWidthProperty().set(width);
 		this.minHeightProperty().set(height);
@@ -162,19 +166,26 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	 * @param heightIncrement - the increase in height
 	 * @param widthIncrement  - the increase in width
 	 */
-	public void increment(VBox incrementBox, double heightIncrement, double widthIncrement) {
-		if (widthIncrement > 0) {
-			incrementBox.setMaxWidth(incrementBox.getWidth() + widthIncrement);
-			incrementBox.setPrefWidth(incrementBox.getWidth() + widthIncrement);
-			this.setMaxWidth(this.getWidth() + widthIncrement);
-		}
-		if (heightIncrement > 0) {
-			incrementBox.setMaxHeight(incrementBox.getHeight() + heightIncrement);
-			incrementBox.setPrefHeight(incrementBox.getHeight() + heightIncrement);
-			this.setMaxHeight(this.getHeight() + heightIncrement);
-		}
-		if (this.getNestedIn() != null)
-			this.getNestedIn().increment((VBox) this.getParent(), heightIncrement, widthIncrement);
+	public void increment(VBox box, GraphicalBlock nest) {
+		if (nest == null)
+			throw new NullPointerException();
+		double incHeight = this.minHeightProperty().get() - box.maxHeightProperty().get();
+		double incWidth = this.minWidthProperty().get() - box.maxWidthProperty().get();
+
+		// Step 1: change dimensions of box
+		box.minWidthProperty().bind(nest.minWidthProperty());
+		box.maxWidthProperty().bind(nest.maxWidthProperty());
+		box.minHeightProperty().bind(nest.minHeightProperty());
+		box.maxHeightProperty().bind(nest.maxHeightProperty());
+
+		// Step 2: change dimensions of this block
+		this.minWidthProperty().bind(nest.minWidthProperty().add(incWidth));
+		this.maxWidthProperty().bind(nest.minWidthProperty().add(incWidth));
+		this.minHeightProperty().bind(nest.minHeightProperty().add(incHeight));
+		this.maxHeightProperty().bind(nest.minHeightProperty().add(incHeight));
+		
+
+
 		if (this.getBelow() != null)
 			this.getBelow().setAbove(this);
 

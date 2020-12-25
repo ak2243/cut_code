@@ -93,7 +93,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 			VBox box = nestBoxes[index];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
-			increment(box, incrementHeight, incrementWidth);
+			increment(box, nest);
 			box.getChildren().add(nest);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new InvalidNestException();
