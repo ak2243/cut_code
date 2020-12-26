@@ -83,7 +83,6 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 			VBox box = nestBoxes[index];
 			double incrementWidth = nest.getWidth() - box.getWidth();
 			double incrementHeight = nest.getHeight() - box.getHeight();
-			System.err.println(" " + box.maxWidthProperty().get() + ", " + box.maxHeightProperty().get());
 			increment(box, nest);
 			box.getChildren().add(nest);
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -97,23 +96,11 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
 		if (box == null || rem == null)
 			throw new InvalidNestException();
+		rem.minHeightProperty().removeListener(super.heightListener);;
+		rem.minWidthProperty().removeListener(super.widthListener);
 		box.getChildren().remove(rem);
 		
-		
-		this.maxHeightProperty().unbind();
-		this.maxWidthProperty().unbind();
-		this.minHeightProperty().unbind();
-		this.minWidthProperty().unbind();
-		
-		
 		this.setSize(initWidth, initHeight);
-
-
-		
-		box.maxHeightProperty().unbind();
-		box.minHeightProperty().unbind();
-		box.maxWidthProperty().unbind();
-		box.minWidthProperty().unbind();
 		
 		box.minWidthProperty().set(initWidth - initWidth/3);
 		box.minHeightProperty().set(initHeight - initHeight/3);
