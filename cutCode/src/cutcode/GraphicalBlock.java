@@ -6,6 +6,8 @@ import java.util.HashMap;
 import factories.LogicalFactory;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
 
@@ -18,8 +20,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private int lineNumber;
 	protected LogicalFactory logicalFactory;
 	private GraphicalBlock nestedIn;
-	protected InvalidationListener widthListener, heightListener;
-
+	protected ChangeListener widthListener, heightListener, bindListener;
 
 	public GraphicalBlock(double width, double height) {
 		this.setSize(width, height);
@@ -27,6 +28,46 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 
 	public void actionIgnored() {
 		ignoreNext = false;
+	}
+
+	/**
+	 * 
+	 * @param b the block to which this block is binding
+	 */
+	public void bindTo(GraphicalBlock above) {
+		if (above == null)
+			unbind();
+		this.above = above;
+		above.below = this;
+
+		this.layoutXProperty().unbind();
+		this.layoutYProperty().unbind();
+		this.layoutXProperty().bind(above.layoutXProperty());
+		this.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
+		System.err.println(" " + this.getLayoutX() + ", " + this.getLayoutY());
+		this.bindListener = new BindListener();
+		above.maxHeightProperty().addListener(bindListener);
+
+	}
+
+	/**
+	 * 
+	 * @return true if the block above this exists and was unbinded. false if there
+	 *         is no block below
+	 */
+	public boolean unbind() {
+		GraphicalBlock above = this.above;
+		if (above == null)
+			return false;
+		this.layoutXProperty().unbind();
+		this.layoutYProperty().unbind();
+		above.maxHeightProperty().removeListener(bindListener);
+		bindListener = null;
+		this.above = null;
+		above.below = null;
+
+		return true;
+
 	}
 
 	public abstract GraphicalBlock cloneBlock();
@@ -65,12 +106,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	public int getLineNumber() {
 		return lineNumber;
 	}
-	
+
 	/**
 	 * @return the logical block object for the graphical block
 	 */
 	public abstract LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException;
-	
 
 	/**
 	 * @return an array of points where a graphical block can nest
@@ -113,20 +153,19 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		box.minHeightProperty().set(box.maxHeightProperty().get() + incHeight);
 		box.maxHeightProperty().set(box.maxHeightProperty().get() + incHeight);
 
-
 		// STEP 2 - change dimensions of this block
 		this.setSize(this.minWidthProperty().get() + incWidth, this.minHeightProperty().get() + incHeight);
 
-		// STEP 3 - add listeners so that change in nested block's dimensions affect changes in this block as well
-		this.widthListener = new DeltaWidthListener(box, nest);
+		// STEP 3 - add listeners so that change in nested block's dimensions affect
+		// changes in this block as well
+		this.widthListener = new DeltaWidthListener(box);
 		nest.minWidthProperty().addListener(widthListener);
-		
-		this.heightListener = new DeltaHeightListener(box, nest);
-		nest.minHeightProperty().addListener(heightListener);
 
+
+		this.heightListener = new DeltaHeightListener(box);
+		nest.minHeightProperty().addListener(heightListener);
 		
-		if (this.getBelow() != null)
-			this.getBelow().setAbove(this);
+		
 
 	}
 
@@ -206,46 +245,64 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	 *                              rem
 	 */
 	public abstract void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException;
+
 	public void untag() {
 		this.setStyle(null);
 	}
-	
-	private class DeltaHeightListener implements InvalidationListener {
+
+	private class DeltaHeightListener implements ChangeListener<Double> {
 
 		VBox box;
-		GraphicalBlock nest;
-		public DeltaHeightListener(VBox box, GraphicalBlock nest) {
+
+		public DeltaHeightListener(VBox box) {
 			this.box = box;
-			this.nest = nest;
 		}
+
+
 		@Override
-		public void invalidated(Observable observable) {
-			double deltaHeight = nest.minHeightProperty().get() - box.maxHeightProperty().get();
+		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+			double deltaHeight = newValue - oldValue;
+			System.err.println(deltaHeight);
 			box.minHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
 			box.maxHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
 			GraphicalBlock.super.minHeightProperty().set(GraphicalBlock.super.minHeightProperty().get() + deltaHeight);
-			GraphicalBlock.super.maxHeightProperty().set(GraphicalBlock.super.minHeightProperty().get() + deltaHeight);
-			
+			GraphicalBlock.super.maxHeightProperty().set(GraphicalBlock.super.minHeightProperty().get());
+
 		}
-		
+
 	}
-	private class DeltaWidthListener implements InvalidationListener {
+
+	private class DeltaWidthListener implements ChangeListener<Double> {
 
 		VBox box;
-		GraphicalBlock nest;
-		public DeltaWidthListener(VBox box, GraphicalBlock nest) {
+
+		public DeltaWidthListener(VBox box) {
 			this.box = box;
-			this.nest = nest;
 		}
+
+
 		@Override
-		public void invalidated(Observable observable) {
-			double deltaWidth = nest.minWidthProperty().get() - box.maxWidthProperty().get();
+		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+			double deltaWidth = newValue - oldValue;
 			box.minWidthProperty().set(box.maxWidthProperty().get() + deltaWidth);
 			box.maxWidthProperty().set(box.maxWidthProperty().get() + deltaWidth);
 			GraphicalBlock.super.minWidthProperty().set(GraphicalBlock.super.minWidthProperty().get() + deltaWidth);
-			GraphicalBlock.super.maxWidthProperty().set(GraphicalBlock.super.minWidthProperty().get() + deltaWidth);
+			GraphicalBlock.super.maxWidthProperty().set(GraphicalBlock.super.minWidthProperty().get());
+
+		}
+
+	}
+	
+	private class BindListener implements ChangeListener<Double> {
+
+		@Override
+		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
 			
+			GraphicalBlock.super.layoutYProperty().unbind();
+			GraphicalBlock.super.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
+			System.err.println(" " + GraphicalBlock.super.getLayoutX() + ", " + GraphicalBlock.super.getLayoutY());
 		}
 		
 	}
+
 }

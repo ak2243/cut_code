@@ -228,8 +228,9 @@ public class Workspace extends Pane {
 					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
 					double distance = checkPoint.distance(clickPoint);
 					if (distance < bindDistance && (b.getBelow() == null)) { //Check for attaching
-						current.setAbove(b);
-						b.setBelow(current);
+//						current.setAbove(b);
+						current.bindTo(b);
+//						b.setBelow(current);
 						break;
 					}
 
@@ -287,12 +288,12 @@ public class Workspace extends Pane {
 				// offsets make it so the point you clicked on the block follows your mouse instead of the top left.
 				// Looks better
 
-				GraphicalBlock above = block.getAbove();
-				if (above != null)
-					above.setBelow(null); // Allows for things to be bound to "above"
+//				GraphicalBlock above = block.getAbove();
+//				if (above != null)
+//					above.setBelow(null); // Allows for things to be bound to "above"
 
-				block.setAbove(null);//detaches block
-
+//				block.setAbove(null);//detaches block
+				block.unbind();
 
 
 				GraphicalBlock nestedIn = block.getNestedIn(); //If the block is nested in something
@@ -353,8 +354,9 @@ public class Workspace extends Pane {
 						if (b == block || b.getAbove() == block)
 							continue;
 						if (distance < bindDistance && (b.getBelow() == null)) {
-							b.setBelow(block); //attaches block if close enough
-							block.setAbove(b);
+//							b.setBelow(block); //attaches block if close enough
+//							block.setAbove(b);
+							block.bindTo(b);
 							break;
 						}
 
@@ -378,13 +380,15 @@ public class Workspace extends Pane {
 												continue;
 											try {
 												if(add.getAbove() != null) { //destroys sequence
-													add.getAbove().setBelow(null);
+													add.unbind();
 												}
-												add.setAbove(null);
+//												add.setAbove(null);
+												add.unbind();
 												b.nest(i, add);
 											} catch (InvalidNestException innerNestException) { //error here means the nest field can only take one
-												add.setLayoutX(add.getLayoutX() + 10);
-												add.setLayoutY(add.getLayoutY() + 10); //Keeps the rest of the sequence intact and offsets the block to indicate nest failure
+												add.layoutXProperty().set(add.layoutXProperty().get() + add.maxHeightProperty().get()/4);
+												add.layoutYProperty().set(add.layoutYProperty().get() + add.maxHeightProperty().get()/4);
+												//Keeps the rest of the sequence intact and offsets the block to indicate nest failure
 												break;
 											}
 										}
