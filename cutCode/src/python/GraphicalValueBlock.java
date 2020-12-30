@@ -16,6 +16,13 @@ import java.util.HashMap;
 public class GraphicalValueBlock extends GraphicalBlock {
 	private TextField value;
 	private double initWidth, initHeight;
+	
+	@Override 
+	public VBox[] getNestBoxes() {
+		return null;
+	}
+
+	
 	/**
 	 * O(1)
 	 * @author Arjun Khanna

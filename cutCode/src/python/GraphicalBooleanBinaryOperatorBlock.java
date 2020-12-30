@@ -9,8 +9,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,37 +21,45 @@ import java.util.HashMap;
 public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 	private ComboBox<String> operatorChoice;
 	private VBox[] nestBoxes;
+	private double initWidth, initHeight;
+
+	@Override 
+	public VBox[] getNestBoxes() {
+		return nestBoxes;
+	}
 
 
 	public GraphicalBooleanBinaryOperatorBlock() {
 		this(200, 40);
 	}
 
-	public GraphicalBooleanBinaryOperatorBlock(int width, int height) {
+	public GraphicalBooleanBinaryOperatorBlock(double width, double height) { //sets up visuals of block
 		super(width, height);
+		System.err.println(width + ", " + height);
+		this.initWidth = width;
+		this.initHeight = height;
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
-		op1.setMaxWidth(50);
-		op1.setMaxHeight(24);
-		op1.setPrefWidth(50);
-		op1.setPrefHeight(24);
+		op1.setMaxWidth(initWidth/4);
+		op1.setMaxHeight(initHeight - initHeight/3);
+		op1.setPrefWidth(initWidth/4);
+		op1.setPrefHeight(initHeight - initHeight/3);
 		op1.setStyle("-fx-background-color: #E6E6E6");
 		VBox op2 = new VBox();
-		op2.setMaxWidth(50);
-		op2.setMaxHeight(24);
-		op2.setPrefWidth(50);
-		op2.setPrefHeight(24);
+		op2.setMaxWidth(initWidth/4);
+		op2.setMaxHeight(initHeight - initHeight/3);
+		op2.setPrefWidth(initWidth/4);
+		op2.setPrefHeight(initHeight - initHeight/3);
 		op2.setStyle("-fx-background-color: #E6E6E6");
-		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="};
+		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="}; // operator choices
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
-		operatorChoice.setValue("or");
-		operatorChoice.setMinWidth(75);
+		operatorChoice.setValue("or"); //default value is or
+		operatorChoice.setMinWidth((initWidth * 3)/ 8);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);
-		this.setMinWidth(200);
-		this.setStyle("-fx-background-color: #A085E4");
-		this.setPadding(new Insets(8));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#A085E4"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setPadding(new Insets(initHeight/5));
 
 		nestBoxes[0] = op1;
 		nestBoxes[1] = op2;
@@ -64,12 +72,12 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 			tagErrorOnBlock();
 			throw new BlockCodeCompilerErrorException();
 		}
-		return logicalFactory.createBinaryBooleanOperator(((GraphicalBlock) (nestBoxes[0].getChildren().get(0))).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) (nestBoxes[1].getChildren().get(0))).getLogicalBlock());
+		return logicalFactory.createBinaryMathOperator(((GraphicalBlock) nestBoxes[0].getChildren().get(0)).getLogicalBlock(), operatorChoice.getValue(), ((GraphicalBlock) nestBoxes[1].getChildren().get(0)).getLogicalBlock());
 	}
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalBooleanBinaryOperatorBlock();
+		return new GraphicalBooleanBinaryOperatorBlock(this.initWidth, this.initHeight);
 	}
 
 	/**
@@ -87,10 +95,12 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		if (nestBoxes[index].getChildren().size() != 0)
+		if(nestBoxes[index].getChildren().size() != 0)
 			throw new InvalidNestException();
 		try {
 			VBox box = nestBoxes[index];
+			double incrementWidth = nest.getWidth() - box.getWidth();
+			double incrementHeight = nest.getHeight() - box.getHeight();
 			increment(box, nest);
 			box.getChildren().add(nest);
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -104,23 +114,25 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
 		if(box == null || rem == null)
 			throw new InvalidNestException();
+		
+		rem.minHeightProperty().removeListener(super.heightListeners.get(rem));
+		rem.minWidthProperty().removeListener(super.widthListeners.get(rem));
+		super.heightListeners.remove(rem);
+		super.widthListeners.remove(rem);
+
+		
 		box.getChildren().remove(rem);
-		box.setMaxWidth(50);
-		box.setMaxHeight(30);
-		box.setPrefWidth(50);
-		box.setPrefHeight(30);
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) {
-			this.setMinWidth(200);
-			this.setMinHeight(40);
-			this.setMaxWidth(200);
-			this.setMaxHeight(40);
-		}
+		//reset box size (only 1 nest in these boxes)
+		box.setMaxWidth(initWidth/4);
+		box.setMaxHeight(initHeight - initHeight/3);
+		box.setMinWidth(initWidth/4);
+		box.setMinHeight(initHeight - initHeight/3);
+
+		double deltaHeight = rem.getMinHeight() - box.getMaxHeight();
+		double deltaWidth = rem.getMinWidth() - box.getMinWidth();
+		this.setSize(this.getMinWidth() - deltaWidth, this.getMinHeight() - deltaHeight);
 	}
 
-	/**
-	 * @param lineLocations the hashmap to put the line number and Graphical Block
-	 * @return the integer for the line number of the next block. -1 if the block isn't an independent line
-	 */
 	@Override
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		return 0;
@@ -129,13 +141,13 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 	@Override
 	public ArrayList<GraphicalBlock> getChildBlocks() {
 		ArrayList<GraphicalBlock> ret = new ArrayList<>();
-		for (VBox box : nestBoxes) {
-			for (Node b : box.getChildren()) {
-				if (b instanceof GraphicalBlock) {
+		for(VBox box : nestBoxes) {
+			for(Node b : box.getChildren()) {
+				if(b instanceof GraphicalBlock) {
 					ret.add((GraphicalBlock) b);
 				}
 			}
 		}
-		return ret;
+		return ret; //No new line because not used independently
 	}
 }

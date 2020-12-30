@@ -47,7 +47,11 @@ public class LanguagePicker extends BorderPane {
 		label.setFont(new Font("Helvetica", 24));
 		Label label2 = new Label("Please pick a programming language below");
 		label2.setFont(new Font("Helvetica", 14));
-		VBox top = new VBox(label, label2);
+		Label label3 = new Label("Note: Cut Code will only check if your commands are valid, not if they are the correct commands to run your program");
+		label3.setFont(new Font("Helvetica", 12));
+		label3.setWrapText(true);
+		label3.setAlignment(Pos.CENTER);
+		VBox top = new VBox(label, label2, label3);
 		top.setAlignment(Pos.CENTER);
 
 		//Setting up drop down

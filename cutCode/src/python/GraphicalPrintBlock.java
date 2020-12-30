@@ -18,14 +18,21 @@ import java.util.Random;
 public class GraphicalPrintBlock extends GraphicalBlock {
 	private VBox[] nestBoxes;
 	private double initWidth, initHeight;
+	
+	@Override 
+	public VBox[] getNestBoxes() {
+		return nestBoxes;
+	}
+
+	
 	public GraphicalPrintBlock(double width, double height) { //sets up visuals of the block
 		super(width, height);
 		this.initWidth = width;
 		this.initHeight = height;
 		nestBoxes = new VBox[1];
 		HBox firstLine = new HBox();
-		firstLine.setSpacing(5);
-		firstLine.setPadding(new Insets(8));
+		firstLine.setSpacing(height/8);
+		firstLine.setPadding(new Insets(height/5));
 		Label label = new Label("print");
 		VBox value = new VBox();
 		value.minWidthProperty().set(initWidth - initWidth/3);
@@ -77,12 +84,10 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException { //Nest the value to be printed
-		if (nestBoxes[index].getChildren().size() != 0)
+		if (nestBoxes[index].getChildren().size() != 0 || index != 0)
 			throw new InvalidNestException();
 		try {
 			VBox box = nestBoxes[index];
-			double incrementWidth = nest.getWidth() - box.getWidth();
-			double incrementHeight = nest.getHeight() - box.getHeight();
 			increment(box, nest);
 			box.getChildren().add(nest);
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -96,9 +101,11 @@ public class GraphicalPrintBlock extends GraphicalBlock {
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
 		if (box == null || rem == null)
 			throw new InvalidNestException();
-		rem.minHeightProperty().removeListener(super.heightListener);;
-		rem.minWidthProperty().removeListener(super.widthListener);
-		super.heightListener = super.widthListener = null;
+		rem.minHeightProperty().removeListener(super.heightListeners.get(rem));
+		rem.minWidthProperty().removeListener(super.widthListeners.get(rem));
+		super.heightListeners.remove(rem);
+		super.widthListeners.remove(rem);
+		
 		box.getChildren().remove(rem);
 		
 		this.setSize(initWidth, initHeight);

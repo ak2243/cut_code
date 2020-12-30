@@ -21,37 +21,44 @@ import java.util.HashMap;
 public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	private ComboBox<String> operatorChoice;
 	private VBox[] nestBoxes;
+	private double initWidth, initHeight;
+
+	@Override 
+	public VBox[] getNestBoxes() {
+		return nestBoxes;
+	}
 
 
 	public GraphicalMathBinaryOperatorBlock() {
 		this(200, 40);
 	}
 
-	public GraphicalMathBinaryOperatorBlock(int width, int height) { //sets up visuals of block
+	public GraphicalMathBinaryOperatorBlock(double width, double height) { //sets up visuals of block
 		super(width, height);
+		this.initWidth = width;
+		this.initHeight = height;
 		HBox line = new HBox();
 		nestBoxes = new VBox[2];
 		VBox op1 = new VBox();
-		op1.setMaxWidth(50);
-		op1.setMaxHeight(24);
-		op1.setPrefWidth(50);
-		op1.setPrefHeight(24);
+		op1.setMaxWidth(initWidth/4);
+		op1.setMaxHeight(initHeight - initHeight/3);
+		op1.setPrefWidth(initWidth/4);
+		op1.setPrefHeight(initHeight - initHeight/3);
 		op1.setStyle("-fx-background-color: #E6E6E6");
 		VBox op2 = new VBox();
-		op2.setMaxWidth(50);
-		op2.setMaxHeight(24);
-		op2.setPrefWidth(50);
-		op2.setPrefHeight(24);
+		op2.setMaxWidth(initWidth/4);
+		op2.setMaxHeight(initHeight - initHeight/3);
+		op2.setPrefWidth(initWidth/4);
+		op2.setPrefHeight(initHeight - initHeight/3);
 		op2.setStyle("-fx-background-color: #E6E6E6");
 		String[] choiceOp = {"+", "-", "÷", "X", "%"}; //drop down options
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
 		operatorChoice.setValue("+"); //default value is addition
-		operatorChoice.setMinWidth(75);
+		operatorChoice.setMinWidth((initWidth * 3)/ 8);
 		line.getChildren().addAll(op1, operatorChoice, op2);
 		this.getChildren().add(line);
-		this.setMinWidth(200);
-		this.setStyle("-fx-background-color: #B08BE9");
-		this.setPadding(new Insets(8));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#B08BE9"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setPadding(new Insets(initHeight/5));
 
 		nestBoxes[0] = op1;
 		nestBoxes[1] = op2;
@@ -69,7 +76,7 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalMathBinaryOperatorBlock();
+		return new GraphicalMathBinaryOperatorBlock(this.initWidth, this.initHeight);
 	}
 
 	/**
@@ -106,18 +113,23 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException {
 		if(box == null || rem == null)
 			throw new InvalidNestException();
+		
+		rem.minHeightProperty().removeListener(super.heightListeners.get(rem));
+		rem.minWidthProperty().removeListener(super.widthListeners.get(rem));
+		super.heightListeners.remove(rem);
+		super.widthListeners.remove(rem);
+
+		
 		box.getChildren().remove(rem);
 		//reset box size (only 1 nest in these boxes)
-		box.setMaxWidth(50);
-		box.setMaxHeight(30);
-		box.setPrefWidth(50);
-		box.setPrefHeight(30);
-		if (nestBoxes[0].getChildren().size() == 0 && nestBoxes[1].getChildren().size() == 0) { //Full size reset
-			this.setMinWidth(200);
-			this.setMinHeight(40);
-			this.setMaxWidth(200);
-			this.setMaxHeight(40);
-		}
+		box.setMaxWidth(initWidth/4);
+		box.setMaxHeight(initHeight - initHeight/3);
+		box.setMinWidth(initWidth/4);
+		box.setMinHeight(initHeight - initHeight/3);
+
+		double deltaHeight = rem.getMinHeight() - box.getMaxHeight();
+		double deltaWidth = rem.getMinWidth() - box.getMinWidth();
+		this.setSize(this.getMinWidth() - deltaWidth, this.getMinHeight() - deltaHeight);
 	}
 
 	@Override

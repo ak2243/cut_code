@@ -22,25 +22,37 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	private TextField name;
 	private VBox[] nestBoxes;
 	private ComboBox<String> types;
+	private double initWidth, initHeight;
+	
+	@Override 
+	public VBox[] getNestBoxes() {
+		return nestBoxes;
+	}
 
-	public GraphicalVariableBlock() {
+
+	public GraphicalVariableBlock(double width, double height) {
 		//setting up the visuals of the block
-		super(200, 40);
+		super(width, height);
+		this.initWidth = width;
+		this.initHeight = height;
 		nestBoxes = new VBox[1];
 		String[] typeChoices = {"num", "T/F", "str", "edit"}; //type options
 		types = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(typeChoices)));
-		types.setMinWidth(80);
+		types.setMinWidth(2 * initWidth/5);
 		name = new TextField();
-		name.setMaxWidth(40);
-		name.setMinWidth(40);
+		name.setMaxWidth(initWidth/5);
+		name.setMinWidth(initWidth/5);
 		VBox value = new VBox();
-		value.setMinWidth(30);
-		value.setMinHeight(24);
+		value.setMinWidth(initWidth/6);
+		value.setMinHeight(initHeight - initHeight/3);
+		value.setMaxWidth(initWidth/6);
+		value.setMaxHeight(initHeight - initHeight/3);
+
 		value.setStyle("-fx-background-color: #E6E6E6"); //color of nest field
 		nestBoxes[0] = value;
 		HBox line = new HBox();
-		line.setSpacing(5);
-		line.setPadding(new Insets(8));
+		line.setSpacing(initHeight/8);
+		line.setPadding(new Insets(initHeight/5));
 		line.getChildren().add(types);
 		line.getChildren().add(name);
 		line.getChildren().add(new Label("="));
@@ -80,13 +92,21 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	public void unnest(VBox box, GraphicalBlock rem) throws InvalidNestException { //takes out the block and resets field and block sizes
 		if (box == null || rem == null)
 			throw new InvalidNestException();
+		
+		rem.minHeightProperty().removeListener(super.heightListeners.get(rem));
+		rem.minWidthProperty().removeListener(super.widthListeners.get(rem));
+		super.heightListeners.remove(rem);
+		super.widthListeners.remove(rem);
+
+		
 		box.getChildren().remove(rem);
-		box.setMinWidth(30);
-		box.setMinHeight(24);
-		this.setMinWidth(200);
-		this.setMinHeight(40);
-		this.setMaxWidth(200);
-		this.setMaxHeight(40);
+		box.setMinWidth(initWidth/6);
+		box.setMinHeight(initHeight - initHeight/3);
+		box.setMaxWidth(initWidth/6);
+		box.setMaxHeight(initHeight - initHeight/3);
+
+		this.setSize(initWidth, initHeight);
+
 	}
 
 
@@ -121,7 +141,7 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 
 	@Override
 	public GraphicalBlock cloneBlock() {
-		return new GraphicalVariableBlock();
+		return new GraphicalVariableBlock(initWidth, initHeight);
 	}
 
 

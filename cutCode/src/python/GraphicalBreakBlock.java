@@ -27,6 +27,13 @@ public class GraphicalBreakBlock extends GraphicalBlock { //Class not in use
 		this.setAlignment(Pos.CENTER);
 		this.setBackground(new Background(new BackgroundFill(Color.web("#6366B8"), CornerRadii.EMPTY, Insets.EMPTY)));
 	}
+	
+	@Override 
+	public VBox[] getNestBoxes() {
+		return null;
+	}
+
+	
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
 		return logicalFactory.createBreak(getIndentFactor());

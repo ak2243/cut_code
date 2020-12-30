@@ -2,6 +2,7 @@ package cutcode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import factories.LogicalFactory;
 import javafx.beans.InvalidationListener;
@@ -10,6 +11,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
 
@@ -20,15 +22,19 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private int lineNumber;
 	protected LogicalFactory logicalFactory;
 	private GraphicalBlock nestedIn;
-	protected ChangeListener widthListener, heightListener, bindListener;
+	protected ChangeListener bindListener;
+	protected HashMap<GraphicalBlock, ChangeListener> widthListeners, heightListeners;
 
 	public GraphicalBlock(double width, double height) {
 		this.setSize(width, height);
+		this.widthListeners = new HashMap<GraphicalBlock, ChangeListener>();
+		this.heightListeners = new HashMap<GraphicalBlock, ChangeListener>();
 	}
 
 	public void actionIgnored() {
 		ignoreNext = false;
 	}
+	public abstract VBox[] getNestBoxes();
 
 	/**
 	 * 
@@ -44,7 +50,6 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.layoutYProperty().unbind();
 		this.layoutXProperty().bind(above.layoutXProperty());
 		this.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
-		System.err.println(" " + this.getLayoutX() + ", " + this.getLayoutY());
 		this.bindListener = new BindListener();
 		above.maxHeightProperty().addListener(bindListener);
 
@@ -144,8 +149,13 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			throw new NullPointerException();
 
 		// STEP 0 - calculate the difference between box size and the nest size
-		double incWidth = nest.maxWidthProperty().get() - box.maxWidthProperty().get();
-		double incHeight = nest.maxHeightProperty().get() - box.maxHeightProperty().get();
+		double incWidth = nest.maxWidthProperty().get() - box.getMaxWidth();
+		double incHeight = nest.getMaxHeight();
+		if(incWidth < 0 && box.getChildren().size() > 0) { //possible when a block is already nested
+			incWidth = 0;
+		}
+		if(box.getChildren().size() == 0)
+			incHeight -= box.getMaxHeight();
 
 		// STEP 1 - change dimensions of box
 		box.minWidthProperty().set(box.maxWidthProperty().get() + incWidth);
@@ -158,14 +168,15 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 
 		// STEP 3 - add listeners so that change in nested block's dimensions affect
 		// changes in this block as well
-		this.widthListener = new DeltaWidthListener(box);
+		ChangeListener widthListener = new DeltaWidthListener(box);
 		nest.minWidthProperty().addListener(widthListener);
 
 
-		this.heightListener = new DeltaHeightListener(box);
+		ChangeListener heightListener = new DeltaHeightListener(box);
 		nest.minHeightProperty().addListener(heightListener);
 		
-		
+		widthListeners.put(nest, widthListener);
+		heightListeners.put(nest, heightListener);
 
 	}
 
@@ -262,7 +273,6 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		@Override
 		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
 			double deltaHeight = newValue - oldValue;
-			System.err.println(deltaHeight);
 			box.minHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
 			box.maxHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
 			GraphicalBlock.super.minHeightProperty().set(GraphicalBlock.super.minHeightProperty().get() + deltaHeight);
@@ -283,12 +293,29 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 
 		@Override
 		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
-			double deltaWidth = newValue - oldValue;
-			box.minWidthProperty().set(box.maxWidthProperty().get() + deltaWidth);
-			box.maxWidthProperty().set(box.maxWidthProperty().get() + deltaWidth);
-			GraphicalBlock.super.minWidthProperty().set(GraphicalBlock.super.minWidthProperty().get() + deltaWidth);
-			GraphicalBlock.super.maxWidthProperty().set(GraphicalBlock.super.minWidthProperty().get());
-
+			double biggestWidth = newValue;
+			System.err.println(newValue);
+			for(Node n : box.getChildren()) {
+				GraphicalBlock b = (GraphicalBlock) n;
+				if(b.getMaxWidth() > biggestWidth)
+					biggestWidth = b.getMaxWidth();
+			}
+			System.err.println(biggestWidth);
+			double deltaWidth = biggestWidth - box.getMaxWidth();
+			box.setMinWidth(biggestWidth);
+			box.setMaxWidth(biggestWidth);
+			if(biggestWidth != newValue)
+				return;
+			VBox farthestOut = box;
+			for (VBox b : getNestBoxes()) {
+				if(b.getLayoutX() + b.getMaxWidth() > farthestOut.getLayoutX() + farthestOut.getMaxWidth())
+					farthestOut = b;
+			}
+			if(farthestOut == box) {
+				System.err.println("farthestOut " + deltaWidth);
+				GraphicalBlock.super.setMinWidth(GraphicalBlock.super.getMinWidth() + deltaWidth);
+				GraphicalBlock.super.setMaxWidth(GraphicalBlock.super.getMinWidth());
+			}
 		}
 
 	}
@@ -300,9 +327,9 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			
 			GraphicalBlock.super.layoutYProperty().unbind();
 			GraphicalBlock.super.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
-			System.err.println(" " + GraphicalBlock.super.getLayoutX() + ", " + GraphicalBlock.super.getLayoutY());
 		}
 		
 	}
+
 
 }
