@@ -25,39 +25,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		return nestBoxes;
 	}
 
-	public GraphicalIfBlock() { // sets up visuals of the block
-		super(200, 80);
-
-		nestDimensions = new HashMap<>();
-
-		this.setPadding(new Insets(10));
-		this.setBackground(new Background(new BackgroundFill(Color.web("#907FDE"), CornerRadii.EMPTY, Insets.EMPTY)));
-
-		HBox topLine = new HBox();
-		topLine.setSpacing(8);
-		topLine.getChildren().addAll(new Label("if"));
-		VBox bottomLine = new VBox();
-		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		bottomLine.setMinWidth(140);
-		bottomLine.setMinHeight(32);
-		double[] bottomLineDimensions = { 140.0, 32.0 };
-		nestDimensions.put(bottomLine, bottomLineDimensions);
-		VBox conditionSpace = new VBox();
-		conditionSpace.setMinHeight(30);
-		conditionSpace.setMinWidth(140);
-		double[] conditionSpaceDimensions = { 140.0, 30.0 };
-		nestDimensions.put(conditionSpace, conditionSpaceDimensions);
-		conditionSpace.setBackground(
-				new Background(new BackgroundFill(Color.web("#E6E6E6"), CornerRadii.EMPTY, Insets.EMPTY)));
-
-		topLine.getChildren().add(conditionSpace);
-
-		this.getChildren().addAll(topLine, bottomLine);
-
-		nestBoxes = new VBox[2];
-		nestBoxes[0] = conditionSpace;
-		nestBoxes[1] = bottomLine;
-	}
+	
 
 	public GraphicalIfBlock(double width, double height) {
 		super(width, height);
