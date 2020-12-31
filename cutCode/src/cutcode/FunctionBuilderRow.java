@@ -32,4 +32,13 @@ public class FunctionBuilderRow extends HBox {
 	public String getType() {
 		return type.getValue();
 	}
+	
+	@Override
+	public String toString() {
+		String ret = getName();
+		if(type != null) {
+			ret = getType() + " " + ret;
+		}
+		return ret;
+	}
 }

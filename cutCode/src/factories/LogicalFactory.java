@@ -113,4 +113,15 @@ public interface LogicalFactory {
 	 * @return the logical block for this else statement
 	 */
 	public LogicalBlock createElseBlock(int indentFactor, List<LogicalBlock> executeBlocks);
+	
+	/**
+	 * 
+	 * @param name - the name of the function
+	 * @param retType - return type of function. ignored if python
+	 * @param parameters - all the parameters for the function, null if none
+	 * @param executeBlocks - all the blocks inside the 
+	 * @return the logical block for this function definition
+	 */
+	public LogicalBlock createFunctionBlock(int indentFactor, String name, String retType, String[] parameters, List<LogicalBlock> executeBlocks);
+	
 }

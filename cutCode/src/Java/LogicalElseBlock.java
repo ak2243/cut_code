@@ -21,7 +21,7 @@ public class LogicalElseBlock extends LogicalBlock {
 		String ret = indents + "else {" + System.lineSeparator();
 		for(LogicalBlock l : executeBlocks)
 			ret = ret +  l.toString();
-		ret = ret + "}";
+		ret = ret + indents + "}" + System.lineSeparator();
 		return ret;
 	}
 }

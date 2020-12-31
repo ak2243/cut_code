@@ -3,11 +3,13 @@ package cutcode;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -23,6 +25,7 @@ public class FunctionBuilderView extends Stage {
 	private String[] types;
 	private BorderPane root;
 	private Scene scene;
+	private ComboBox<String> retType;
 
 	public FunctionBuilderView(String[] types, double width, double height) {
 		rows = new ArrayList<FunctionBuilderRow>();
@@ -37,6 +40,10 @@ public class FunctionBuilderView extends Stage {
 
 	public List<FunctionBuilderRow> getRows() {
 		return rows;
+	}
+	
+	public String getRetType() {
+		return this.retType.getValue();
 	}
 
 	public void make(String title) {
@@ -53,7 +60,15 @@ public class FunctionBuilderView extends Stage {
 		ScrollPane middle = new ScrollPane();
 		Label paramLabel = new Label("Parameters");
 		paramLabel.setFont(new Font("Helvetica", height * 0.04));
-		VBox rowBox = new VBox(paramLabel);
+		VBox rowBox = new VBox();
+		if(types != null) {
+			Label retLabel = new Label("Return: ");
+			retLabel.setFont(paramLabel.getFont());
+			retType = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(types)));
+			HBox retBox = new HBox(retLabel, retType);
+			rowBox.getChildren().add(retBox);
+		}
+		rowBox.getChildren().add(paramLabel);
 		rowBox.setAlignment(Pos.TOP_LEFT);
 		middle.setContent(rowBox);
 		middle.setMaxSize(width * 0.88, height * 0.6);

@@ -5,6 +5,7 @@ import cutcode.LogicalBlock;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class PythonLogicalFactory implements LogicalFactory {
 	public HashMap<String, String> operatorTranslation; //Used to go from graphical representation of operators to code
 
@@ -111,6 +112,17 @@ public class PythonLogicalFactory implements LogicalFactory {
 		ret.setCondition(condition);
 		ret.setExecuteBlocks(executeBlocks);
 		ret.setIndentFactor(indentFactor);
+		return ret;
+	}
+
+	@Override
+	public LogicalBlock createFunctionBlock(int indentFactor, String name, String retType, String[] parameters,
+			List<LogicalBlock> executeBlocks) {
+		python.LogicalFunctionBlock ret = new python.LogicalFunctionBlock();
+		ret.setIndentFactor(indentFactor);
+		ret.setName(name);
+		ret.setParameters(parameters);
+		ret.setExecuteBlocks(executeBlocks);
 		return ret;
 	}
 

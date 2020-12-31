@@ -26,7 +26,7 @@ public class LogicalIfBlock extends LogicalBlock {
 		String ret = indents + "if (" + condition.toString() + ") {" + System.lineSeparator();
 		for(LogicalBlock l : executeBlocks)
 			ret = ret +  l.toString();
-		ret = ret + "}";
+		ret = ret + indents + "}" + System.lineSeparator();
 		return ret;
 	}
 }
