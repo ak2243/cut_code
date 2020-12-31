@@ -38,7 +38,9 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 
 		HBox topLine = new HBox();
 		topLine.setSpacing(height / 5);
-		topLine.getChildren().addAll(new Label("while"));
+		Label label = new Label("while");
+	    label.setTextFill(Color.WHITE);
+		topLine.getChildren().add(label);
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 

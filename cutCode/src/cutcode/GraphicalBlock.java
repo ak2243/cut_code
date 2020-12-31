@@ -53,6 +53,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.bindListener = new BindListener();
 		above.maxHeightProperty().addListener(bindListener);
 
+
 	}
 
 	/**
@@ -157,6 +158,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		if(box.getChildren().size() == 0)
 			incHeight -= box.getMaxHeight();
 
+		
 		// STEP 1 - change dimensions of box
 		box.minWidthProperty().set(box.maxWidthProperty().get() + incWidth);
 		box.maxWidthProperty().set(box.maxWidthProperty().get() + incWidth);
@@ -168,12 +170,12 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 
 		// STEP 3 - add listeners so that change in nested block's dimensions affect
 		// changes in this block as well
-		ChangeListener widthListener = new DeltaWidthListener(box);
-		nest.minWidthProperty().addListener(widthListener);
+		ChangeListener widthListener = new DeltaWidthListener(box, nest);
+		nest.maxWidthProperty().addListener(widthListener);
 
 
 		ChangeListener heightListener = new DeltaHeightListener(box);
-		nest.minHeightProperty().addListener(heightListener);
+		nest.maxHeightProperty().addListener(heightListener);
 		
 		widthListeners.put(nest, widthListener);
 		heightListeners.put(nest, heightListener);
@@ -285,26 +287,26 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private class DeltaWidthListener implements ChangeListener<Double> {
 
 		VBox box;
+		GraphicalBlock nest;
 
-		public DeltaWidthListener(VBox box) {
+		public DeltaWidthListener(VBox box, GraphicalBlock nest) {
 			this.box = box;
+			this.nest = nest;
 		}
 
 
 		@Override
 		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
-			double biggestWidth = newValue;
-			System.err.println(newValue);
+			GraphicalBlock biggestWidth = nest;
 			for(Node n : box.getChildren()) {
 				GraphicalBlock b = (GraphicalBlock) n;
-				if(b.getMaxWidth() > biggestWidth)
-					biggestWidth = b.getMaxWidth();
+				if(b.getMaxWidth() > biggestWidth.getMaxWidth())
+					biggestWidth = b;
 			}
-			System.err.println(biggestWidth);
-			double deltaWidth = biggestWidth - box.getMaxWidth();
-			box.setMinWidth(biggestWidth);
-			box.setMaxWidth(biggestWidth);
-			if(biggestWidth != newValue)
+			double deltaWidth = biggestWidth.getMaxWidth() - box.getMaxWidth();
+			box.setMinWidth(biggestWidth.getMaxWidth());
+			box.setMaxWidth(box.getMinWidth());
+			if(biggestWidth != nest)
 				return;
 			VBox farthestOut = box;
 			for (VBox b : getNestBoxes()) {
@@ -312,7 +314,6 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 					farthestOut = b;
 			}
 			if(farthestOut == box) {
-				System.err.println("farthestOut " + deltaWidth);
 				GraphicalBlock.super.setMinWidth(GraphicalBlock.super.getMinWidth() + deltaWidth);
 				GraphicalBlock.super.setMaxWidth(GraphicalBlock.super.getMinWidth());
 			}

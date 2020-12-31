@@ -39,7 +39,9 @@ public class GraphicalIfBlock extends GraphicalBlock {
 
 		HBox topLine = new HBox();
 		topLine.setSpacing(height / 5);
-		topLine.getChildren().addAll(new Label("if"));
+		Label label = new Label("if");
+	    label.setTextFill(Color.WHITE);
+		topLine.getChildren().add(label);
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -52,7 +54,7 @@ public class GraphicalIfBlock extends GraphicalBlock {
 		VBox conditionSpace = new VBox();
 		conditionSpace.setMinHeight(initHeight / 3);
 		conditionSpace.setMaxHeight(conditionSpace.getMinHeight());
-		conditionSpace.setMinWidth(initWidth * 0.73);
+		conditionSpace.setMinWidth(initWidth * 0.68);
 		conditionSpace.setMaxWidth(conditionSpace.getMinWidth());
 		double[] conditionSpaceDimensions = { conditionSpace.getMinWidth(), conditionSpace.getMinHeight() };
 		nestDimensions.put(conditionSpace, conditionSpaceDimensions);

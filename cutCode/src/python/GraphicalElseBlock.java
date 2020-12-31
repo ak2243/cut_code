@@ -36,7 +36,9 @@ public class GraphicalElseBlock extends GraphicalBlock {
 		this.setBackground(new Background(new BackgroundFill(Color.web("#8079D8"), CornerRadii.EMPTY, Insets.EMPTY)));
 
 		HBox topLine = new HBox();
-		topLine.getChildren().addAll(new Label("else"));
+		Label label = new Label("else");
+	    label.setTextFill(Color.WHITE);
+		topLine.getChildren().add(label);
 		VBox bottomLine = new VBox();
 		bottomLine.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		bottomLine.setMinWidth(initWidth * 0.88);
@@ -85,7 +87,6 @@ public class GraphicalElseBlock extends GraphicalBlock {
 
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
-		System.err.println("nest");
 		if (index == 0) {
 			VBox box = nestBoxes[0];
 			increment(box, nest);

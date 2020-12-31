@@ -29,9 +29,6 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 	}
 
 
-	public GraphicalMathBinaryOperatorBlock() {
-		this(200, 40);
-	}
 
 	public GraphicalMathBinaryOperatorBlock(double width, double height) { //sets up visuals of block
 		super(width, height);
