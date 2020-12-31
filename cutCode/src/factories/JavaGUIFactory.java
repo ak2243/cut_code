@@ -14,7 +14,7 @@ public class JavaGUIFactory extends GUIFactory {
 				new GraphicalIfBlock(blockWidth, blockHeight*2),
 				new GraphicalElseBlock(blockWidth, blockHeight * 2),
 				new GraphicalWhileBlock(blockWidth, blockHeight * 2),
-				new GraphicalFunctionBlock(blockWidth, blockHeight * 2),
+				new Java.GraphicalFunctionBlock(blockWidth, blockHeight * 2),
 				new GraphicalFunctionCallBlock(blockWidth, blockHeight * 2)};
 		return ret;
 	}
