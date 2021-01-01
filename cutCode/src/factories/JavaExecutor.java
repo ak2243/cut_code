@@ -10,8 +10,8 @@ import java.util.List;
 
 public class JavaExecutor extends Executor {
 	private String filename;
-	public static final String PREFIX = "public class Program {" + System.lineSeparator() + "	public static void main (String[] args) {" + System.lineSeparator();
-	public static final String SUFFIX = "	}" + System.lineSeparator() + "}";
+	public static final String PREFIX = "public class Program {" + System.lineSeparator();
+	public static final String SUFFIX = "}";
 	private String compileCommand;
 	private String runKeyword;
 	public JavaExecutor(String filename, String compileCommand, String runKeyword) {

@@ -1,7 +1,18 @@
 package factories;
 
+import java.util.List;
+
 import cutcode.GraphicalBlock;
-import python.*;
+import python.GraphicalBooleanBinaryOperatorBlock;
+import python.GraphicalElseBlock;
+import python.GraphicalFunctionBlock;
+import python.GraphicalFunctionCallBlock;
+import python.GraphicalIfBlock;
+import python.GraphicalMathBinaryOperatorBlock;
+import python.GraphicalPrintBlock;
+import python.GraphicalValueBlock;
+import python.GraphicalVariableBlock;
+import python.GraphicalWhileBlock;
 
 public class PythonGUIFactory extends GUIFactory {
 	@Override
@@ -17,5 +28,10 @@ public class PythonGUIFactory extends GUIFactory {
 				new GraphicalFunctionBlock(blockWidth, blockHeight * 2),
 				new GraphicalFunctionCallBlock(blockWidth, blockHeight * 2)};
 		return ret;
+	}
+
+	@Override
+	public List<GraphicalBlock> sortFunctions(List<GraphicalBlock> blocks, LogicalFactory factory) {
+		return blocks;
 	}
 }

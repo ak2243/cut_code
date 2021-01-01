@@ -37,8 +37,8 @@ public class JavaLogicalFactory implements LogicalFactory {
 
 	@Override
 	public int getBaseIndent() {
-		return 3;
-	} //base indent is 3 because class and method
+		return 2;
+	}
 
 	@Override
 	public LogicalBlock createPrint(int indentFactor, LogicalBlock print) {

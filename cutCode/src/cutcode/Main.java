@@ -44,7 +44,7 @@ public class Main extends Application {
 			filename = "program.py";
 			executor = new PythonExecutor(filename, runKeyword); //Only a run command in python
 		} else if (language.equals("java")) {
-			baseLineNumber = 3; //class and method declaration takes two lines, so code starts on line 3
+			baseLineNumber = 2; 
 			guiFactory = new factories.JavaGUIFactory();
 			guiFactory.setBlockSize(maxX * 0.1, maxY/25);
 			logicalFactory = new factories.JavaLogicalFactory();

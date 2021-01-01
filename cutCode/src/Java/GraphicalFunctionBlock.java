@@ -32,6 +32,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	public static HashMap<String, String> retTypes;
 	private boolean inPalette;
 
+	
 	public GraphicalFunctionBlock(double width, double height) {
 		super(width, height);
 		this.initWidth = width;
@@ -144,7 +145,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
 			}
 		}
-		return ret + logicalFactory.getEndingBrace(); // Block class reused for java so might have ending brace
+		return ret + logicalFactory.getEndingBrace();
 	}
 
 	@Override

@@ -80,26 +80,27 @@ public class Workspace extends Pane {
 				try {
 					HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
 					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
-					ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
 					int lineLoc = baseLineNumber;
 
 					for(GraphicalBlock b : blocks) { //Goes through all the block
 						b.untag(); //Ensures that error tags from previous methods don't stay
 						if(b.getNestedIn() == null) {
-							b.setLineNumber(lineLoc);
-							lineLoc = b.putInHashMap(lineLocations); //Allows for specific error reporting by matching blocks to line numbers
 							if(b.getAbove() == null)
 								orderedHeadBlocks.add(b); //Ordering by height of head blocks (aren't nested in or attached to something)
 						}
 					}
-
 					if(orderedHeadBlocks.inOrder() == null) {
 						OutputView.output("Please create some blocks before exporting", new Stage());
 						return;
 					}
-					for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
-						for (GraphicalBlock curr = head; curr != null; curr = curr.getBelow())
-							orderedBlocks.add(curr.getLogicalBlock());
+					List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(), logicalFactory);
+					for(GraphicalBlock b : funcBlocks) {
+						b.setLineNumber(lineLoc);
+						lineLoc = b.putInHashMap(lineLocations);
+					}
+					List<LogicalBlock> orderedBlocks = new ArrayList<>();
+					for(GraphicalBlock func : funcBlocks) {
+						orderedBlocks.add(func.getLogicalBlock());
 					}
 					String ret = mainClass.run(orderedBlocks, lineLocations); //Runs the code
 					OutputView.output(ret, new Stage());
