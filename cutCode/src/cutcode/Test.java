@@ -3,6 +3,7 @@ package cutcode;
 import java.util.ArrayList;
 import java.util.List;
 
+import factories.JavaExecutor;
 import factories.JavaLogicalFactory;
 import factories.LogicalFactory;
 import factories.PythonLogicalFactory;
@@ -11,23 +12,17 @@ import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import Java.LogicalFunctionBlock;
+import Java.LogicalFunctionCallBlock;
 
 public class Test extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		//new FunctionBuilderView();
-		LogicalFactory factory = new PythonLogicalFactory();
+		Executor exec = new JavaExecutor("Program.java", "java", "javac");
+		LogicalFactory factory = new JavaLogicalFactory();
 		List<LogicalBlock> blocks = new ArrayList<LogicalBlock>();
-		int fact = 1;
-		String[] params = {"int x", "double y", "String z", "boolean b"};
-		blocks.add(factory.createPrint(0, factory.createValue("\"hello world\"")));
-		for(LogicalBlock b : blocks) {
-			b.setIndentFactor(fact + 1);
-		}
-		LogicalBlock block = factory.createFunctionBlock(fact, "test", "double", params, blocks);
-		System.err.println(block.toString());
-		System.exit(0);
+		blocks.add(factory.createPrint(0, factory.createValue("2")));
+		exec.export(blocks, "program.py");
 	}
 	public static void main(String[] args) {
 		launch(args);

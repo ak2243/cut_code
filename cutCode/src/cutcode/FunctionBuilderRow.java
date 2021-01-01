@@ -9,11 +9,19 @@ public class FunctionBuilderRow extends HBox {
 	private ComboBox<String> type;
 	private TextField name;
 	public FunctionBuilderRow(String[] types, double width, double height) {
+		String[] paramTypes = null;
+		if(types != null) {
+			paramTypes = new String[types.length - 1];
+			for(int i = 1; i < types.length; i++) {
+				paramTypes[i-1] = types[i];
+			}
+		}
 		name = new TextField();
 		name.setMaxSize(width / 2, height);
 		name.setMinSize(width / 2, height);
 		if(types != null) {
-			type = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(types)));
+			type = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(paramTypes)));
+			type.setValue(paramTypes[0]);
 			type.setMaxSize(width / 2, height);
 			type.setMinSize(width / 2, height);
 			this.getChildren().add(type);

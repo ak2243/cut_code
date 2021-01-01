@@ -58,7 +58,7 @@ public class GraphicalElseBlock extends GraphicalBlock {
 		ArrayList<LogicalBlock> executeBlocks = new ArrayList<>();
 		for (Node n : nestBoxes[0].getChildren()) { // gets all the blocks to be executed if the if statement evaluates
 													// to true
-			((GraphicalBlock) n).setIndentFactor(getIndentFactor() + 1);
+			((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
 			executeBlocks.add(((GraphicalBlock) n).getLogicalBlock());
 		}
 		return logicalFactory.createElseBlock(getIndentFactor(), executeBlocks);

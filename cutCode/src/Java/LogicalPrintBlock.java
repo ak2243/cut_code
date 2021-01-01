@@ -16,6 +16,7 @@ public class LogicalPrintBlock extends LogicalBlock {
 	@Override
 	public String toString() {
 		String indents = "";
+		System.err.println(getIndentFactor());
 		for(int i = 0; i < getIndentFactor(); i++)
 			indents += "	";
 		return indents + "System.out.println(" + print.toString() + ");" + System.lineSeparator();

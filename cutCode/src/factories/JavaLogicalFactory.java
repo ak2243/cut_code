@@ -128,7 +128,7 @@ public class JavaLogicalFactory implements LogicalFactory {
 	@Override
 	public LogicalBlock createFunctionBlock(int indentFactor, String name, String retType, String[] parameters,
 			List<LogicalBlock> executeBlocks) {
-		LogicalFunctionBlock ret = new LogicalFunctionBlock();
+		Java.LogicalFunctionBlock ret = new Java.LogicalFunctionBlock();
 		ret.setIndentFactor(indentFactor);
 		ret.setName(name);
 		ret.setRetType(retType);

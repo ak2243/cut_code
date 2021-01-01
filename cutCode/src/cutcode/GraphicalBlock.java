@@ -18,7 +18,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private GraphicalBlock above;
 	private GraphicalBlock below;
 	private boolean ignoreNext;
-	private int indentFactor;
+	protected int indentFactor;
 	private int lineNumber;
 	protected LogicalFactory logicalFactory;
 	private GraphicalBlock nestedIn;

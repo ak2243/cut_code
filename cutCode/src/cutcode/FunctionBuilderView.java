@@ -32,6 +32,10 @@ public class FunctionBuilderView extends Stage {
 		this.width = width;
 		this.height = height;
 		this.types = types;
+		if (types != null) {
+			retType = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(types)));
+			retType.setValue(types[0]);
+		}
 
 		root = new BorderPane();
 		scene = new Scene(root, width, height);
@@ -41,8 +45,9 @@ public class FunctionBuilderView extends Stage {
 	public List<FunctionBuilderRow> getRows() {
 		return rows;
 	}
-	
+
 	public String getRetType() {
+		System.err.println(retType);
 		return this.retType.getValue();
 	}
 
@@ -61,14 +66,16 @@ public class FunctionBuilderView extends Stage {
 		Label paramLabel = new Label("Parameters");
 		paramLabel.setFont(new Font("Helvetica", height * 0.04));
 		VBox rowBox = new VBox();
-		if(types != null) {
+		if (types != null) {
 			Label retLabel = new Label("Return: ");
 			retLabel.setFont(paramLabel.getFont());
-			retType = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(types)));
 			HBox retBox = new HBox(retLabel, retType);
 			rowBox.getChildren().add(retBox);
 		}
 		rowBox.getChildren().add(paramLabel);
+		for (FunctionBuilderRow row : rows) {
+			rowBox.getChildren().add(row);
+		}
 		rowBox.setAlignment(Pos.TOP_LEFT);
 		middle.setContent(rowBox);
 		middle.setMaxSize(width * 0.88, height * 0.6);
@@ -92,7 +99,7 @@ public class FunctionBuilderView extends Stage {
 			}
 
 		});
-		
+
 		rem.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {

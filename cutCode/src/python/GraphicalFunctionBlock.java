@@ -1,8 +1,10 @@
 package python;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import cutcode.BlockCodeCompilerErrorException;
+import cutcode.FunctionBuilderRow;
 import cutcode.FunctionBuilderView;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
@@ -103,8 +105,16 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<LogicalBlock> execBlocks = new ArrayList<>();
+		for(Node n : nestBoxes[0].getChildren()) {
+			((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
+			execBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		String[] params = new String[funcBuilder.getRows().size()];
+		for(int i = 0; i < params.length; i++) {
+			params[i] = funcBuilder.getRows().get(i).getName();
+		}
+		return logicalFactory.createFunctionBlock(getIndentFactor(), this.field.getText(), null, params, execBlocks);
 	}
 
 	@Override
@@ -122,7 +132,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
 		int ret = getLineNumber() + 1;
-		for (Node n : nestBoxes[1].getChildren()) {
+		for (Node n : nestBoxes[0].getChildren()) {
 			if (n instanceof GraphicalBlock) {
 				((GraphicalBlock) n).setLineNumber(ret);
 				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);

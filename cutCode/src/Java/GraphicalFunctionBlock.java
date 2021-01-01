@@ -1,5 +1,6 @@
 package Java;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import cutcode.BlockCodeCompilerErrorException;
@@ -28,6 +29,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	private TextField field;
 	private HashMap<VBox, double[]> nestDimensions;
 	private FunctionBuilderView funcBuilder;
+	public static HashMap<String, String> retTypes;
 	private boolean inPalette;
 
 	public GraphicalFunctionBlock(double width, double height) {
@@ -36,9 +38,14 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		this.initHeight = height;
 		nestBoxes = new VBox[1];
 		nestDimensions = new HashMap<>();
-		String[] types = {"num", "T/F", "str"};
+		String[] types = {"void", "num", "T/F", "str"};
 		funcBuilder = new FunctionBuilderView(types, width * 2.2, width * 2.2);
 		inPalette = false;
+		retTypes = new HashMap<>();
+		retTypes.put("num", "double");
+		retTypes.put("T/F", "boolean");
+		retTypes.put("str", "String");
+	
 
 		Label label = new Label("func");
 		label.setTextFill(Color.WHITE);
@@ -61,7 +68,6 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		nestDimensions.put(runSpace, dimensions);
 		
 		this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
 			@Override
 			public void handle(MouseEvent event) {
 				if(event.getButton() == MouseButton.SECONDARY) {
@@ -70,7 +76,6 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 					}
 				}
 			}
-			
 		});
 
 		this.setBackground(new Background(new BackgroundFill(Color.web("#545ac9"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -104,8 +109,18 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<LogicalBlock> execBlocks = new ArrayList<>();
+		for(Node n : nestBoxes[0].getChildren()) {
+			//((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
+			execBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		String[] params = new String[funcBuilder.getRows().size()];
+		for(int i = 0; i < params.length; i++) {
+			params[i] = retTypes.get(funcBuilder.getRows().get(i).getType()) + " " + funcBuilder.getRows().get(i).getName();
+		}
+		return logicalFactory.createFunctionBlock(getIndentFactor() - 1, this.field.getText(), retTypes.get(funcBuilder.getRetType()), params, execBlocks);
+		
+
 	}
 
 	@Override
@@ -123,7 +138,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
 		int ret = getLineNumber() + 1;
-		for (Node n : nestBoxes[1].getChildren()) {
+		for (Node n : nestBoxes[0].getChildren()) {
 			if (n instanceof GraphicalBlock) {
 				((GraphicalBlock) n).setLineNumber(ret);
 				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
