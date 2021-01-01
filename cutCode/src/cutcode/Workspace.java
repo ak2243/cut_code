@@ -122,26 +122,33 @@ public class Workspace extends Pane {
 			//Didn't comment the second time because it's the same as running but you call mainClass.export() instead of mainClass.run()
 			@Override
 			public void handle(MouseEvent e) {
+				HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
 				BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
-				ArrayList<LogicalBlock> orderedBlocks = new ArrayList<>();
-				for(GraphicalBlock b : blocks) {
+				int lineLoc = baseLineNumber;
+
+				for(GraphicalBlock b : blocks) { //Goes through all the block
+					b.untag(); //Ensures that error tags from previous methods don't stay
 					if(b.getNestedIn() == null) {
 						if(b.getAbove() == null)
-							orderedHeadBlocks.add(b);
+							orderedHeadBlocks.add(b); //Ordering by height of head blocks (aren't nested in or attached to something)
 					}
 				}
 				if(orderedHeadBlocks.inOrder() == null) {
 					OutputView.output("Please create some blocks before exporting", new Stage());
 					return;
 				}
-
-				for(GraphicalBlock head : orderedHeadBlocks.inOrder()) {
-					for(GraphicalBlock curr = head; curr != null; curr = curr.getBelow()) {
-						try {
-							orderedBlocks.add(curr.getLogicalBlock());
-						} catch (BlockCodeCompilerErrorException blockCodeCompilerErrorException) {
-							OutputView.output("Export failed, please check your code", new Stage());
-						}
+				List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(), logicalFactory);
+				for(GraphicalBlock b : funcBlocks) {
+					b.setLineNumber(lineLoc);
+					lineLoc = b.putInHashMap(lineLocations);
+				}
+				List<LogicalBlock> orderedBlocks = new ArrayList<>();
+				for(GraphicalBlock func : funcBlocks) {
+					try {
+						orderedBlocks.add(func.getLogicalBlock());
+					} catch (BlockCodeCompilerErrorException e1) {
+						e1.printStackTrace();
+						System.exit(1);
 					}
 				}
 				String file = FilePicker.chooseFile(new Stage());
