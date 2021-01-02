@@ -1,5 +1,6 @@
 package python;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import cutcode.BlockCodeCompilerErrorException;
@@ -41,14 +42,13 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 		HBox topLine = new HBox(label, field);
 
 		VBox runSpace = new VBox();
-		runSpace.setBackground(
-				new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		runSpace.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		runSpace.setMinWidth(initWidth * 0.88);
 		runSpace.setMaxWidth(runSpace.getMinWidth());
 		runSpace.setMinHeight(initHeight / 3);
 		runSpace.setMaxHeight(runSpace.getMinHeight());
 		nestBoxes[0] = runSpace;
-		double[] dimensions = {runSpace.getMinWidth(), runSpace.getMinHeight()};
+		double[] dimensions = { runSpace.getMinWidth(), runSpace.getMinHeight() };
 		nestDimensions.put(runSpace, dimensions);
 
 		this.setBackground(new Background(new BackgroundFill(Color.web("#454BC4"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -80,8 +80,17 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<LogicalBlock> paramBlocks = null;
+		if (nestBoxes[0].getChildren().size() > 0) {
+			paramBlocks = new ArrayList<>();
+			for (Node n : nestBoxes[0].getChildren()) {
+				((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
+				paramBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+			}
+		}
+		boolean independent = this.getNestedIn() == null;
+		System.err.println(independent + " " + this.getNestedIn());
+		return logicalFactory.createFunctionCallBlock(getIndentFactor(), field.getText(), paramBlocks, independent);
 	}
 
 	@Override
@@ -98,14 +107,11 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 	@Override
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
-		int ret = getLineNumber() + 1;
-		for (Node n : nestBoxes[1].getChildren()) {
-			if (n instanceof GraphicalBlock) {
-				((GraphicalBlock) n).setLineNumber(ret);
-				ret = ((GraphicalBlock) n).putInHashMap(lineLocations);
-			}
+		if(this.getNestedIn() == null) {
+			return getLineNumber() + 1;
+		} else {
+			return 0;
 		}
-		return ret + logicalFactory.getEndingBrace(); // Block class reused for java so might have ending brace
 	}
 
 	@Override

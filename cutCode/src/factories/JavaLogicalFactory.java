@@ -136,4 +136,14 @@ public class JavaLogicalFactory implements LogicalFactory {
 		ret.setExecuteBlocks(executeBlocks);
 		return ret;
 	}
+
+	@Override
+	public LogicalBlock createFunctionCallBlock(int indentFactor, String name, List<LogicalBlock> parameters, boolean independent) {
+		LogicalFunctionCallBlock ret = new LogicalFunctionCallBlock();
+		ret.setIndentFactor(indentFactor);
+		ret.setName(name);
+		ret.setIndependent(independent);
+		ret.setParams(parameters);
+		return ret;
+	}
 }

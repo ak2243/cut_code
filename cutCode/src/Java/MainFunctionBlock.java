@@ -8,6 +8,8 @@ import cutcode.BlockCodeCompilerErrorException;
 import cutcode.GraphicalBlock;
 import cutcode.InvalidNestException;
 import cutcode.LogicalBlock;
+import cutcode.OutputView;
+import javafx.stage.Stage;
 
 public class MainFunctionBlock extends GraphicalFunctionBlock {
 	List<GraphicalBlock> insideGraphicalBlocks;
@@ -25,8 +27,7 @@ public class MainFunctionBlock extends GraphicalFunctionBlock {
 			inside.add(nest.getLogicalBlock());
 			insideGraphicalBlocks.add(nest);
 		} catch (BlockCodeCompilerErrorException e) {
-			e.printStackTrace();
-			System.exit(1);
+			throw new InvalidNestException();
 		}
 	}
 	

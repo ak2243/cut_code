@@ -115,7 +115,7 @@ public interface LogicalFactory {
 	public LogicalBlock createElseBlock(int indentFactor, List<LogicalBlock> executeBlocks);
 	
 	/**
-	 * 
+	 * @param indentFactor - the number of times this block should be indented
 	 * @param name - the name of the function
 	 * @param retType - return type of function. ignored if python
 	 * @param parameters - all the parameters for the function, null if none
@@ -124,4 +124,13 @@ public interface LogicalFactory {
 	 */
 	public LogicalBlock createFunctionBlock(int indentFactor, String name, String retType, String[] parameters, List<LogicalBlock> executeBlocks);
 	
+	
+	/**
+	 * 
+	 * @param indentFactor - the number of times this block should be indented
+	 * @param parameters - the parameter blocks for this function call
+	 * @param independent - true if this function is called as an independent block (has a new line after), false if not.
+	 * @return
+	 */
+	public LogicalBlock createFunctionCallBlock(int indentFactor, String name, List<LogicalBlock> parameters, boolean independent);
 }

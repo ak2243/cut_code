@@ -171,11 +171,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		// STEP 3 - add listeners so that change in nested block's dimensions affect
 		// changes in this block as well
 		ChangeListener widthListener = new DeltaWidthListener(box, nest);
-		nest.maxWidthProperty().addListener(widthListener);
+		nest.minWidthProperty().addListener(widthListener);
 
 
 		ChangeListener heightListener = new DeltaHeightListener(box);
-		nest.maxHeightProperty().addListener(heightListener);
+		nest.minHeightProperty().addListener(heightListener);
 		
 		widthListeners.put(nest, widthListener);
 		heightListeners.put(nest, heightListener);
@@ -303,14 +303,14 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 				if(b.getMaxWidth() > biggestWidth.getMaxWidth())
 					biggestWidth = b;
 			}
-			double deltaWidth = biggestWidth.getMaxWidth() - box.getMaxWidth();
-			box.setMinWidth(biggestWidth.getMaxWidth());
+			double deltaWidth = biggestWidth.getMinWidth() - box.getMaxWidth();
+			box.setMinWidth(biggestWidth.getMinWidth());
 			box.setMaxWidth(box.getMinWidth());
 			if(biggestWidth != nest)
 				return;
 			VBox farthestOut = box;
 			for (VBox b : getNestBoxes()) {
-				if(b.getLayoutX() + b.getMaxWidth() > farthestOut.getLayoutX() + farthestOut.getMaxWidth())
+				if(b.getLayoutX() + b.getMinWidth() > farthestOut.getLayoutX() + farthestOut.getMinWidth())
 					farthestOut = b;
 			}
 			if(farthestOut == box) {

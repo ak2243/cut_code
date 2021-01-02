@@ -126,5 +126,16 @@ public class PythonLogicalFactory implements LogicalFactory {
 		return ret;
 	}
 
+	@Override
+	public LogicalBlock createFunctionCallBlock(int indentFactor, String name, List<LogicalBlock> parameters,
+			boolean independent) {
+		python.LogicalFunctionCallBlock ret = new python.LogicalFunctionCallBlock();
+		ret.setIndentFactor(indentFactor);
+		ret.setName(name);
+		ret.setIndependent(independent);
+		ret.setParams(parameters);
+		return ret;
+	}
+
 
 }

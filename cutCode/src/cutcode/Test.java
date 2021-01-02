@@ -18,11 +18,13 @@ public class Test extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Executor exec = new JavaExecutor("Program.java", "java", "javac");
-		LogicalFactory factory = new JavaLogicalFactory();
-		List<LogicalBlock> blocks = new ArrayList<LogicalBlock>();
-		blocks.add(factory.createPrint(0, factory.createValue("2")));
-		exec.export(blocks, "program.py");
+		python.GraphicalPrintBlock b = new python.GraphicalPrintBlock(0,0);
+		b.nest(0, new python.GraphicalValueBlock(0, 0));
+		GraphicalBlock t = new Java.MainFunctionBlock(0,0);
+		t.nest(0, b);
+		System.err.println(b.getNestedIn());
+		
+		System.exit(0);
 	}
 	public static void main(String[] args) {
 		launch(args);

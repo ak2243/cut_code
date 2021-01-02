@@ -38,8 +38,7 @@ public class JavaGUIFactory extends GUIFactory {
 						firstFunc.nest(0, curr);
 
 				} catch (InvalidNestException e) {
-					e.printStackTrace();
-					System.exit(0);
+					return null;
 				}
 			}
 		}

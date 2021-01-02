@@ -94,7 +94,10 @@ public class Workspace extends Pane {
 						return;
 					}
 					List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(), logicalFactory);
+					if(funcBlocks == null)
+						throw new BlockCodeCompilerErrorException();
 					for(GraphicalBlock b : funcBlocks) {
+						System.err.println(lineLoc + ": " + b.toString());
 						b.setLineNumber(lineLoc);
 						lineLoc = b.putInHashMap(lineLocations);
 					}
@@ -105,7 +108,7 @@ public class Workspace extends Pane {
 					String ret = mainClass.run(orderedBlocks, lineLocations); //Runs the code
 					OutputView.output(ret, new Stage());
 				} catch (BlockCodeCompilerErrorException e1) {
-					OutputView.output("There was an error in your code", new Stage());
+					OutputView.output("There was an error in your code. We attempted to identify the problem but may not have been successful in doing so.", new Stage());
 				}
 			}
 		});
