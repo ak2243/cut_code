@@ -10,6 +10,7 @@ import python.GraphicalFunctionCallBlock;
 import python.GraphicalIfBlock;
 import python.GraphicalMathBinaryOperatorBlock;
 import python.GraphicalPrintBlock;
+import python.GraphicalReturnBlock;
 import python.GraphicalValueBlock;
 import python.GraphicalVariableBlock;
 import python.GraphicalWhileBlock;
@@ -26,6 +27,7 @@ public class PythonGUIFactory extends GUIFactory {
 				new GraphicalElseBlock(blockWidth, blockHeight * 2),
 				new GraphicalWhileBlock(blockWidth, blockHeight * 2),
 				new GraphicalFunctionBlock(blockWidth, blockHeight * 2),
+				new GraphicalReturnBlock(blockWidth, blockHeight),
 				new GraphicalFunctionCallBlock(blockWidth, blockHeight * 2)};
 		return ret;
 	}

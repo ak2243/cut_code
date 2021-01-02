@@ -133,4 +133,12 @@ public interface LogicalFactory {
 	 * @return
 	 */
 	public LogicalBlock createFunctionCallBlock(int indentFactor, String name, List<LogicalBlock> parameters, boolean independent);
+	
+	/**
+	 * 
+	 * @param indentFactor - the number of times this block should be indented
+	 * @param r - the block this return block will return
+	 * @return the logical block for this return
+	 */
+	public LogicalBlock createReturnBlock(int indentFactor, LogicalBlock r);
 }

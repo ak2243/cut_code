@@ -20,6 +20,7 @@ public class JavaGUIFactory extends GUIFactory {
 				new python.GraphicalElseBlock(blockWidth, blockHeight * 2),
 				new python.GraphicalWhileBlock(blockWidth, blockHeight * 2),
 				new GraphicalFunctionBlock(blockWidth, blockHeight * 2),
+				new python.GraphicalReturnBlock(blockWidth, blockHeight),
 				new python.GraphicalFunctionCallBlock(blockWidth, blockHeight * 2)};
 		return ret;
 	}

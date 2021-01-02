@@ -137,5 +137,14 @@ public class PythonLogicalFactory implements LogicalFactory {
 		return ret;
 	}
 
+	@Override
+	public LogicalBlock createReturnBlock(int indentFactor, LogicalBlock r) {
+		python.LogicalReturnBlock ret = new python.LogicalReturnBlock();
+		ret.setIndentFactor(indentFactor);
+		ret.setRet(r);
+		return ret;
+
+	}
+
 
 }

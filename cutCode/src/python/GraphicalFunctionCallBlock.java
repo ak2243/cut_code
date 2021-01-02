@@ -51,7 +51,7 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 		double[] dimensions = { runSpace.getMinWidth(), runSpace.getMinHeight() };
 		nestDimensions.put(runSpace, dimensions);
 
-		this.setBackground(new Background(new BackgroundFill(Color.web("#454BC4"), CornerRadii.EMPTY, Insets.EMPTY)));
+		this.setBackground(new Background(new BackgroundFill(Color.web("#363CAB"), CornerRadii.EMPTY, Insets.EMPTY)));
 		topLine.setSpacing(height / 5);
 		this.setPadding(new Insets(height / 5));
 		this.getChildren().addAll(topLine, runSpace);

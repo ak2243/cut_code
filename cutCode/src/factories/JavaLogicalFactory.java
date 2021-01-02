@@ -146,4 +146,12 @@ public class JavaLogicalFactory implements LogicalFactory {
 		ret.setParams(parameters);
 		return ret;
 	}
+
+	@Override
+	public LogicalBlock createReturnBlock(int indentFactor, LogicalBlock r) {
+		LogicalReturnBlock ret = new LogicalReturnBlock();
+		ret.setIndentFactor(indentFactor);
+		ret.setRet(r);
+		return ret;
+	}
 }
