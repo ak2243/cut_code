@@ -91,6 +91,7 @@ public class LanguagePicker extends BorderPane {
 						javaSecondLine.setAlignment(Pos.CENTER);
 						break;
 					case "python":
+						compileInput = null;
 						Label pythonCompileKeyword = new Label("Compile keyword:");
 						runInput = new TextField(pythonDefault);
 						Button pythonRunPicker = new Button("...");
@@ -135,10 +136,12 @@ public class LanguagePicker extends BorderPane {
 									mainClass.setLanguage(language, null, runInput.getText());
 									mainClass.setUpWorkspace();
 								}
-								else
+								else {
 									err();
-							} else
+								}
+							} else {
 								err();
+							}
 							break;
 					}
 					

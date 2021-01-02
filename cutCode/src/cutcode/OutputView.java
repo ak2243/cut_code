@@ -15,7 +15,7 @@ public class OutputView {
 		stage.setScene(scene);
 		stage.show();
 	}
-	public static void output(String output, Stage stage) {
+	/*public static void output(String output, Stage stage) {
 		BorderPane root = new BorderPane();
 		Label out = new Label(output);
 		out.setWrapText(true);
@@ -23,5 +23,5 @@ public class OutputView {
 		Scene scene = new Scene(root, 400, 400);
 		stage.setScene(scene);
 		stage.show();
-	}
+	}*/
 }
