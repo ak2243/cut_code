@@ -24,31 +24,32 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 public class GraphicalFunctionBlock extends GraphicalBlock {
+	public static HashMap<String, String> retTypes; // the types, as well as the syntax associated with each
+	private TextField field; // function name field
+	private FunctionBuilderView funcBuilder; //
 	private double initWidth, initHeight;
-	private VBox[] nestBoxes;
-	private TextField field;
-	private HashMap<VBox, double[]> nestDimensions;
-	private FunctionBuilderView funcBuilder;
-	public static HashMap<String, String> retTypes;
 	private boolean inPalette;
+	private VBox[] nestBoxes;
+	private HashMap<VBox, double[]> nestDimensions;
 
-	
 	public GraphicalFunctionBlock(double width, double height) {
+		// initialize variables
 		super(width, height);
 		this.initWidth = width;
 		this.initHeight = height;
 		this.allowBind = false;
 		nestBoxes = new VBox[1];
 		nestDimensions = new HashMap<>();
-		String[] types = {"void", "num", "T/F", "str"};
-		funcBuilder = new FunctionBuilderView(types, width * 2.2, width * 2.2);
+		String[] types = { "void", "num", "T/F", "str" };
+		funcBuilder = new FunctionBuilderView(types, width * 2.2, width * 2.2); // sets up function builder
 		inPalette = false;
 		retTypes = new HashMap<>();
+		// set up types
 		retTypes.put("num", "double");
 		retTypes.put("T/F", "boolean");
 		retTypes.put("str", "String");
-	
 
+		// set up block basics
 		Label label = new Label("func");
 		label.setTextFill(Color.WHITE);
 		this.field = new TextField();
@@ -58,21 +59,22 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		field.setMaxHeight(field.getMinHeight());
 		HBox topLine = new HBox(label, field);
 
+		// sets up the VBox for nesting
 		VBox runSpace = new VBox();
-		runSpace.setBackground(
-				new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		runSpace.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		runSpace.setMinWidth(initWidth * 0.88);
 		runSpace.setMaxWidth(runSpace.getMinWidth());
 		runSpace.setMinHeight(initHeight / 3);
 		runSpace.setMaxHeight(runSpace.getMinHeight());
 		nestBoxes[0] = runSpace;
-		double[] dimensions = {runSpace.getMinWidth(), runSpace.getMinHeight()};
+		double[] dimensions = { runSpace.getMinWidth(), runSpace.getMinHeight() };
 		nestDimensions.put(runSpace, dimensions);
-		
+
+		// Listener for right click (shows function builder view)
 		this.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(event.getButton() == MouseButton.SECONDARY) {
+				if (event.getButton() == MouseButton.SECONDARY) {
 					if (inPalette) {
 						funcBuilder.make(field.getText());
 					}
@@ -80,11 +82,39 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 			}
 		});
 
-		CornerRadii cornerRadius = new CornerRadii(12);
+		CornerRadii cornerRadius = new CornerRadii(12); // indicates that nothing can attach to this block
 		this.setBackground(new Background(new BackgroundFill(Color.web("#545ac9"), cornerRadius, Insets.EMPTY)));
 		topLine.setSpacing(height / 5);
 		this.setPadding(new Insets(height / 5));
 		this.getChildren().addAll(topLine, runSpace);
+	}
+
+	@Override
+	public GraphicalBlock cloneBlock() {
+		GraphicalFunctionBlock ret = new GraphicalFunctionBlock(this.initWidth, this.initHeight);
+		ret.inPalette = true;
+		return ret;
+	}
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return getNestBoxes();
+	}
+
+	@Override
+	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
+		ArrayList<LogicalBlock> execBlocks = new ArrayList<>();
+		for (Node n : nestBoxes[0].getChildren()) {
+			execBlocks.add(((GraphicalBlock) n).getLogicalBlock());
+		}
+		String[] params = new String[funcBuilder.getRows().size()];
+		for (int i = 0; i < params.length; i++) { // parameters need to be processed
+			params[i] = retTypes.get(funcBuilder.getRows().get(i).getType()) + " "
+					+ funcBuilder.getRows().get(i).getName();
+		}
+		return logicalFactory.createFunctionBlock(getIndentFactor() - 1, this.field.getText(),
+				retTypes.get(funcBuilder.getRetType()), params, execBlocks);
+
 	}
 
 	@Override
@@ -101,29 +131,6 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	@Override
 	public VBox[] getNestBoxes() {
 		return nestBoxes;
-	}
-
-	@Override
-	public GraphicalBlock cloneBlock() {
-		GraphicalFunctionBlock ret = new GraphicalFunctionBlock(this.initWidth, this.initHeight);
-		ret.inPalette = true;
-		return ret;
-	}
-
-	@Override
-	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		ArrayList<LogicalBlock> execBlocks = new ArrayList<>();
-		for(Node n : nestBoxes[0].getChildren()) {
-			//((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
-			execBlocks.add(((GraphicalBlock) n).getLogicalBlock());
-		}
-		String[] params = new String[funcBuilder.getRows().size()];
-		for(int i = 0; i < params.length; i++) {
-			params[i] = retTypes.get(funcBuilder.getRows().get(i).getType()) + " " + funcBuilder.getRows().get(i).getName();
-		}
-		return logicalFactory.createFunctionBlock(getIndentFactor() - 1, this.field.getText(), retTypes.get(funcBuilder.getRetType()), params, execBlocks);
-		
-
 	}
 
 	@Override
@@ -171,14 +178,15 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 					}
 				}
 				double deltaWidth = box.getMaxWidth() - newBoxWidth;
-				double deltaHeight = rem.getMinHeight(); // no need for subtraction since there's more than one nested
-															// block
+				double deltaHeight = rem.getMinHeight(); // height simply decreases by the height of this block since
+															// there's more than one block nested in the box
 				box.setMaxWidth(newBoxWidth);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(boxHeight - rem.getMinHeight());
 				box.setMinHeight(box.getMaxHeight());
 				this.setSize(this.getMaxWidth() - deltaWidth, this.getMinHeight() - deltaHeight);
 			} else {
+				// size resets to original
 				box.setMaxWidth(dimensions[0]);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(dimensions[1]);
@@ -187,11 +195,6 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 			}
 		}
 
-	}
-
-	@Override
-	public VBox[] getIndependentNestBoxes() {
-		return getNestBoxes();
 	}
 
 }

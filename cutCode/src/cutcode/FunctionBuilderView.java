@@ -20,37 +20,60 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class FunctionBuilderView extends Stage {
-	private List<FunctionBuilderRow> rows;
-	private double width, height;
-	private String[] types;
-	private BorderPane root;
-	private Scene scene;
 	private ComboBox<String> retType;
+	private BorderPane root;
+	private List<FunctionBuilderRow> rows;
+	private Scene scene;
+	private String[] types;
+	private double width, height;
 
+	/**
+	 * 
+	 * @param types  - the list of types for return and parameters. null if untyped
+	 *               language
+	 * @param width  - the width of this window
+	 * @param height - the height of this window
+	 */
 	public FunctionBuilderView(String[] types, double width, double height) {
+		// initialize variables
 		rows = new ArrayList<FunctionBuilderRow>();
 		this.width = width;
 		this.height = height;
 		this.types = types;
 		if (types != null) {
-			retType = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(types)));
+			retType = new ComboBox<String>(FXCollections.observableArrayList(types));
 			retType.setValue(types[0]);
 		}
-
-		root = new BorderPane();
-		scene = new Scene(root, width, height);
+		this.root = new BorderPane();
+		this.scene = new Scene(root, width, height);
 		this.setScene(scene);
+		this.setResizable(false);
 	}
 
+	/**
+	 * 
+	 * @return the return type of this function. null if untyped.
+	 */
+	public String getRetType() {
+		if (retType == null) {
+			return null;
+		}
+		return this.retType.getValue();
+	}
+
+	/**
+	 * 
+	 * @return a list of all the parameters for this function
+	 */
 	public List<FunctionBuilderRow> getRows() {
 		return rows;
 	}
 
-	public String getRetType() {
-		System.err.println(retType);
-		return this.retType.getValue();
-	}
-
+	/**
+	 * Creates and displays the function builder view.
+	 * 
+	 * @param title - the function's name
+	 */
 	public void make(String title) {
 		root.setPadding(new Insets(width * 0.06));
 
@@ -66,14 +89,14 @@ public class FunctionBuilderView extends Stage {
 		Label paramLabel = new Label("Parameters");
 		paramLabel.setFont(new Font("Helvetica", height * 0.04));
 		VBox rowBox = new VBox();
-		if (types != null) {
+		if (types != null) { // if the language is typed, need a return type
 			Label retLabel = new Label("Return: ");
 			retLabel.setFont(paramLabel.getFont());
 			HBox retBox = new HBox(retLabel, retType);
 			rowBox.getChildren().add(retBox);
 		}
 		rowBox.getChildren().add(paramLabel);
-		for (FunctionBuilderRow row : rows) {
+		for (FunctionBuilderRow row : rows) { // load pre-existing parameters
 			rowBox.getChildren().add(row);
 		}
 		rowBox.setAlignment(Pos.TOP_LEFT);
@@ -90,7 +113,7 @@ public class FunctionBuilderView extends Stage {
 		rem.setMaxSize(width * 0.44, height * 0.2);
 		rem.setMinSize(width * 0.44, height * 0.2);
 		add.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+			// user adds a parameter
 			@Override
 			public void handle(MouseEvent event) {
 				FunctionBuilderRow addRow = new FunctionBuilderRow(types, width * 0.84, height * 0.1);
@@ -101,6 +124,7 @@ public class FunctionBuilderView extends Stage {
 		});
 
 		rem.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			// user deletes a parameter (assumed to be the last one)
 			@Override
 			public void handle(MouseEvent event) {
 				if (rows.size() > 0) {
@@ -113,7 +137,6 @@ public class FunctionBuilderView extends Stage {
 		HBox bottom = new HBox(add, rem);
 		root.setBottom(bottom);
 
-		this.setResizable(false);
 		this.show();
 	}
 

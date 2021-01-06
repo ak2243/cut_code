@@ -16,50 +16,53 @@ import javafx.scene.Node;
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
 
 	private GraphicalBlock above;
+	protected boolean allowBind;
 	private GraphicalBlock below;
+	protected ChangeListener bindListener;
 	private boolean ignoreNext;
 	protected int indentFactor;
 	private int lineNumber;
 	protected LogicalFactory logicalFactory;
 	private GraphicalBlock nestedIn;
-	protected ChangeListener bindListener;
 	protected HashMap<GraphicalBlock, ChangeListener> widthListeners, heightListeners;
-	protected boolean allowBind;
 
 	public GraphicalBlock(double width, double height) {
 		this.setSize(width, height);
 		this.widthListeners = new HashMap<GraphicalBlock, ChangeListener>();
 		this.heightListeners = new HashMap<GraphicalBlock, ChangeListener>();
-		allowBind = true;
+		allowBind = true; // blocks must explicitly set this to false after this constructor is called as
+							// the vast majority of blocks allow binding
 	}
 
+	/**
+	 * Resets the action ignore value, meaning the block will once again process
+	 * mouse events like normal
+	 */
 	public void actionIgnored() {
 		ignoreNext = false;
 	}
-	public abstract VBox[] getNestBoxes();
-	
-	/**
-	 * 
-	 * @return the list of nest boxes this block has for which the contents should be independent blocks. null if none
-	 */
-	public abstract VBox[] getIndependentNestBoxes();
 
 	/**
+	 * 
+	 * Attach a block to the one above it
 	 * 
 	 * @param b the block to which this block is binding
 	 */
 	public void bindTo(GraphicalBlock above) {
-		if(!above.allowBind || !this.allowBind) { //some blocks cannot have things bound to them. these blocks have rounded edges
-			this.setLayoutX(this.getLayoutX() + this.getMaxHeight()/4);
-			this.setLayoutY(this.getLayoutY() + this.getMaxHeight()/4);
-			//TODO: Consider outputting something here.
+		if (!above.allowBind || !this.allowBind) { // some blocks cannot have things bound to them. these blocks have
+													// rounded edges
+			this.setLayoutX(this.getLayoutX() + this.getMaxHeight() / 4);
+			this.setLayoutY(this.getLayoutY() + this.getMaxHeight() / 4);
+			// TODO: Consider outputting a message to the user here.
+			return;
+		} else if (above == null) { // effectively the same as unbinding
+			this.unbind();
+			this.above = null;
 			return;
 		}
-		if (above == null)
-			unbind();
+
 		this.above = above;
 		above.below = this;
-
 		this.layoutXProperty().unbind();
 		this.layoutYProperty().unbind();
 		this.layoutXProperty().bind(above.layoutXProperty());
@@ -67,33 +70,15 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.bindListener = new BindListener();
 		above.maxHeightProperty().addListener(bindListener);
 
-
 	}
 
 	/**
-	 * 
-	 * @return true if the block above this exists and was unbinded. false if there
-	 *         is no block below
+	 * @return a new block of the same type
 	 */
-	public boolean unbind() {
-		GraphicalBlock above = this.above;
-		if (above == null)
-			return false;
-		this.layoutXProperty().unbind();
-		this.layoutYProperty().unbind();
-		above.maxHeightProperty().removeListener(bindListener);
-		bindListener = null;
-		this.above = null;
-		above.below = null;
-
-		return true;
-
-	}
-
 	public abstract GraphicalBlock cloneBlock();
 
 	@Override
-	public int compareTo(GraphicalBlock other) {
+	public int compareTo(GraphicalBlock other) { // used in sorting
 		int compare = Double.compare(this.getLayoutY(), other.getLayoutY());
 		if (compare == 0)
 			return Double.compare(this.getLayoutX(), other.getLayoutX());
@@ -115,14 +100,33 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		return below;
 	}
 
+	/**
+	 * 
+	 * @return an list of all the graphical blocks nested inside this one.
+	 */
 	public ArrayList<GraphicalBlock> getChildBlocks() {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return the amount by which this block is indented in syntactical code
+	 */
 	public int getIndentFactor() {
 		return indentFactor + logicalFactory.getBaseIndent();
 	}
 
+	/**
+	 * 
+	 * @return the list of nest boxes this block has for which the contents should
+	 *         be independent blocks. null if none
+	 */
+	public abstract VBox[] getIndependentNestBoxes();
+
+	/**
+	 * 
+	 * @return the line number associated with this graphical block
+	 */
 	public int getLineNumber() {
 		return lineNumber;
 	}
@@ -139,17 +143,26 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		return new Point2D[0];
 	}
 
+	public abstract VBox[] getNestBoxes();
+
 	/**
-	 * @return the block that this block is nested in
+	 * @return the block in which this block is nested
 	 */
 	public GraphicalBlock getNestedIn() {
 		return nestedIn;
 	}
 
+	/**
+	 * sets the ignore next action value to true
+	 */
 	public void ignoreNextAction() {
 		ignoreNext = true;
 	}
 
+	/**
+	 * 
+	 * @return the ignore next action value
+	 */
 	public boolean ignoreStatus() {
 		return ignoreNext;
 	}
@@ -166,13 +179,12 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		// STEP 0 - calculate the difference between box size and the nest size
 		double incWidth = nest.maxWidthProperty().get() - box.getMaxWidth();
 		double incHeight = nest.getMaxHeight();
-		if(incWidth < 0 && box.getChildren().size() > 0) { //possible when a block is already nested
+		if (incWidth < 0 && box.getChildren().size() > 0) { // possible when a block is already nested
 			incWidth = 0;
 		}
-		if(box.getChildren().size() == 0)
+		if (box.getChildren().size() == 0)
 			incHeight -= box.getMaxHeight();
 
-		
 		// STEP 1 - change dimensions of box
 		box.minWidthProperty().set(box.maxWidthProperty().get() + incWidth);
 		box.maxWidthProperty().set(box.maxWidthProperty().get() + incWidth);
@@ -187,10 +199,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		ChangeListener widthListener = new DeltaWidthListener(box, nest);
 		nest.minWidthProperty().addListener(widthListener);
 
-
 		ChangeListener heightListener = new DeltaHeightListener(box);
 		nest.minHeightProperty().addListener(heightListener);
-		
+
+		// STEP 3.5 - put these listeners in a hashmap so they can be removed when the
+		// block is unnested
 		widthListeners.put(nest, widthListener);
 		heightListeners.put(nest, heightListener);
 
@@ -214,6 +227,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	public abstract int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations);
 
 	/**
+	 * @deprecated
 	 * @param b the block this block is bound to (b is above)
 	 */
 	public void setAbove(GraphicalBlock b) {
@@ -227,20 +241,35 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	}
 
 	/**
+	 * @deprecated
 	 * @param b the block that is bound to this block (b is below)
 	 */
 	public void setBelow(GraphicalBlock b) {
 		below = b;
 	}
 
+	/**
+	 * 
+	 * @param indentFactor - the amount of times this block should be indented when
+	 *                     converted to syntactical code
+	 */
 	public void setIndentFactor(int indentFactor) {
 		this.indentFactor = indentFactor;
 	}
 
+	/**
+	 * 
+	 * @param line - the line number that should be associated with this block
+	 */
 	public void setLineNumber(int line) {
 		lineNumber = line;
 	}
 
+	/**
+	 * 
+	 * @param logicalFactory - the logical factory for the language the user is
+	 *                       running
+	 */
 	public void setLogicalFactory(LogicalFactory logicalFactory) {
 		this.logicalFactory = logicalFactory;
 	}
@@ -252,6 +281,11 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.nestedIn = nestedIn;
 	}
 
+	/**
+	 * 
+	 * @param width  of this block
+	 * @param height of this block
+	 */
 	public void setSize(double width, double height) {
 		this.maxHeightProperty().set(height);
 		this.maxWidthProperty().set(width);
@@ -259,9 +293,33 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.minWidthProperty().set(width);
 	}
 
+	/**
+	 * Adds a white border to this block to indicate a user error
+	 */
 	public void tagErrorOnBlock() {
-		String cssLayout = "-fx-border-color: white;\n" + "-fx-border-width: 5;\n" + "-fx-border-style: dashed;\n";
+		String cssLayout = "-fx-border-color: white;" + System.lineSeparator() + "-fx-border-width: 5;"
+				+ System.lineSeparator() + "-fx-border-style: dashed;" + System.lineSeparator();
 		this.setStyle(cssLayout);
+	}
+
+	/**
+	 * 
+	 * @return true if the block above this exists and was unbinded. false if there
+	 *         is no block below
+	 */
+	public boolean unbind() {
+		GraphicalBlock above = this.above;
+		if (above == null)
+			return false;
+		this.layoutXProperty().unbind();
+		this.layoutYProperty().unbind();
+		above.maxHeightProperty().removeListener(bindListener);
+		bindListener = null;
+		this.above = null;
+		above.below = null;
+
+		return true;
+
 	}
 
 	/**
@@ -277,6 +335,16 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 		this.setStyle(null);
 	}
 
+	private class BindListener implements ChangeListener<Double> {
+
+		@Override
+		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+			GraphicalBlock.super.layoutYProperty().unbind();
+			GraphicalBlock.super.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
+		}
+
+	}
+
 	private class DeltaHeightListener implements ChangeListener<Double> {
 
 		VBox box;
@@ -285,9 +353,9 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			this.box = box;
 		}
 
-
 		@Override
 		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+			// height of a nested block changes, need to adjust height of this block
 			double deltaHeight = newValue - oldValue;
 			box.minHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
 			box.maxHeightProperty().set(box.maxHeightProperty().get() + deltaHeight);
@@ -308,43 +376,32 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			this.nest = nest;
 		}
 
-
 		@Override
 		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
+			// width of a nested block changes, need to adjust height of this block
+
 			GraphicalBlock biggestWidth = nest;
-			for(Node n : box.getChildren()) {
+			for (Node n : box.getChildren()) { //find the widest block in this box
 				GraphicalBlock b = (GraphicalBlock) n;
-				if(b.getMaxWidth() > biggestWidth.getMaxWidth())
+				if (b.getMaxWidth() > biggestWidth.getMaxWidth())
 					biggestWidth = b;
 			}
-			double deltaWidth = biggestWidth.getMinWidth() - box.getMaxWidth();
+			double deltaWidth = biggestWidth.getMinWidth() - box.getMaxWidth(); // 0 if the box is already adjusted to
+																				// the widest block
 			box.setMinWidth(biggestWidth.getMinWidth());
 			box.setMaxWidth(box.getMinWidth());
-			if(biggestWidth != nest)
+			if (biggestWidth != nest) // another block is wider than this, no need to change width
 				return;
 			VBox farthestOut = box;
-			for (VBox b : getNestBoxes()) {
-				if(b.getLayoutX() + b.getMinWidth() > farthestOut.getLayoutX() + farthestOut.getMinWidth())
+			for (VBox b : getNestBoxes()) { // find the farthest out box
+				if (b.getLayoutX() + b.getMinWidth() > farthestOut.getLayoutX() + farthestOut.getMinWidth())
 					farthestOut = b;
 			}
-			if(farthestOut == box) {
+			if (farthestOut == box) { // farthest out block is the one affected, need to change block width
 				GraphicalBlock.super.setMinWidth(GraphicalBlock.super.getMinWidth() + deltaWidth);
 				GraphicalBlock.super.setMaxWidth(GraphicalBlock.super.getMinWidth());
 			}
 		}
 
 	}
-	
-	private class BindListener implements ChangeListener<Double> {
-
-		@Override
-		public void changed(ObservableValue<? extends Double> observable, Double oldValue, Double newValue) {
-			
-			GraphicalBlock.super.layoutYProperty().unbind();
-			GraphicalBlock.super.layoutYProperty().bind(above.layoutYProperty().add(above.maxHeightProperty().get()));
-		}
-		
-	}
-
-
 }

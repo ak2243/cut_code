@@ -26,12 +26,14 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 	private HashMap<VBox, double[]> nestDimensions;
 
 	public GraphicalFunctionCallBlock(double width, double height) {
+		// initializes variable
 		super(width, height);
 		this.initWidth = width;
 		this.initHeight = height;
 		nestBoxes = new VBox[1];
 		nestDimensions = new HashMap<>();
 
+		// sets up basic javafx things for the block
 		Label label = new Label("call");
 		label.setTextFill(Color.WHITE);
 		this.field = new TextField();
@@ -41,6 +43,7 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 		field.setMaxHeight(field.getMinHeight());
 		HBox topLine = new HBox(label, field);
 
+		// sets up nesting box
 		VBox runSpace = new VBox();
 		runSpace.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		runSpace.setMinWidth(initWidth * 0.88);
@@ -81,7 +84,7 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
 		ArrayList<LogicalBlock> paramBlocks = null;
-		if (nestBoxes[0].getChildren().size() > 0) {
+		if (nestBoxes[0].getChildren().size() > 0) { // processes nested blocks (parameters)
 			paramBlocks = new ArrayList<>();
 			for (Node n : nestBoxes[0].getChildren()) {
 				((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
@@ -89,9 +92,10 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 			}
 		}
 		boolean independent = false;
-		if(this.getNestedIn().getIndependentNestBoxes() != null) {
-			for (VBox box : this.getNestedIn().getIndependentNestBoxes()) {
-				if(box == this.getParent()) {
+		if (this.getNestedIn().getIndependentNestBoxes() != null) {
+			for (VBox box : this.getNestedIn().getIndependentNestBoxes()) { // helps determine if the function call
+																			// block is an independent block or not
+				if (box == this.getParent()) {
 					independent = true;
 					break;
 				}
@@ -114,7 +118,7 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 	@Override
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
-		if(this.getNestedIn() == null) {
+		if (this.getNestedIn() == null) {
 			return getLineNumber() + 1;
 		} else {
 			return 0;
@@ -141,15 +145,17 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 						newBoxWidth = b.getMaxWidth();
 					}
 				}
+
+				// calculates the change in width and height
 				double deltaWidth = box.getMaxWidth() - newBoxWidth;
-				double deltaHeight = rem.getMinHeight(); // no need for subtraction since there's more than one nested
-															// block
+				double deltaHeight = rem.getMinHeight();
+
 				box.setMaxWidth(newBoxWidth);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(boxHeight - rem.getMinHeight());
 				box.setMinHeight(box.getMaxHeight());
 				this.setSize(this.getMaxWidth() - deltaWidth, this.getMinHeight() - deltaHeight);
-			} else {
+			} else { // no blocks left, resize box and block size
 				box.setMaxWidth(dimensions[0]);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(dimensions[1]);

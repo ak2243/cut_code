@@ -8,6 +8,13 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class OutputView {
+	/**
+	 * 
+	 * @param output - the string to be outputted
+	 * @param stage - the stage for this output window
+	 * @param width - the width of the output view
+	 * @param height - the height of the output view
+	 */
 	public static void output(String output, Stage stage, double width, double height) {
 		BorderPane root = new BorderPane();
 		Label out = new Label(output);
@@ -19,13 +26,5 @@ public class OutputView {
 		stage.setScene(scene);
 		stage.show();
 	}
-	/*public static void output(String output, Stage stage) {
-		BorderPane root = new BorderPane();
-		Label out = new Label(output);
-		out.setWrapText(true);
-		root.setCenter(out);
-		Scene scene = new Scene(root, 400, 400);
-		stage.setScene(scene);
-		stage.show();
-	}*/
+
 }

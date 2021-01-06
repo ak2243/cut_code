@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 
 public class LList<E> implements List<E> {
 	/**
-	 * @author arjunk2022
+	 * @author Arjun Khanna
 	 */
 	private Node<E> head, tail; // Head does not ever contain data
 	private int size;
@@ -36,9 +36,9 @@ public class LList<E> implements List<E> {
 	@Override
 	public boolean contains(Object o) {
 		Node<E> node = head;
-		while(node != null) {
+		while (node != null) {
 			node = node.getNext();
-			if(o == node.data) {
+			if (o == node.data) {
 				return true;
 			}
 		}
@@ -57,7 +57,7 @@ public class LList<E> implements List<E> {
 	@Override
 	public Object[] toArray() {
 		Object[] arr = new Object[size];
-		for(int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			arr[i] = get(i);
 		}
 		return arr;
@@ -93,7 +93,7 @@ public class LList<E> implements List<E> {
 		Node<E> spot = head.next;
 		while (spot != null) {
 			if (spot.data.equals(o)) {
-				if(spot == tail) //if the spot is tail, there is no spot.next
+				if (spot == tail) // if the spot is tail, there is no spot.next
 				{
 					tail = spot.prev;
 					tail.next = null;
@@ -144,6 +144,7 @@ public class LList<E> implements List<E> {
 
 	/**
 	 * O(n)
+	 * 
 	 * @author Arjun Khanna
 	 */
 	@Override
@@ -199,7 +200,7 @@ public class LList<E> implements List<E> {
 	public E remove(int index) throws IndexOutOfBoundsException {
 		if (index >= size || index < 0) { // out of bounds
 			throw new IndexOutOfBoundsException();
-		} else if (index == size - 1) { //special scenario
+		} else if (index == size - 1) { // special scenario
 			E data = tail.data;
 			tail = tail.prev;
 			tail.next = null;
@@ -212,16 +213,15 @@ public class LList<E> implements List<E> {
 			}
 
 			spot.prev.next = spot.next;
-			spot.next.prev = spot.prev; //links the nodes held together by the node we're removing
+			spot.next.prev = spot.prev; // links the nodes held together by the node we're removing
 			size--;
 			return spot.getData();
 		}
 	}
 
-
 	@Override
 	public int indexOf(Object o) {
-		throw new UnsupportedOperationException(); 
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class LList<E> implements List<E> {
 			return data; // return the data
 		}
 	}
-	
+
 	public E getEnd() {
 		return tail.getData();
 	}

@@ -12,7 +12,24 @@ public abstract class Executor {
 	 * @throws BlockCodeCompilerErrorException thrown when the user's code doesn't compile
 	 */
 	public abstract String execute(HashMap<Integer, GraphicalBlock> lineLocations) throws BlockCodeCompilerErrorException;
+	/**
+	 * 
+	 * @param code - the syntactic code to export to a file
+	 * @param filename - the file to which this code will be exported
+	 * @throws IOException
+	 */
 	public abstract void export(String code, String filename) throws IOException;
+	/**
+	 * 
+	 * @param logicalBlocks - the block code to export to a file
+	 * @param filename - the file to which this code will be exported
+	 * @throws IOException
+	 */
 	public abstract void export(List<LogicalBlock> logicalBlocks, String filename) throws IOException;
+	/**
+	 * 
+	 * @param error - an error message
+	 * @return the line number indicated in the error message
+	 */
 	public abstract int extractError(String error);
 }

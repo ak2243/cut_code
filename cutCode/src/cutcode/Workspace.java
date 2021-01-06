@@ -1,279 +1,43 @@
 package cutcode;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import factories.GUIFactory;
 import factories.LogicalFactory;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
-
-import factories.GUIFactory;
 
 /**
  * @author Arjun Khanna and Peter Timpane
  */
 public class Workspace extends Pane {
-	private double bindDistance, nestDistance;
-	private ArrayList<GraphicalBlock> blocks;
-	private BorderPane layout;
-	private VBox palette;
-	private ScrollPane paletteScroll; // Palette may need to scroll in the feature
-	private GUIFactory guiFactory;// used for factory design pattern
-	private double paletteWidth, runButtonHeight;
-	private LogicalFactory logicalFactory; // used for factory design pattern
-
-	private Button run; // run button
-	private Button changeLanguage; // change language button
-	private double height, width; // necessary for reset
-
-	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass,
-			int baseLineNumber) {
-		this.height = height;
-		this.width = width;
-		this.logicalFactory = logicalFactory;
-		this.guiFactory = guiFactory;
-		blocks = new ArrayList<>();
-
-		bindDistance = nestDistance = this.width * 0.0125;
-		runButtonHeight = this.height / 30;
-		paletteWidth = this.width / 6;
-
-		this.setMinHeight(height);
-		this.setMaxHeight(height);
-		this.setMinWidth(width);
-		this.setMaxWidth(width);
-		layout = new BorderPane();
-		this.getChildren().add(layout);
-		palette = setUpPalette(paletteWidth, height - runButtonHeight);
-
-		paletteScroll = new ScrollPane();
-		paletteScroll.setContent(palette);
-		paletteScroll.setMinHeight(this.getMinHeight());
-		paletteScroll.setMaxHeight(this.getMaxHeight());
-		paletteScroll.setPrefHeight(this.getMaxHeight());
-		paletteScroll.setMinWidth(paletteWidth);
-
-		layout.setLeft(paletteScroll);
-
-		run = new Button("run");
-		run.setMaxHeight(runButtonHeight);
-		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				try {
-					HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
-					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
-					int lineLoc = baseLineNumber;
-
-					for (GraphicalBlock b : blocks) { // Goes through all the block
-						b.untag(); // Ensures that error tags from previous methods don't stay
-						if (b.getNestedIn() == null) {
-							if (b.getAbove() == null)
-								orderedHeadBlocks.add(b); // Ordering by height of head blocks (aren't nested in or
-															// attached to something)
-						}
-					}
-					if (orderedHeadBlocks.inOrder() == null) {
-						OutputView.output("Please create some blocks before exporting", new Stage(), width/3, width/3);
-						return;
-					}
-					List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(),
-							logicalFactory);
-					if (funcBlocks == null)
-						throw new BlockCodeCompilerErrorException();
-					for (GraphicalBlock b : funcBlocks) {
-						System.err.println(lineLoc + ": " + b.toString());
-						b.setLineNumber(lineLoc);
-						lineLoc = b.putInHashMap(lineLocations);
-					}
-					List<LogicalBlock> orderedBlocks = new ArrayList<>();
-					for (GraphicalBlock func : funcBlocks) {
-						orderedBlocks.add(func.getLogicalBlock());
-					}
-					String ret = mainClass.run(orderedBlocks, lineLocations); // Runs the code
-					OutputView.output(ret, new Stage(), width/3, width/3);
-				} catch (BlockCodeCompilerErrorException e1) {
-					OutputView.output(
-							"There was an error in your code." + System.lineSeparator() + "We attempted to identify the problem but may not have been successful in doing so.",
-							new Stage(), width/3, width/3);
-				}
-			}
-		});
-		changeLanguage = new Button("change language");
-		changeLanguage.setMaxHeight(runButtonHeight);
-		changeLanguage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				mainClass.reset(); // Changing languages requires a reset
-			}
-		});
-		Button export = new Button("export");
-		export.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			// Didn't comment the second time because it's the same as running but you call
-			// mainClass.export() instead of mainClass.run()
-			@Override
-			public void handle(MouseEvent e) {
-				HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
-				BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
-				int lineLoc = baseLineNumber;
-
-				for (GraphicalBlock b : blocks) { // Goes through all the block
-					b.untag(); // Ensures that error tags from previous methods don't stay
-					if (b.getNestedIn() == null) {
-						if (b.getAbove() == null)
-							orderedHeadBlocks.add(b); // Ordering by height of head blocks (aren't nested in or attached
-														// to something)
-					}
-				}
-				if (orderedHeadBlocks.inOrder() == null) {
-					OutputView.output("Please create some blocks before exporting", new Stage(), width/3, width/3);
-					return;
-				}
-				List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(), logicalFactory);
-				for (GraphicalBlock b : funcBlocks) {
-					b.setLineNumber(lineLoc);
-					lineLoc = b.putInHashMap(lineLocations);
-				}
-				List<LogicalBlock> orderedBlocks = new ArrayList<>();
-				for (GraphicalBlock func : funcBlocks) {
-					try {
-						orderedBlocks.add(func.getLogicalBlock());
-					} catch (BlockCodeCompilerErrorException e1) {
-						e1.printStackTrace();
-						System.exit(1);
-					}
-				}
-				String file = FilePicker.chooseFile(new Stage());
-				if (file == null)
-					OutputView.output("Please pick a valid file", new Stage(), width/3, width/3);
-				else {
-					try {
-						OutputView.output(mainClass.export(orderedBlocks, file), new Stage(), width/3, width/3);
-					} catch (IOException ioException) {
-						OutputView.output("An unexpected error occurred in exporting your code to " + file,
-								new Stage(), width/3, width/3);
-					}
-				}
-			}
-		});
-		export.setMaxHeight(runButtonHeight);
-
-		HBox topButtons = new HBox(run, changeLanguage, export);
-		topButtons.setAlignment(Pos.TOP_LEFT);
-		layout.setTop(topButtons);
-
-	}
-
-	public VBox setUpPalette(double width, double height) {
-		VBox palette = new VBox();
-		palette.setSpacing(width / 5);
-		palette.setPadding(new Insets(3 * width / 20));
-		palette.setMinWidth(width);
-		palette.setMinHeight(height);
-		palette.setBackground(
-				new Background(new BackgroundFill(Color.rgb(128, 209, 255, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
-
-		for (GraphicalBlock b : guiFactory.getAllBlocks()) {
-			CreateHandler handler = new CreateHandler(b);
-			b.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
-			b.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
-			b.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-			// These handlers are used to create blocks
-			palette.getChildren().add(b);
-		}
-
-		return palette;
-	}
-
-	private class CreateHandler implements EventHandler<MouseEvent> { // Handler for the blocks in palette
-
-		GraphicalBlock block;
-
-		GraphicalBlock current;
-
-		public CreateHandler(GraphicalBlock b) {
-			block = b;
-		}
-
-		@Override
-		public void handle(MouseEvent e) {
-			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
-				current = block.cloneBlock(); // Creates block. Dragging now affects the new block
-				Workspace.this.getChildren().add(current);
-
-				current.setLayoutX(e.getSceneX());
-				current.setLayoutY(e.getSceneY());
-
-				BlockHandler handler = new BlockHandler(current);
-				current.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
-				current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
-				current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
-				current.setLogicalFactory(logicalFactory);
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) { // Drag listener
-				current.setLayoutX(e.getSceneX());
-				current.setLayoutY(e.getSceneY());
-
-			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-				if (palette.contains(e.getSceneX(), e.getSceneY()) || e.getSceneX() < palette.getWidth()) {
-					Workspace.this.getChildren().remove(current);
-					return;
-				} // Remove block if the mouse is to the left of the pallette | play area border
-
-				blocks.add(current); // Need to add the new block to the list of blocks
-				for (GraphicalBlock b : blocks) { // Need to check for nesting and attaching
-					if (b == current)
-						continue;
-					Point2D checkPoint = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
-					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
-					double distance = checkPoint.distance(clickPoint);
-					if (distance < bindDistance && (b.getBelow() == null)) { // Check for attaching
-//						current.setAbove(b);
-						current.bindTo(b);
-//						b.setBelow(current);
-						break;
-					}
-
-					Point2D[] nestables = b.getNestables();
-					for (int i = 0; i < nestables.length; i++) { // Check for nesting
-						distance = clickPoint.distance(nestables[i]);
-						if (distance < nestDistance) {
-							try {
-								b.nest(i, current);
-							} catch (InvalidNestException invalidNestException) {
-								continue;
-							}
-
-						}
-					}
-				}
-
-			}
-
-		}
-
-	}
-
+	
+	
 	private class BlockHandler implements EventHandler<MouseEvent> { // Handlers for clicking and dragging blocks when
 																		// it's already created
 
 		private GraphicalBlock block;
-		private double offsetX, offsetY;
 		private List<GraphicalBlock> clickSequence;
 		private List<GraphicalBlock> ignoring;
+		private double offsetX, offsetY;
 
 		public BlockHandler(GraphicalBlock b) {
 			block = b;
@@ -304,11 +68,6 @@ public class Workspace extends Pane {
 				// instead of the top left.
 				// Looks better
 
-//				GraphicalBlock above = block.getAbove();
-//				if (above != null)
-//					above.setBelow(null); // Allows for things to be bound to "above"
-
-//				block.setAbove(null);//detaches block
 				block.unbind();
 
 				GraphicalBlock nestedIn = block.getNestedIn(); // If the block is nested in something
@@ -437,6 +196,226 @@ public class Workspace extends Pane {
 			}
 		}
 	}
+	private class CreateHandler implements EventHandler<MouseEvent> { // Handler for the blocks in palette
+
+		GraphicalBlock block;
+
+		GraphicalBlock current;
+
+		public CreateHandler(GraphicalBlock b) {
+			block = b;
+		}
+
+		@Override
+		public void handle(MouseEvent e) {
+			if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
+				current = block.cloneBlock(); // Creates block. Dragging now affects the new block
+				Workspace.this.getChildren().add(current);
+
+				current.setLayoutX(e.getSceneX());
+				current.setLayoutY(e.getSceneY());
+
+				BlockHandler handler = new BlockHandler(current);
+				current.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
+				current.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
+				current.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
+				current.setLogicalFactory(logicalFactory);
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) { // Drag listener
+				current.setLayoutX(e.getSceneX());
+				current.setLayoutY(e.getSceneY());
+
+			} else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+				if (palette.contains(e.getSceneX(), e.getSceneY()) || e.getSceneX() < palette.getWidth()) {
+					Workspace.this.getChildren().remove(current);
+					return;
+				} // Remove block if the mouse is to the left of the pallette | play area border
+
+				blocks.add(current); // Need to add the new block to the list of blocks
+				for (GraphicalBlock b : blocks) { // Need to check for nesting and attaching
+					if (b == current)
+						continue;
+					Point2D checkPoint = new Point2D(b.getLayoutX(), b.getLayoutY() + b.getMaxHeight());
+					Point2D clickPoint = new Point2D(current.getLayoutX(), current.getLayoutY());
+					double distance = checkPoint.distance(clickPoint);
+					if (distance < bindDistance && (b.getBelow() == null)) { // Check for attaching
+//						current.setAbove(b);
+						current.bindTo(b);
+//						b.setBelow(current);
+						break;
+					}
+
+					Point2D[] nestables = b.getNestables();
+					for (int i = 0; i < nestables.length; i++) { // Check for nesting
+						distance = clickPoint.distance(nestables[i]);
+						if (distance < nestDistance) {
+							try {
+								b.nest(i, current);
+							} catch (InvalidNestException invalidNestException) {
+								continue;
+							}
+
+						}
+					}
+				}
+
+			}
+
+		}
+
+	}
+	private double bindDistance, nestDistance;
+	private ArrayList<GraphicalBlock> blocks;
+	private Button changeLanguage; // change language button
+	private GUIFactory guiFactory;// used for factory design pattern
+	private double height, width; // necessary for reset
+	private BorderPane layout;
+
+	private LogicalFactory logicalFactory; // used for factory design pattern
+	private VBox palette;
+	private ScrollPane paletteScroll; // Palette may need to scroll in the feature
+
+	private double paletteWidth, runButtonHeight;
+
+	private Button run; // run button
+
+	public Workspace(double width, double height, GUIFactory guiFactory, LogicalFactory logicalFactory, Main mainClass,
+			int baseLineNumber) {
+		this.height = height;
+		this.width = width;
+		this.logicalFactory = logicalFactory;
+		this.guiFactory = guiFactory;
+		blocks = new ArrayList<>();
+
+		bindDistance = nestDistance = this.width * 0.0125;
+		runButtonHeight = this.height / 30;
+		paletteWidth = this.width / 6;
+
+		this.setMinHeight(height);
+		this.setMaxHeight(height);
+		this.setMinWidth(width);
+		this.setMaxWidth(width);
+		layout = new BorderPane();
+		this.getChildren().add(layout);
+		palette = setUpPalette(paletteWidth, height - runButtonHeight);
+
+		paletteScroll = new ScrollPane();
+		paletteScroll.setContent(palette);
+		paletteScroll.setMinHeight(this.getMinHeight());
+		paletteScroll.setMaxHeight(this.getMaxHeight());
+		paletteScroll.setPrefHeight(this.getMaxHeight());
+		paletteScroll.setMinWidth(paletteWidth);
+
+		layout.setLeft(paletteScroll);
+
+		run = new Button("run");
+		run.setMaxHeight(runButtonHeight);
+		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				try {
+					HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
+					BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
+					int lineLoc = baseLineNumber;
+
+					for (GraphicalBlock b : blocks) { // Goes through all the block
+						b.untag(); // Ensures that error tags from previous methods don't stay
+						if (b.getNestedIn() == null) {
+							if (b.getAbove() == null)
+								orderedHeadBlocks.add(b); // Ordering by height of head blocks (aren't nested in or
+															// attached to something)
+						}
+					}
+					if (orderedHeadBlocks.inOrder() == null) {
+						OutputView.output("Please create some blocks before exporting", new Stage(), width / 3,
+								width / 3);
+						return;
+					}
+					List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(),
+							logicalFactory);
+					if (funcBlocks == null)
+						throw new BlockCodeCompilerErrorException();
+					for (GraphicalBlock b : funcBlocks) {
+						System.err.println(lineLoc + ": " + b.toString());
+						b.setLineNumber(lineLoc);
+						lineLoc = b.putInHashMap(lineLocations);
+					}
+					List<LogicalBlock> orderedBlocks = new ArrayList<>();
+					for (GraphicalBlock func : funcBlocks) {
+						orderedBlocks.add(func.getLogicalBlock());
+					}
+					String ret = mainClass.run(orderedBlocks, lineLocations); // Runs the code
+					OutputView.output(ret, new Stage(), width / 3, width / 3);
+				} catch (BlockCodeCompilerErrorException e1) {
+					OutputView.output("There was an error in your code." + System.lineSeparator()
+							+ "We attempted to identify the problem but may not have been successful in doing so.",
+							new Stage(), width / 3, width / 3);
+				}
+			}
+		});
+		changeLanguage = new Button("change language");
+		changeLanguage.setMaxHeight(runButtonHeight);
+		changeLanguage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				mainClass.reset(); // Changing languages requires a reset
+			}
+		});
+		Button export = new Button("export");
+		export.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			// Didn't comment the second time because it's the same as running but you call
+			// mainClass.export() instead of mainClass.run()
+			@Override
+			public void handle(MouseEvent e) {
+				HashMap<Integer, GraphicalBlock> lineLocations = new HashMap<>();
+				BSTree<GraphicalBlock> orderedHeadBlocks = new BSTree<>();
+				int lineLoc = baseLineNumber;
+
+				for (GraphicalBlock b : blocks) { // Goes through all the block
+					b.untag(); // Ensures that error tags from previous methods don't stay
+					if (b.getNestedIn() == null) {
+						if (b.getAbove() == null)
+							orderedHeadBlocks.add(b); // Ordering by height of head blocks (aren't nested in or attached
+														// to something)
+					}
+				}
+				if (orderedHeadBlocks.inOrder() == null) {
+					OutputView.output("Please create some blocks before exporting", new Stage(), width / 3, width / 3);
+					return;
+				}
+				List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(), logicalFactory);
+				for (GraphicalBlock b : funcBlocks) {
+					b.setLineNumber(lineLoc);
+					lineLoc = b.putInHashMap(lineLocations);
+				}
+				List<LogicalBlock> orderedBlocks = new ArrayList<>();
+				for (GraphicalBlock func : funcBlocks) {
+					try {
+						orderedBlocks.add(func.getLogicalBlock());
+					} catch (BlockCodeCompilerErrorException e1) {
+						e1.printStackTrace();
+						System.exit(1);
+					}
+				}
+				String file = FilePicker.chooseFile(new Stage());
+				if (file == null)
+					OutputView.output("Please pick a valid file", new Stage(), width / 3, width / 3);
+				else {
+					try {
+						OutputView.output(mainClass.export(orderedBlocks, file), new Stage(), width / 3, width / 3);
+					} catch (IOException ioException) {
+						OutputView.output("An unexpected error occurred in exporting your code to " + file, new Stage(),
+								width / 3, width / 3);
+					}
+				}
+			}
+		});
+		export.setMaxHeight(runButtonHeight);
+
+		HBox topButtons = new HBox(run, changeLanguage, export);
+		topButtons.setAlignment(Pos.TOP_LEFT);
+		layout.setTop(topButtons);
+
+	}
 
 	private void remove(GraphicalBlock rem) { // uses recursion for nested block
 		blocks.remove(rem);
@@ -484,7 +463,8 @@ public class Workspace extends Pane {
 						}
 					}
 					if (orderedHeadBlocks.inOrder() == null) {
-						OutputView.output("Please create some blocks before exporting", new Stage(), width/3, width/3);
+						OutputView.output("Please create some blocks before exporting", new Stage(), width / 3,
+								width / 3);
 						return;
 					}
 					List<GraphicalBlock> funcBlocks = guiFactory.sortFunctions(orderedHeadBlocks.inOrder(),
@@ -500,23 +480,44 @@ public class Workspace extends Pane {
 						orderedBlocks.add(func.getLogicalBlock());
 					}
 					String ret = mainClass.run(orderedBlocks, lineLocations); // Runs the code
-					OutputView.output(ret, new Stage(), width/3, width/3);
+					OutputView.output(ret, new Stage(), width / 3, width / 3);
 				} catch (BlockCodeCompilerErrorException e1) {
-					OutputView.output(
-							"There was an error in your code." + System.lineSeparator() + "We attempted to identify the problem but may not have been successful in doing so.",
-							new Stage(), width/3, width/3);
+					OutputView.output("There was an error in your code." + System.lineSeparator()
+							+ "We attempted to identify the problem but may not have been successful in doing so.",
+							new Stage(), width / 3, width / 3);
 				}
 			}
 		});
-		for(int i = 0; i < this.getChildren().size(); i++) { //Blocks reset when language changed
+		for (int i = 0; i < this.getChildren().size(); i++) { // Blocks reset when language changed
 			Node n = this.getChildren().get(i);
-			if(n instanceof GraphicalBlock) {
+			if (n instanceof GraphicalBlock) {
 				this.getChildren().remove(i);
 				i--;
 			}
 
 		}
 
+	}
+
+	public VBox setUpPalette(double width, double height) {
+		VBox palette = new VBox();
+		palette.setSpacing(width / 5);
+		palette.setPadding(new Insets(3 * width / 20));
+		palette.setMinWidth(width);
+		palette.setMinHeight(height);
+		palette.setBackground(
+				new Background(new BackgroundFill(Color.rgb(128, 209, 255, 0.8), CornerRadii.EMPTY, Insets.EMPTY)));
+
+		for (GraphicalBlock b : guiFactory.getAllBlocks()) {
+			CreateHandler handler = new CreateHandler(b);
+			b.addEventHandler(MouseEvent.MOUSE_DRAGGED, handler);
+			b.addEventHandler(MouseEvent.MOUSE_PRESSED, handler);
+			b.addEventHandler(MouseEvent.MOUSE_RELEASED, handler);
+			// These handlers are used to create blocks
+			palette.getChildren().add(b);
+		}
+
+		return palette;
 	}
 
 }

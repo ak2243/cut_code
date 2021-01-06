@@ -14,13 +14,19 @@ import javafx.stage.Stage;
 public class MainFunctionBlock extends GraphicalFunctionBlock {
 	List<GraphicalBlock> insideGraphicalBlocks;
 	List<LogicalBlock> inside;
+
+	/**
+	 * 
+	 * A backend block used so that we can put all the play area blocks inside a main function when necessary.
+	 * @param width - the width of this block (irrelevant since it's a backend block)
+	 * @param height - the height of this block (also irrelevant since it's a backend block)
+	 */
 	public MainFunctionBlock(double width, double height) {
 		super(width, height);
 		inside = new ArrayList<>();
 		insideGraphicalBlocks = new ArrayList<>();
 	}
-	
-	
+
 	@Override
 	public void nest(int index, GraphicalBlock nest) throws InvalidNestException {
 		try {
@@ -30,13 +36,13 @@ public class MainFunctionBlock extends GraphicalFunctionBlock {
 			throw new InvalidNestException();
 		}
 	}
-	
+
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
-		String[] params = {"String[] args"};
+		String[] params = { "String[] args" };
 		return logicalFactory.createFunctionBlock(getIndentFactor() - 1, "main", "void", params, inside);
 	}
-	
+
 	@Override
 	public int putInHashMap(HashMap<Integer, GraphicalBlock> lineLocations) {
 		lineLocations.put(getLineNumber(), this);
@@ -47,6 +53,5 @@ public class MainFunctionBlock extends GraphicalFunctionBlock {
 		}
 		return ret + logicalFactory.getEndingBrace();
 	}
-
 
 }

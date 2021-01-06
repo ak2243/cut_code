@@ -82,6 +82,7 @@ public interface LogicalFactory {
 	public LogicalBlock createBreak(int indentFactor);
 
 	/**
+	 * @deprecated
 	 * @param indentFactor  the number of times the while loop should be indented
 	 *                      (this does not influence indentFactor for executeBlocks,
 	 *                      which should have separately set indentFactors)

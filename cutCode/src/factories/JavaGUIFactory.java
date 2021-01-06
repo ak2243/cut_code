@@ -31,7 +31,7 @@ public class JavaGUIFactory extends GUIFactory {
 		MainFunctionBlock firstFunc = new MainFunctionBlock(0,0);
 		firstFunc.setLogicalFactory(factory);
 		for(GraphicalBlock block : blocks) {
-			if(block instanceof GraphicalFunctionBlock) {
+			if(block instanceof GraphicalFunctionBlock) { // Functions are separate from the main
 				ret.add(block);
 			} else {
 				try {

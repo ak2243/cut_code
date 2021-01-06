@@ -33,6 +33,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	private boolean inPalette;
 
 	public GraphicalFunctionBlock(double width, double height) {
+		// initialize variables
 		super(width, height);
 		this.initWidth = width;
 		this.initHeight = height;
@@ -42,6 +43,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		funcBuilder = new FunctionBuilderView(null, width * 2.2, width * 2.2);
 		inPalette = false;
 
+		// sets up label and text field
 		Label label = new Label("func");
 		label.setTextFill(Color.WHITE);
 		this.field = new TextField();
@@ -51,32 +53,30 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		field.setMaxHeight(field.getMinHeight());
 		HBox topLine = new HBox(label, field);
 
+		// set up the box for nesting
 		VBox runSpace = new VBox();
-		runSpace.setBackground(
-				new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		runSpace.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		runSpace.setMinWidth(initWidth * 0.88);
 		runSpace.setMaxWidth(runSpace.getMinWidth());
 		runSpace.setMinHeight(initHeight / 3);
 		runSpace.setMaxHeight(runSpace.getMinHeight());
 		nestBoxes[0] = runSpace;
-		double[] dimensions = {runSpace.getMinWidth(), runSpace.getMinHeight()};
+		double[] dimensions = { runSpace.getMinWidth(), runSpace.getMinHeight() };
 		nestDimensions.put(runSpace, dimensions);
-		
-		this.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
+		// sets a listener so that when the block is right clicked, the function builder view is showed
+		this.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(event.getButton() == MouseButton.SECONDARY) {
+				if (event.getButton() == MouseButton.SECONDARY) {
 					if (inPalette) {
 						funcBuilder.make(field.getText());
 					}
 				}
 			}
-			
 		});
 
-		
-		CornerRadii cornerRadius = new CornerRadii(12);
+		CornerRadii cornerRadius = new CornerRadii(12); // indicates that no blocks can be attached to this block
 		this.setBackground(new Background(new BackgroundFill(Color.web("#545ac9"), cornerRadius, Insets.EMPTY)));
 		topLine.setSpacing(height / 5);
 		this.setPadding(new Insets(height / 5));
@@ -109,12 +109,12 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 	@Override
 	public LogicalBlock getLogicalBlock() throws BlockCodeCompilerErrorException {
 		ArrayList<LogicalBlock> execBlocks = new ArrayList<>();
-		for(Node n : nestBoxes[0].getChildren()) {
+		for (Node n : nestBoxes[0].getChildren()) { // processes all the blocks in the execution sapce
 			((GraphicalBlock) n).setIndentFactor(this.indentFactor + 1);
 			execBlocks.add(((GraphicalBlock) n).getLogicalBlock());
 		}
 		String[] params = new String[funcBuilder.getRows().size()];
-		for(int i = 0; i < params.length; i++) {
+		for (int i = 0; i < params.length; i++) { // processes parameters
 			params[i] = funcBuilder.getRows().get(i).getName();
 		}
 		return logicalFactory.createFunctionBlock(getIndentFactor(), this.field.getText(), null, params, execBlocks);
@@ -164,15 +164,16 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 						newBoxWidth = b.getMaxWidth();
 					}
 				}
+				// calculates the change in width and height
 				double deltaWidth = box.getMaxWidth() - newBoxWidth;
-				double deltaHeight = rem.getMinHeight(); // no need for subtraction since there's more than one nested
-															// block
+				double deltaHeight = rem.getMinHeight();
+
 				box.setMaxWidth(newBoxWidth);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(boxHeight - rem.getMinHeight());
 				box.setMinHeight(box.getMaxHeight());
 				this.setSize(this.getMaxWidth() - deltaWidth, this.getMinHeight() - deltaHeight);
-			} else {
+			} else { // no blocks left, reset block and box size
 				box.setMaxWidth(dimensions[0]);
 				box.setMinWidth(box.getMaxWidth());
 				box.setMaxHeight(dimensions[1]);

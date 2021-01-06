@@ -17,7 +17,7 @@ public class LogicalFunctionCallBlock extends LogicalBlock {
 				indents += "	";
 		}
 		String ret = indents + name + "(";
-		if (params != null) {
+		if (params != null) { // the parameters passed to the function
 			for (int i = 0; i < params.size() - 1; i++) {
 				ret = ret + params.get(i) + ", ";
 			}
@@ -29,6 +29,10 @@ public class LogicalFunctionCallBlock extends LogicalBlock {
 		return ret;
 	}
 
+	/**
+	 * 
+	 * @param name - the name of the function being called
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}

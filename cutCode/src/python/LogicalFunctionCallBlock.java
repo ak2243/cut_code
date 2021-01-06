@@ -18,13 +18,13 @@ public class LogicalFunctionCallBlock extends LogicalBlock {
 		}
 		String ret = indents + name + "(";
 		if (params != null) {
-			for (int i = 0; i < params.size() - 1; i++) {
+			for (int i = 0; i < params.size() - 1; i++) { // processes parameters
 				ret = ret + params.get(i) + ", ";
 			}
 			ret = ret + params.get(params.size() - 1);
 		}
 		ret = ret + ")";
-		if (independent)
+		if (independent) // may or may not be an independent block
 			ret = ret + System.lineSeparator();
 		return ret;
 	}

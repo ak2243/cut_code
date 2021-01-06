@@ -9,6 +9,7 @@ public class BSTree<T extends Comparable<T>> {
 	 * @param data -- value added to the tree
 	 */
 	public void add(T data) {
+		// if root is null, can just add to root and be done with it
 		if (root == null) {
 			root = new Node<T>(data);
 			return;
@@ -17,23 +18,25 @@ public class BSTree<T extends Comparable<T>> {
 		Node<T> check = root;
 
 		int compare = data.compareTo(check.data);
+		// loop to figure out where a node should be added
 		while (check != null) {
+			// less than or equal to zero means go left
 			if (compare <= 0) {
-				if (check.left == null) {
+				if (check.left == null) { // if no left child, add node
 					check.left = new Node<T>(data);
 					break;
-				} else {
+				} else { // no node, so need to change check to the left node
 					check = check.left;
 				}
-			} else {
-				if (check.right == null) {
+			} else { // greater than, so go right
+				if (check.right == null) { // if no right child, add 
 					check.right = new Node<T>(data);
 					break;
-				} else {
+				} else { // no node, so need to change check to the right node
 					check = check.right;
 				}
 			}
-			compare = data.compareTo(check.data);
+			compare = data.compareTo(check.data); // update comparison in case we haven't inserted a node yet
 		}
 
 	}

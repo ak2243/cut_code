@@ -16,7 +16,7 @@ public class LogicalFunctionBlock extends LogicalBlock {
 			indents += "	";
 		String ret = indents + "def " + name + "(";
 		if (parameters != null) {
-			for (int i = 0; i < parameters.length; i++) {
+			for (int i = 0; i < parameters.length; i++) { // processes parameters
 				if (i == parameters.length - 1) {
 					ret = ret + parameters[i];
 				} else {

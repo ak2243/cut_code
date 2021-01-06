@@ -30,33 +30,36 @@ public class LanguagePicker extends BorderPane {
 
 	/**
 	 * 
-	 * @param height desired height of the language picker screen when not in fullscreen mode
-	 * @param width desired width of the language picker screen when not in fullscreen mode
+	 * @param height    desired height of the language picker screen when not in
+	 *                  fullscreen mode
+	 * @param width     desired width of the language picker screen when not in
+	 *                  fullscreen mode
 	 * @param mainClass the main class which calls this language picker constructor
-	 * @param stage the stage for the language picker screen
+	 * @param stage     the stage for the language picker screen
 	 */
 	public LanguagePicker(double height, double width, Main mainClass, Stage stage) {
-		//Need to check if the default values work
+		// Need to check if the default values work
 		javaDefault = "java";
 		pythonDefault = "python3";
 		this.height = height;
 		this.width = width;
 
-		//Setting up the scene
+		// Setting up the scene
 		Label label = new Label("Welcome to Cut Code");
 		label.setFont(new Font("Helvetica", 24));
 		Label label2 = new Label("Please pick a programming language below");
 		label2.setFont(new Font("Helvetica", 14));
-		Label label3 = new Label("Note: Cut Code will only check if your commands are valid, not if they are the correct commands to run your program");
+		Label label3 = new Label(
+				"Note: Cut Code will only check if your commands are valid, not if they are the correct commands to run your program");
 		label3.setFont(new Font("Helvetica", 12));
 		label3.setWrapText(true);
 		label3.setAlignment(Pos.CENTER);
 		VBox top = new VBox(label, label2, label3);
 		top.setAlignment(Pos.CENTER);
 
-		//Setting up drop down
-		String[] langChoice = {"java", "python"};
-		languageChoice = new ComboBox<>(FXCollections.observableArrayList(FXCollections.observableArrayList(langChoice)));
+		// Setting up drop down
+		String[] langChoice = { "java", "python" };
+		languageChoice = new ComboBox<>(FXCollections.observableArrayList(langChoice));
 		VBox options = new VBox(languageChoice);
 		options.setAlignment(Pos.CENTER);
 		languageChoice.setValue("Pick Language");
@@ -65,45 +68,46 @@ public class LanguagePicker extends BorderPane {
 		content.getChildren().add(options);
 		languageChoice.valueProperty().addListener(new ChangeListener<String>() {
 			private VBox keywordInput;
+
 			@Override
-			public void changed(ObservableValue ov, String t, String t1) { //t1 is language choice
+			public void changed(ObservableValue ov, String t, String t1) { // t1 is language choice
 				language = t1;
 				keywordInput = new VBox();
 				keywordInput.setAlignment(Pos.CENTER);
 				if (content.getChildren().size() > 1)
 					content.getChildren().remove(1);
-				switch (t1) { //Gets keywords from user when they pick a drop down option
-					case "java":
-						Label javaCompileKeyword = new Label("Compile keyword:");
-						compileInput = new TextField(javaDefault + "c");
-						Button javaCompilePicker = new Button("...");
-						javaCompilePicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(compileInput));
-						HBox javaFirstLine = new HBox(javaCompileKeyword, compileInput, javaCompilePicker);
-						javaFirstLine.setAlignment(Pos.CENTER);
-						Label javaRunKeyword = new Label("Run keyword:");
-						runInput = new TextField(javaDefault);
-						Button javaRunPicker = new Button("...");
-						///allows user to use a filepicker to pick executable
-						javaRunPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(runInput));
-						HBox javaSecondLine = new HBox(javaRunKeyword, runInput, javaRunPicker);
-						keywordInput.getChildren().clear();
-						keywordInput.getChildren().addAll(javaFirstLine, javaSecondLine);
-						javaSecondLine.setAlignment(Pos.CENTER);
-						break;
-					case "python":
-						compileInput = null;
-						Label pythonCompileKeyword = new Label("Compile keyword:");
-						runInput = new TextField(pythonDefault);
-						Button pythonRunPicker = new Button("...");
-						pythonRunPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(runInput));
-						//this allows the user to use a filepicker to pick the executable
-						HBox pythonFirstLine = new HBox(pythonCompileKeyword, runInput, pythonRunPicker);
-						pythonFirstLine.setAlignment(Pos.CENTER);
-						keywordInput.getChildren().clear();
-						keywordInput.getChildren().add(pythonFirstLine);
-						break;
+				switch (t1) { // Gets keywords from user when they pick a drop down option
+				case "java":
+					Label javaCompileKeyword = new Label("Compile keyword:");
+					compileInput = new TextField(javaDefault + "c");
+					Button javaCompilePicker = new Button("...");
+					javaCompilePicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(compileInput));
+					HBox javaFirstLine = new HBox(javaCompileKeyword, compileInput, javaCompilePicker);
+					javaFirstLine.setAlignment(Pos.CENTER);
+					Label javaRunKeyword = new Label("Run keyword:");
+					runInput = new TextField(javaDefault);
+					Button javaRunPicker = new Button("...");
+					/// allows user to use a filepicker to pick executable
+					javaRunPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(runInput));
+					HBox javaSecondLine = new HBox(javaRunKeyword, runInput, javaRunPicker);
+					keywordInput.getChildren().clear();
+					keywordInput.getChildren().addAll(javaFirstLine, javaSecondLine);
+					javaSecondLine.setAlignment(Pos.CENTER);
+					break;
+				case "python":
+					compileInput = null; // resets the compile input box to null
+					Label pythonCompileKeyword = new Label("Compile keyword:");
+					runInput = new TextField(pythonDefault);
+					Button pythonRunPicker = new Button("...");
+					pythonRunPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(runInput));
+					// this allows the user to use a filepicker to pick the executable
+					HBox pythonFirstLine = new HBox(pythonCompileKeyword, runInput, pythonRunPicker);
+					pythonFirstLine.setAlignment(Pos.CENTER);
+					keywordInput.getChildren().clear();
+					keywordInput.getChildren().add(pythonFirstLine);
+					break;
 				}
-				
+
 				content.getChildren().add(keywordInput);
 			}
 		});
@@ -117,66 +121,66 @@ public class LanguagePicker extends BorderPane {
 			public void handle(MouseEvent event) {
 				if (language != null && languageChoice.getValue() != null) {
 					switch (language) {
-						//first, figure out what language was picked, then check that the run commands are valid
-						case "java":
-							if (compileInput != null && runInput != null) {
-								if (checkValidity(compileInput.getText(), runInput.getText())) {
-									// Language valid. Need to set language and run
-									mainClass.setLanguage(language, compileInput.getText(), runInput.getText());
-									mainClass.setUpWorkspace();
-								}
-								else
-									err(); //outputs an error message telling tha user to input valid commands
+					// first, figure out what language was picked, then check that the run commands
+					// are valid
+					case "java":
+						if (compileInput != null && runInput != null) {
+							if (checkValidity(compileInput.getText(), runInput.getText())) {
+								// Language valid. Need to set language and run
+								mainClass.setLanguage(language, compileInput.getText(), runInput.getText());
+								mainClass.setUpWorkspace();
 							} else
-								err();
-							break;
-						case "python":
-							if (compileInput == null && runInput != null) {
-								if (checkValidity(null, runInput.getText())) {
-									mainClass.setLanguage(language, null, runInput.getText());
-									mainClass.setUpWorkspace();
-								}
-								else {
-									err();
-								}
+								err(); // outputs an error message telling tha user to input valid commands
+						} else
+							err();
+						break;
+					case "python":
+						if (compileInput == null && runInput != null) {
+							if (checkValidity(null, runInput.getText())) {
+								mainClass.setLanguage(language, null, runInput.getText());
+								mainClass.setUpWorkspace();
 							} else {
 								err();
 							}
-							break;
+						} else {
+							err();
+						}
+						break;
 					}
-					
+
 				}
 			}
 		});
 
-		
 		top.getChildren().add(content);
 		setBottom(bottom);
 		setTop(top);
 	}
 
-
 	/**
 	 * 
-	 * @param compile the compile command. If not applicable for the language, use null
-	 * @param run the run command. 
-	 * @return true if the command is found and false if the command is not found. 
-	 * Note: this method will not check if the command points to the necessary language, just that the command exists.
+	 * @param compile the compile command. If not applicable for the language, use
+	 *                null
+	 * @param run     the run command.
+	 * @return true if the command is found and false if the command is not found.
+	 *         Note: this method will not check if the command points to the
+	 *         necessary language, just that the command exists.
 	 * 
 	 * 
 	 */
-	private boolean checkValidity(String compile, String run) { //Need to ensure that the default commands work
-		if (compile != null) {
+	private boolean checkValidity(String compile, String run) {
+		if (compile != null) { // in some languages, compiling isn't necessary
 			Runtime rt = Runtime.getRuntime();
 			Process p1;
 			boolean valid;
 			try {
-				p1 = rt.exec("which " + compile);
+				p1 = rt.exec("which " + compile); // `which` command checks that the command is a valid executable. gives
+													// 0 exit code if the executable valid and exists
 				p1.waitFor();
 				int exit = p1.exitValue();
 				valid = exit == 0;
 				if (!valid) {
-					p1 = rt.exec("where " + compile);
+					p1 = rt.exec("where " + compile); //on windows machines, there is no `which`. `where` is used instead.
 					p1.waitFor();
 					exit = p1.exitValue();
 					valid = exit == 0;
@@ -187,7 +191,8 @@ public class LanguagePicker extends BorderPane {
 				return false;
 			}
 		}
-		Runtime rt = Runtime.getRuntime();
+		// Now, need to do the same things with the run commands
+		Runtime rt = Runtime.getRuntime(); 
 		Process p1;
 		boolean valid;
 		try {
@@ -205,30 +210,39 @@ public class LanguagePicker extends BorderPane {
 				return false;
 		} catch (IOException | InterruptedException e) {
 			return false;
-		}		
-		
+		}
+
 		return true;
 	}
 
-	public void reset() { //Resets the language picker
+	/**
+	 * Resets the language picker.
+	 */
+	public void reset() { // Resets the language picker
 		setRight(null);
 		languageChoice.setValue("Pick Language");
+		compileInput = null;
+		runInput = null;
 	}
-	
+
 	public void err() {
-		OutputView.output("Please pick valid commands", new Stage(), width, height/2);
+		OutputView.output("Please pick valid commands", new Stage(), width, height / 2);
 	}
+
 	private class FilePickHandler implements EventHandler<MouseEvent> {
 		private TextField field;
+
 		public FilePickHandler(TextField field) {
 			this.field = field;
 		}
+
+		// User would like to pick the executable through the mine system
 		@Override
 		public void handle(MouseEvent event) {
 			FilePicker pick = new FilePicker();
 			this.field.setText(pick.pickFile(new Stage()));
-			
+
 		}
-		
+
 	}
 }

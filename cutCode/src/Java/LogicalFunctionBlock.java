@@ -12,7 +12,7 @@ public class LogicalFunctionBlock extends LogicalBlock {
 
 	@Override
 	public String toString() {
-		if(retType == null)
+		if (retType == null)
 			retType = "void";
 		String indents = "";
 		for (int i = 0; i < getIndentFactor(); i++)
@@ -34,18 +34,34 @@ public class LogicalFunctionBlock extends LogicalBlock {
 		return ret;
 	}
 
+	/**
+	 * 
+	 * @param parameters - an array of strings for the parameters of the function
+	 */
 	public void setParameters(String[] parameters) {
 		this.parameters = parameters;
 	}
 
+	/**
+	 * 
+	 * @param executeBlocks - a list of logical blocks that are executed when the function are called
+	 */
 	public void setExecuteBlocks(List<LogicalBlock> executeBlocks) {
 		this.executeBlocks = executeBlocks;
 	}
 
+	/**
+	 * 
+	 * @param name - the name of the function
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * 
+	 * @param type - the return type of the function
+	 */
 	public void setRetType(String type) {
 		this.retType = type;
 	}
