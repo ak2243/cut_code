@@ -146,4 +146,11 @@ public class GraphicalMathBinaryOperatorBlock extends GraphicalBlock {
 		}
 		return ret; //No new line because not used independently
 	}
+
+
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
+	}
 }

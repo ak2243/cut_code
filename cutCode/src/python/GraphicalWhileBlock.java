@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GraphicalWhileBlock extends GraphicalBlock {
-	private GraphicalBooleanBinaryOperatorBlock condition; // TODO make this OperatorBlock
+	private GraphicalBooleanBinaryOperatorBlock condition; 
 	private VBox[] nestBoxes;
 	private HashMap<VBox, double[]> nestDimensions;
 	private double initWidth, initHeight;
@@ -202,6 +202,14 @@ public class GraphicalWhileBlock extends GraphicalBlock {
 				}
 			}
 		}
+		return ret;
+	}
+
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		VBox[] ret = new VBox[1];
+		ret[0] = nestBoxes[1];
 		return ret;
 	}
 

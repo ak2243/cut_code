@@ -63,4 +63,9 @@ public class GraphicalBreakBlock extends GraphicalBlock { //Class not in use
 		lineLocations.put(getLineNumber(), this);
 		return getLineNumber() + 1;
 	}
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
+	}
 }

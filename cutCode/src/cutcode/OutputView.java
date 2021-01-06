@@ -1,8 +1,10 @@
 package cutcode;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class OutputView {
@@ -10,6 +12,8 @@ public class OutputView {
 		BorderPane root = new BorderPane();
 		Label out = new Label(output);
 		out.setWrapText(true);
+		out.setTextAlignment(TextAlignment.CENTER);
+		out.setAlignment(Pos.CENTER);
 		root.setCenter(out);
 		Scene scene = new Scene(root, width, height);
 		stage.setScene(scene);

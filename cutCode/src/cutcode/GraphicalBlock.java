@@ -24,23 +24,37 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	private GraphicalBlock nestedIn;
 	protected ChangeListener bindListener;
 	protected HashMap<GraphicalBlock, ChangeListener> widthListeners, heightListeners;
+	protected boolean allowBind;
 
 	public GraphicalBlock(double width, double height) {
 		this.setSize(width, height);
 		this.widthListeners = new HashMap<GraphicalBlock, ChangeListener>();
 		this.heightListeners = new HashMap<GraphicalBlock, ChangeListener>();
+		allowBind = true;
 	}
 
 	public void actionIgnored() {
 		ignoreNext = false;
 	}
 	public abstract VBox[] getNestBoxes();
+	
+	/**
+	 * 
+	 * @return the list of nest boxes this block has for which the contents should be independent blocks. null if none
+	 */
+	public abstract VBox[] getIndependentNestBoxes();
 
 	/**
 	 * 
 	 * @param b the block to which this block is binding
 	 */
 	public void bindTo(GraphicalBlock above) {
+		if(!above.allowBind || !this.allowBind) { //some blocks cannot have things bound to them. these blocks have rounded edges
+			this.setLayoutX(this.getLayoutX() + this.getMaxHeight()/4);
+			this.setLayoutY(this.getLayoutY() + this.getMaxHeight()/4);
+			//TODO: Consider outputting something here.
+			return;
+		}
 		if (above == null)
 			unbind();
 		this.above = above;

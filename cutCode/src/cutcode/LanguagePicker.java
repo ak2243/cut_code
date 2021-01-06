@@ -115,7 +115,7 @@ public class LanguagePicker extends BorderPane {
 		run.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (languageChoice.getValue() != null) {
+				if (language != null && languageChoice.getValue() != null) {
 					switch (language) {
 						//first, figure out what language was picked, then check that the run commands are valid
 						case "java":

@@ -36,6 +36,7 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 		super(width, height);
 		this.initWidth = width;
 		this.initHeight = height;
+		this.allowBind = false;
 		nestBoxes = new VBox[1];
 		nestDimensions = new HashMap<>();
 		funcBuilder = new FunctionBuilderView(null, width * 2.2, width * 2.2);
@@ -74,7 +75,9 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 			
 		});
 
-		this.setBackground(new Background(new BackgroundFill(Color.web("#545ac9"), CornerRadii.EMPTY, Insets.EMPTY)));
+		
+		CornerRadii cornerRadius = new CornerRadii(12);
+		this.setBackground(new Background(new BackgroundFill(Color.web("#545ac9"), cornerRadius, Insets.EMPTY)));
 		topLine.setSpacing(height / 5);
 		this.setPadding(new Insets(height / 5));
 		this.getChildren().addAll(topLine, runSpace);
@@ -178,6 +181,13 @@ public class GraphicalFunctionBlock extends GraphicalBlock {
 			}
 		}
 
+	}
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		VBox[] ret = new VBox[1];
+		ret[0] = nestBoxes[1];
+		return ret;
 	}
 
 }

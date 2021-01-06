@@ -143,4 +143,10 @@ public class GraphicalVariableBlock extends GraphicalBlock {
 	}
 
 
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
+	}
+
+
 }

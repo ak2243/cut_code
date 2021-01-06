@@ -88,8 +88,15 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 				paramBlocks.add(((GraphicalBlock) n).getLogicalBlock());
 			}
 		}
-		boolean independent = this.getNestedIn() == null;
-		System.err.println(independent + " " + this.getNestedIn());
+		boolean independent = false;
+		if(this.getNestedIn().getIndependentNestBoxes() != null) {
+			for (VBox box : this.getNestedIn().getIndependentNestBoxes()) {
+				if(box == this.getParent()) {
+					independent = true;
+					break;
+				}
+			}
+		}
 		return logicalFactory.createFunctionCallBlock(getIndentFactor(), field.getText(), paramBlocks, independent);
 	}
 
@@ -151,6 +158,11 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 			}
 		}
 
+	}
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
 	}
 
 }

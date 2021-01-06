@@ -134,4 +134,10 @@ public class GraphicalReturnBlock extends GraphicalBlock {
 		return ret;
 	}
 
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
+	}
+
 }

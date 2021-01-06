@@ -160,4 +160,10 @@ public class GraphicalElseBlock extends GraphicalBlock {
 		return ret;
 	}
 
+
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return getNestBoxes();
+	}
+
 }

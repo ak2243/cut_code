@@ -79,4 +79,10 @@ public class GraphicalValueBlock extends GraphicalBlock {
 	}
 
 
+	@Override
+	public VBox[] getIndependentNestBoxes() {
+		return null;
+	}
+
+
 }

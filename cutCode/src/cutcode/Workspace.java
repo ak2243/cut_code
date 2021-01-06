@@ -48,7 +48,7 @@ public class Workspace extends Pane {
 		this.guiFactory = guiFactory;
 		blocks = new ArrayList<>();
 
-		bindDistance = nestDistance = this.width * 0.025;
+		bindDistance = nestDistance = this.width * 0.0125;
 		runButtonHeight = this.height / 30;
 		paletteWidth = this.width / 6;
 
@@ -108,7 +108,7 @@ public class Workspace extends Pane {
 					OutputView.output(ret, new Stage(), width/3, width/3);
 				} catch (BlockCodeCompilerErrorException e1) {
 					OutputView.output(
-							"There was an error in your code. We attempted to identify the problem but may not have been successful in doing so.",
+							"There was an error in your code." + System.lineSeparator() + "We attempted to identify the problem but may not have been successful in doing so.",
 							new Stage(), width/3, width/3);
 				}
 			}
@@ -503,7 +503,7 @@ public class Workspace extends Pane {
 					OutputView.output(ret, new Stage(), width/3, width/3);
 				} catch (BlockCodeCompilerErrorException e1) {
 					OutputView.output(
-							"There was an error in your code. We attempted to identify the problem but may not have been successful in doing so.",
+							"There was an error in your code." + System.lineSeparator() + "We attempted to identify the problem but may not have been successful in doing so.",
 							new Stage(), width/3, width/3);
 				}
 			}

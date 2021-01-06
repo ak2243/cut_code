@@ -59,12 +59,12 @@ public class Main extends Application {
 		try {
 			executor.export(logicalBlocks, this.filename); //the code needs to be exported to a file first
 		} catch (IOException e) {
-			return "An unexpected error occured when writing the code. Please ensure that permissions are enabled";
+			return "An unexpected error occured when writing the code. Please ensure that cut code has the necessary permissions to access your filesystem";
 		}
 		try {
 			return executor.execute(lineLocations); //Run the code in the file written to
 		} catch (BlockCodeCompilerErrorException e) {
-			return "There was an error in your code";
+			return "There was an error in your code." + System.lineSeparator() + "We attempted to identify the problem but may not have been successful in doing so.";
 		}
 	}
 
