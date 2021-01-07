@@ -11,6 +11,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.scene.Node;
 
 public abstract class GraphicalBlock extends VBox implements Comparable<GraphicalBlock> {
@@ -49,18 +50,21 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 	 * @param b the block to which this block is binding
 	 */
 	public void bindTo(GraphicalBlock above) {
-		if (!above.allowBind || !this.allowBind) { // some blocks cannot have things bound to them. these blocks have
-													// rounded edges
-			this.setLayoutX(this.getLayoutX() + this.getMaxHeight() / 4);
-			this.setLayoutY(this.getLayoutY() + this.getMaxHeight() / 4);
-			// TODO: Consider outputting a message to the user here.
-			return;
-		} else if (above == null) { // effectively the same as unbinding
+		if (above == null) { // effectively the same as unbinding
 			this.unbind();
 			this.above = null;
 			return;
+		} else if (!above.allowBind || !this.allowBind) { // some blocks cannot have things bound to them. these blocks
+															// have
+			// rounded edges
+			this.setLayoutX(this.getLayoutX() + this.getMaxHeight() / 4);
+			this.setLayoutY(this.getLayoutY() + this.getMaxHeight() / 4);
+			cutcode.OutputView.output(
+					"Certain blocks cannot be attached to others or have other blocks attached to them. These blocks are indicated by rounded edges.",
+					new Stage(), this.getMinWidth() * 1.5, this.getMinHeight() * 1.5);
+			// TODO: replace pop-up window with a less intrusive alert in a later version
+			return;
 		}
-
 		this.above = above;
 		above.below = this;
 		this.layoutXProperty().unbind();
@@ -381,7 +385,7 @@ public abstract class GraphicalBlock extends VBox implements Comparable<Graphica
 			// width of a nested block changes, need to adjust height of this block
 
 			GraphicalBlock biggestWidth = nest;
-			for (Node n : box.getChildren()) { //find the widest block in this box
+			for (Node n : box.getChildren()) { // find the widest block in this box
 				GraphicalBlock b = (GraphicalBlock) n;
 				if (b.getMaxWidth() > biggestWidth.getMaxWidth())
 					biggestWidth = b;
