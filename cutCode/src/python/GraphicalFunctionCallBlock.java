@@ -92,7 +92,7 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 			}
 		}
 		boolean independent = false;
-		if (this.getNestedIn().getIndependentNestBoxes() != null) {
+		if (this.getNestedIn() != null && this.getNestedIn().getIndependentNestBoxes() != null) {
 			for (VBox box : this.getNestedIn().getIndependentNestBoxes()) { // helps determine if the function call
 																			// block is an independent block or not
 				if (box == this.getParent()) {
@@ -100,6 +100,8 @@ public class GraphicalFunctionCallBlock extends GraphicalBlock {
 					break;
 				}
 			}
+		} else if (this.getNestedIn() == null) {
+			independent = true;
 		}
 		return logicalFactory.createFunctionCallBlock(getIndentFactor(), field.getText(), paramBlocks, independent);
 	}
