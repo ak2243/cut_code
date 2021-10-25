@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -49,12 +50,8 @@ public class LanguagePicker extends BorderPane {
 		label.setFont(new Font("Helvetica", 24));
 		Label label2 = new Label("Please pick a programming language below");
 		label2.setFont(new Font("Helvetica", 14));
-		Label label3 = new Label(
-				"Note: Cut Code will only check if your commands are valid, not if they are the correct commands to run your program");
-		label3.setFont(new Font("Helvetica", 12));
-		label3.setWrapText(true);
-		label3.setAlignment(Pos.CENTER);
-		VBox top = new VBox(label, label2, label3);
+		VBox top = new VBox(label, label2);
+		top.setSpacing(height/10);
 		top.setAlignment(Pos.CENTER);
 
 		// Setting up drop down
@@ -65,6 +62,7 @@ public class LanguagePicker extends BorderPane {
 		languageChoice.setValue("Pick Language");
 		VBox content = new VBox();
 		content.setAlignment(Pos.CENTER);
+		content.setSpacing(height/10);
 		content.getChildren().add(options);
 		languageChoice.valueProperty().addListener(new ChangeListener<String>() {
 			private VBox keywordInput;
@@ -95,19 +93,20 @@ public class LanguagePicker extends BorderPane {
 					javaSecondLine.setAlignment(Pos.CENTER);
 					break;
 				case "python":
-					compileInput = null; // resets the compile input box to null
-					Label pythonCompileKeyword = new Label("Compile keyword:");
+					runInput = null; // resets the compile input box to null
+					Label pythonRunKeyword = new Label("Run keyword:");
 					runInput = new TextField(pythonDefault);
 					Button pythonRunPicker = new Button("...");
 					pythonRunPicker.addEventHandler(MouseEvent.MOUSE_CLICKED, new FilePickHandler(runInput));
 					// this allows the user to use a filepicker to pick the executable
-					HBox pythonFirstLine = new HBox(pythonCompileKeyword, runInput, pythonRunPicker);
+					HBox pythonFirstLine = new HBox(pythonRunKeyword, runInput, pythonRunPicker);
 					pythonFirstLine.setAlignment(Pos.CENTER);
 					keywordInput.getChildren().clear();
 					keywordInput.getChildren().add(pythonFirstLine);
 					break;
 				}
-
+				
+				keywordInput.setSpacing(height/20);
 				content.getChildren().add(keywordInput);
 			}
 		});

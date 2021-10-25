@@ -13,6 +13,7 @@ public class JavaLogicalFactory implements LogicalFactory {
 		keywordTranslation = new HashMap<>();
 		keywordTranslation.put("or", "||");
 		keywordTranslation.put("and", "&&");
+		keywordTranslation.put("==", "==");
 		keywordTranslation.put(">", ">");
 		keywordTranslation.put(">=", ">=");
 		keywordTranslation.put("<", "<");

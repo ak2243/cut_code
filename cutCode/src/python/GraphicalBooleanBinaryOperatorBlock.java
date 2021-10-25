@@ -52,7 +52,7 @@ public class GraphicalBooleanBinaryOperatorBlock extends GraphicalBlock {
 		op2.setPrefWidth(initWidth/4);
 		op2.setPrefHeight(initHeight - initHeight/3);
 		op2.setStyle("-fx-background-color: #E6E6E6");
-		String[] choiceOp = {"or", "and", ">", ">=", "<", "<="}; // operator choices
+		String[] choiceOp = {"or", "and", "==", ">", ">=", "<", "<="}; // operator choices
 		operatorChoice = new ComboBox<String>(FXCollections.observableArrayList(FXCollections.observableArrayList(choiceOp)));
 		operatorChoice.setValue("or"); //default value is or
 		operatorChoice.setMinWidth((initWidth * 3)/ 8);

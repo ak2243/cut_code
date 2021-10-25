@@ -79,10 +79,12 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		//Gets max screen size
-		maxX = Screen.getScreens().get(0).getBounds().getWidth();
-		maxY = Screen.getScreens().get(0).getBounds().getHeight();
-		langPicker = new LanguagePicker(maxX/5, maxY/4, this, primaryStage);
-		Scene scene = new Scene(langPicker, maxX/5, maxY/4);
+//		maxX = Screen.getScreens().get(0).getBounds().getWidth();
+//		maxY = Screen.getScreens().get(0).getBounds().getHeight();
+		maxX = 1920;
+		maxY = 1080;
+		langPicker = new LanguagePicker(maxX/3, maxY/2, this, primaryStage);
+		Scene scene = new Scene(langPicker, maxX/3, maxY/2);
 		langStage = primaryStage;
 		langStage.setScene(scene);
 		//primaryStage.setMaximized(true);

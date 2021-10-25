@@ -11,8 +11,9 @@ public class PythonLogicalFactory implements LogicalFactory {
 
 	public PythonLogicalFactory() {
 		operatorTranslation = new HashMap<>();
-		operatorTranslation.put("or", "|");
-		operatorTranslation.put("and", "&");
+		operatorTranslation.put("or", "or");
+		operatorTranslation.put("and", "and");
+		operatorTranslation.put("==", "==");
 		operatorTranslation.put(">", ">");
 		operatorTranslation.put(">=", ">=");
 		operatorTranslation.put("<", "<");
